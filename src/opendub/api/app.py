@@ -4,12 +4,14 @@ from __future__ import annotations
 
 import base64
 import binascii
+import json
+from collections.abc import Iterator
 from pathlib import Path
 from typing import Literal
 
-from fastapi import FastAPI, HTTPException, status
+from fastapi import FastAPI, HTTPException, Query, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, StreamingResponse
 from pydantic import BaseModel, ConfigDict, Field
 
 from opendub.application.evaluation_service import EvaluationService
@@ -28,6 +30,8 @@ from opendub.domain.metrics import MetricResult
 from opendub.domain.project import Project
 from opendub.domain.segments import DubbingSegment, EmotionLabel, EmotionSpec
 from opendub.domain.time import TimeRange
+from opendub.jobs.models import JobEvent, JobRecord
+from opendub.jobs.repository import JobRepository
 from opendub.media.timeline import import_srt, import_vtt
 from opendub.models.registry import ModelRegistry, UpstreamModel
 from opendub.storage.artifact_store import ArtifactStore
@@ -187,6 +191,7 @@ def create_app(*, workspace: Path | None = None) -> FastAPI:
     """Create an API application that defaults to a private local workspace."""
     root = (workspace or Path.cwd() / ".opendub").resolve()
     store = ProjectStore(root)
+    jobs = JobRepository(root / "jobs.json")
     artifacts = ArtifactStore(root)
     repository_root = Path(__file__).resolve().parents[3]
     model_registry = ModelRegistry(repository_root / "model-registry" / "upstreams.yaml")
@@ -222,6 +227,39 @@ def create_app(*, workspace: Path | None = None) -> FastAPI:
     @app.get("/api/v1/projects", response_model=tuple[Project, ...])
     def list_projects() -> tuple[Project, ...]:
         return store.iter_projects()
+
+    @app.get("/api/v1/projects/{project_id}/jobs", response_model=tuple[JobRecord, ...])
+    def list_project_jobs(project_id: str) -> tuple[JobRecord, ...]:
+        """List the durable local job ledger entries belonging to one project."""
+        try:
+            store.load(project_id)
+        except DomainError as error:
+            raise _http_error(error) from error
+        return jobs.list(project_id=project_id)
+
+    @app.get("/api/v1/jobs/{job_id}", response_model=JobRecord)
+    def get_job(job_id: str) -> JobRecord:
+        """Return one durable job state without disclosing project filesystem paths."""
+        try:
+            return jobs.get(job_id)
+        except DomainError as error:
+            raise _http_error(error) from error
+
+    @app.get("/api/v1/jobs/{job_id}/events")
+    def replay_job_events(
+        job_id: str,
+        after_id: int = Query(default=0, ge=0),
+    ) -> StreamingResponse:
+        """Replay the persisted suffix of a job's progress events as Server-Sent Events."""
+        try:
+            events = jobs.events(job_id, after_id=after_id)
+        except DomainError as error:
+            raise _http_error(error) from error
+        return StreamingResponse(
+            _sse_events(events),
+            media_type="text/event-stream",
+            headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+        )
 
     @app.get("/api/v1/projects/{project_id}/assets/{asset_id}")
     def get_asset(project_id: str, asset_id: str) -> FileResponse:
@@ -585,6 +623,15 @@ def _project_asset_path(store: ProjectStore, project: Project, asset: MediaAsset
     if not path.is_relative_to(project_assets) or not path.is_file():
         raise DomainError(code="ASSET_NOT_FOUND", message="Project asset data was not found.")
     return path
+
+
+def _sse_events(events: tuple[JobEvent, ...]) -> Iterator[str]:
+    """Serialize durable events using the minimal SSE framing required for reconnect replay."""
+    for event in events:
+        payload = json.dumps(
+            event.model_dump(mode="json"), ensure_ascii=False, separators=(",", ":")
+        )
+        yield f"id: {event.id}\nevent: progress\ndata: {payload}\n\n"
 
 
 app = create_app()
