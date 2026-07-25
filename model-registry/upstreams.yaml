@@ -9,7 +9,7 @@ models:
       license: MIT
     artifacts: []
     paper: "EmoDubber: Towards High Quality and Emotion Controllable Movie Dubbing"
-    review: "Emotion-control implementation and weight terms require release audit."
+    review: "Audit 2026-07-25: basic inference code exists, but emotion inference is marked Under construction; checkpoint terms and SHA-256 are unpublished."
   - id: galaxycong/hpmdubbing
     display_name: HPMDubbing
     maturity: planned

@@ -13,3 +13,13 @@ This document records the first reproducibility boundary for OpenDub adapters. I
 | LLM-Flow-Dubber | `7075d8c170ea10786fea306c7c311c3bdb74f04f` | Not yet verified | Planned | Public repository is not a model implementation |
 
 No source in this table is copied into OpenDub by this audit. Each future adapter stores its own license record and patch notes.
+## EmoDubber
+
+- Pinned source: `553fa054160fed17e757125d185e5a61ef6ed437`.
+- Source license: MIT, confirmed from the root `LICENSE`.
+- Published scope: basic Chem/GRID feature-file inference and a linked 16 kHz
+  vocoder checkpoint.
+- Blocking gaps: published emotion inference is explicitly under construction;
+  linked weights have no recorded terms, byte size, or SHA-256.
+- OpenDub disposition: `planned`; detailed evidence and release gate are in
+  [`docs/audits/emodubber-553fa054.md`](../docs/audits/emodubber-553fa054.md).
