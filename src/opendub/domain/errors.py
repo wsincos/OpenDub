@@ -23,7 +23,7 @@ ErrorCode = Literal[
 ]
 
 
-@dataclass(frozen=True)
+@dataclass
 class DomainError(Exception):
     """An expected failure with a safe, stable error code."""
 

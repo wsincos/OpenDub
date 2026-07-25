@@ -94,9 +94,73 @@ class Project(BaseModel):
             )
         if any(item.id == segment.id for item in self.segments):
             raise DomainError(code="INPUT_INVALID", message="Segment identifier is already in use.")
+        if not any(
+            reference.id == segment.voice_reference_id for reference in self.voice_references
+        ):
+            raise DomainError(
+                code="ASSET_NOT_FOUND",
+                message="Segment must reference an authorized voice reference in this project.",
+            )
         return self.model_copy(
             update={
                 "segments": (*self.segments, segment),
+                "revision": self.revision + 1,
+                "updated_at": datetime.now(UTC),
+            }
+        )
+
+    def add_asset(self, asset: MediaAsset, expected_revision: int) -> Project:
+        """Attach a content-addressed local asset using optimistic concurrency control."""
+        if expected_revision != self.revision:
+            raise DomainError(
+                code="PROJECT_CONFLICT",
+                message="Project was changed by another operation.",
+                action="Reload the project and retry the change.",
+            )
+        if any(item.id == asset.id for item in self.assets):
+            raise DomainError(code="INPUT_INVALID", message="Asset identifier is already in use.")
+        return self.model_copy(
+            update={
+                "assets": (*self.assets, asset),
+                "revision": self.revision + 1,
+                "updated_at": datetime.now(UTC),
+            }
+        )
+
+    def add_voice_reference(
+        self,
+        consent: ConsentRecord,
+        reference: VoiceReference,
+        expected_revision: int,
+    ) -> Project:
+        """Register an authorized voice reference backed by an existing audio asset."""
+        if expected_revision != self.revision:
+            raise DomainError(
+                code="PROJECT_CONFLICT",
+                message="Project was changed by another operation.",
+                action="Reload the project and retry the change.",
+            )
+        asset = next((item for item in self.assets if item.id == reference.asset_id), None)
+        if asset is None or asset.kind != "audio":
+            raise DomainError(
+                code="ASSET_NOT_FOUND",
+                message="Voice reference must use an audio asset in this project.",
+            )
+        if reference.consent_id != consent.id:
+            raise DomainError(
+                code="RIGHTS_DECLARATION_REQUIRED",
+                message="Voice reference must be linked to its explicit consent declaration.",
+            )
+        if any(item.id == reference.id for item in self.voice_references):
+            raise DomainError(
+                code="INPUT_INVALID", message="Voice reference identifier is already in use."
+            )
+        if any(item.id == consent.id for item in self.consents):
+            raise DomainError(code="INPUT_INVALID", message="Consent identifier is already in use.")
+        return self.model_copy(
+            update={
+                "consents": (*self.consents, consent),
+                "voice_references": (*self.voice_references, reference),
                 "revision": self.revision + 1,
                 "updated_at": datetime.now(UTC),
             }

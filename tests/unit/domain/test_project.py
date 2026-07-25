@@ -1,5 +1,6 @@
 import pytest
 
+from opendub.domain.assets import ConsentRecord, MediaAsset, VoiceReference
 from opendub.domain.candidates import Candidate
 from opendub.domain.errors import DomainError
 from opendub.domain.ids import new_id
@@ -53,3 +54,31 @@ def test_project_rejects_stale_revision() -> None:
 
     with pytest.raises(DomainError, match="PROJECT_CONFLICT"):
         project.accept_candidate(segment.id, candidate.id, expected_revision=project.revision - 1)
+
+
+def test_project_requires_authorized_audio_reference_for_new_segment() -> None:
+    project, segment, _ = make_project()
+    asset = MediaAsset(
+        id=new_id(),
+        kind="audio",
+        display_name="authorized.wav",
+        relative_path="assets/authorized.wav",
+        sha256="0" * 64,
+        size_bytes=1,
+    )
+    with_asset = project.add_asset(asset, expected_revision=project.revision)
+    consent = ConsentRecord(id=new_id(), material_source="self_recorded")
+    reference = VoiceReference(
+        id=segment.voice_reference_id,
+        asset_id=asset.id,
+        consent_id=consent.id,
+        speaker_label="Narrator",
+    )
+    configured = with_asset.add_voice_reference(
+        consent, reference, expected_revision=with_asset.revision
+    )
+
+    new_segment = segment.model_copy(update={"id": new_id()})
+    updated = configured.add_segment(new_segment, expected_revision=configured.revision)
+
+    assert updated.segments[-1].voice_reference_id == reference.id

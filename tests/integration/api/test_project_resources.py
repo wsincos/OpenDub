@@ -1,0 +1,73 @@
+import base64
+from pathlib import Path
+
+from fastapi.testclient import TestClient
+
+from opendub.api.app import create_app
+from opendub.domain.ids import new_id
+
+
+def test_api_creates_authorized_reference_then_dubbing_segment(tmp_path: Path) -> None:
+    client = TestClient(create_app(workspace=tmp_path))
+    project = client.post("/api/v1/projects", json={"name": "Authorized film"}).json()
+
+    asset = client.post(
+        f"/api/v1/projects/{project['id']}/assets",
+        json={
+            "kind": "audio",
+            "filename": "narrator.wav",
+            "content_base64": base64.b64encode(b"local audio fixture").decode("ascii"),
+            "expected_revision": project["revision"],
+        },
+    )
+    assert asset.status_code == 201
+
+    reference = client.post(
+        f"/api/v1/projects/{project['id']}/voice-references",
+        json={
+            "asset_id": asset.json()["id"],
+            "speaker_label": "Narrator",
+            "material_source": "self_recorded",
+            "expected_revision": asset.json()["project_revision"],
+        },
+    )
+    assert reference.status_code == 201
+
+    segment = client.post(
+        f"/api/v1/projects/{project['id']}/segments",
+        json={
+            "start_us": 0,
+            "end_us": 1_250_000,
+            "text": "A verified local dubbing workflow.",
+            "language": "en",
+            "character_id": new_id(),
+            "voice_reference_id": reference.json()["id"],
+            "adapter_id": "galaxycong/emodubber",
+            "emotion_label": "neutral",
+            "emotion_intensity": 0.5,
+            "expected_revision": reference.json()["project_revision"],
+        },
+    )
+
+    assert segment.status_code == 201
+    loaded = client.get(f"/api/v1/projects/{project['id']}").json()
+    assert loaded["segments"][0]["text"] == "A verified local dubbing workflow."
+    assert loaded["voice_references"][0]["speaker_label"] == "Narrator"
+
+
+def test_api_rejects_stale_asset_upload_before_writing_a_project_reference(tmp_path: Path) -> None:
+    client = TestClient(create_app(workspace=tmp_path))
+    project = client.post("/api/v1/projects", json={"name": "Versioned film"}).json()
+    payload = {
+        "kind": "audio",
+        "filename": "narrator.wav",
+        "content_base64": base64.b64encode(b"local audio fixture").decode("ascii"),
+        "expected_revision": project["revision"],
+    }
+
+    first = client.post(f"/api/v1/projects/{project['id']}/assets", json=payload)
+    stale = client.post(f"/api/v1/projects/{project['id']}/assets", json=payload)
+
+    assert first.status_code == 201
+    assert stale.status_code == 409
+    assert len(client.get(f"/api/v1/projects/{project['id']}").json()["assets"]) == 1
