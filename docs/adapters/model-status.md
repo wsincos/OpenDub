@@ -17,3 +17,7 @@ Audits live under [`docs/audits/`](../audits/). An adapter can move to `experime
 the repository, source commit, source license, weights, input contract, and at least one real
 inference have been verified. It can move to `stable` only after a controlled real smoke test,
 documented limits, and release-quality reproducibility evidence.
+
+The enforceable evidence packet and planned-backend index are in
+[Research Backend Promotion Gate](research-backend-gate.md) and
+[`model-registry/planned/`](../../model-registry/planned/).

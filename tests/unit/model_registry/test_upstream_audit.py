@@ -60,3 +60,40 @@ def test_registry_allows_planned_model_without_release_artifacts(tmp_path: Path)
     result = validate_upstream_registry(registry)
 
     assert result.errors == ()
+
+
+def test_registry_rejects_releasable_model_without_adapter_admission_evidence(
+    tmp_path: Path,
+) -> None:
+    registry = write_registry(
+        tmp_path,
+        maturity="experimental",
+        commit="a" * 40,
+        checksum="b" * 64,
+    )
+
+    result = validate_upstream_registry(registry)
+
+    assert "test/model: admission is required" in result.errors
+
+
+def test_registry_allows_releasable_model_with_complete_adapter_admission(tmp_path: Path) -> None:
+    registry = write_registry(
+        tmp_path,
+        maturity="experimental",
+        commit="a" * 40,
+        checksum="b" * 64,
+    )
+    registry.write_text(
+        registry.read_text(encoding="utf-8")
+        + """    admission:
+      adapter_version: 0.1.0
+      input_contract: docs/adapters/test-model-input.md
+      real_smoke_report: reports/test-model-smoke.md
+""",
+        encoding="utf-8",
+    )
+
+    result = validate_upstream_registry(registry)
+
+    assert result.errors == ()

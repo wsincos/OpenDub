@@ -32,6 +32,16 @@ class UpstreamArtifact(BaseModel):
     sha256: str
 
 
+class UpstreamAdmission(BaseModel):
+    """Evidence that an adapter has passed the minimum user-visible promotion gate."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    adapter_version: str
+    input_contract: str
+    real_smoke_report: str
+
+
 class UpstreamModel(BaseModel):
     """One discovery record, deliberately separate from a runnable adapter."""
 
@@ -42,6 +52,7 @@ class UpstreamModel(BaseModel):
     maturity: RegistryMaturity
     source: UpstreamSource
     artifacts: tuple[UpstreamArtifact, ...] = ()
+    admission: UpstreamAdmission | None = None
     paper: str | None = None
     review: str | None = None
 

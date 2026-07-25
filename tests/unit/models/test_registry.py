@@ -18,6 +18,10 @@ models:
     artifacts:
       - role: acoustic_model
         sha256: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+    admission:
+      adapter_version: 0.1.0
+      input_contract: docs/adapters/ready-input.md
+      real_smoke_report: reports/ready-smoke.md
 """,
         encoding="utf-8",
     )

@@ -101,9 +101,10 @@ def _validate_model(model: dict[str, Any], seen_ids: set[str], index: int) -> li
     artifacts = model.get("artifacts")
     if not isinstance(artifacts, list) or not artifacts:
         errors.append(f"{label}: artifacts are required")
-        return errors
-    for artifact_index, artifact in enumerate(artifacts):
-        errors.extend(_validate_artifact(label, artifact_index, artifact))
+    else:
+        for artifact_index, artifact in enumerate(artifacts):
+            errors.extend(_validate_artifact(label, artifact_index, artifact))
+    errors.extend(_validate_admission(label, model.get("admission")))
     return errors
 
 
@@ -119,6 +120,16 @@ def _validate_artifact(label: str, index: int, artifact: Any) -> list[str]:
         errors.append(f"{label}: artifacts[{index}].sha256 is required")
     elif not _SHA256_PATTERN.fullmatch(checksum):
         errors.append(f"{label}: artifacts[{index}].sha256 must be a 64-character lowercase SHA")
+    return errors
+
+
+def _validate_admission(label: str, admission: Any) -> list[str]:
+    if not isinstance(admission, dict):
+        return [f"{label}: admission is required"]
+    errors: list[str] = []
+    for field in ("adapter_version", "input_contract", "real_smoke_report"):
+        if not _text(admission.get(field)):
+            errors.append(f"{label}: admission.{field} is required")
     return errors
 
 
