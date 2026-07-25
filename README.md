@@ -35,6 +35,18 @@ Only process video, scripts, and voice references that you own or are authorized
 - [Alpha demo recording script](docs/grant/demo-script.md)
 - The detailed engineering, product, release, grant, and formal-film plans remain in [TODO/README.md](TODO/README.md).
 
+## Local Containers
+
+The optional compose stack keeps both services on loopback addresses and stores project data in a
+named local Docker volume. It contains no model weights.
+
+```bash
+docker compose up --build
+```
+
+Open the Studio at `http://127.0.0.1:8080`. The API is available at
+`http://127.0.0.1:8000/api/docs`.
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md). Security issues must be reported through [SECURITY.md](SECURITY.md), not public issues.
