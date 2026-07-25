@@ -20,7 +20,7 @@ and real inference evidence are all recorded.
 | API and CLI | Local project management, asset serving, authorization, segment creation, registry listing, candidate acceptance, accepted-candidate render/download API, candidate evaluation/report API, durable job list and SSE event replay, `init`, `create`, `list`, `doctor`, `evaluate`, `render`, `serve` |
 | Web Studio | Real local project list, media import, authorization recording, segment setup, local video preview, data-driven timeline, candidate audio review/evaluation/accept controls, explicit original-audio export policy, render evidence links, and visual QA |
 | Documentation and grant | Quick start, model-status guide, grant summary, evidence index, alpha demo script, validated separate DOCX draft |
-| Examples and delivery | Two FFmpeg-generated redistributable example projects, container definitions, Compose syntax check, GitHub Actions quality workflow |
+| Examples and delivery | Two FFmpeg-generated redistributable example projects, container definitions, Compose syntax check, documentation-link validation, and a GitHub Actions quality workflow |
 
 ## Deliberately Not Claimed As Complete
 
@@ -37,7 +37,7 @@ and real inference evidence are all recorded.
 
 ## Current Verification
 
-- `make check`: 85 tests pass, including a real FFmpeg/FFprobe check of exported MP4 provenance metadata; it also runs Ruff, mypy, and TypeScript. The test run has one upstream FastAPI/Starlette `TestClient` deprecation warning only.
+- `make check`: 88 tests pass, including a real FFmpeg/FFprobe check of exported MP4 provenance metadata; it also runs Ruff, mypy, TypeScript, and local documentation-link validation. The test run has one upstream FastAPI/Starlette `TestClient` deprecation warning only.
 - Browser QA: empty and configured project states were captured at 1440×900; the configured flow imported local synthetic audio, recorded authorization, imported/editable subtitle cues, retained a compact cue timeline at 375×812, and kept Export gated without accepted candidates. An isolated `opendub.test` QA fixture also verified candidate evaluation, acceptance persistence, audio-policy selection, WAV download, manifest link, and non-distributable export status; it is not a product model or demo asset.
 - DOCX: `original/output/种子计划_OpenDub_申报表_草案.docx` is generated from the original template by `tools/grant-docx/`, OpenXML-validated, and visually checked as a two-page A4 PDF.
 - Docker: `docker compose config --quiet` passes. Image build was not run in this environment because access to the Docker daemon is denied.
