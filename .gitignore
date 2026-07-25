@@ -27,6 +27,8 @@ logs/
 *.sqlite
 *.sqlite3
 original/
+tools/*/bin/
+tools/*/obj/
 
 # Large media and model artifacts
 *.ckpt
