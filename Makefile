@@ -3,7 +3,7 @@
 UV_INDEX_URL := https://pypi.org/simple
 export UV_INDEX_URL
 
-check: format lint type test
+check: format lint type test web-check
 
 format:
 	uv run ruff format --check src tests

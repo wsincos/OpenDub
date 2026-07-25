@@ -37,8 +37,7 @@ and real inference evidence are all recorded.
 
 ## Current Verification
 
-- Current local full verification: 84 tests pass; Ruff, mypy, and TypeScript pass. The test run has one upstream FastAPI/Starlette `TestClient` deprecation warning only.
-- `make web-check`: TypeScript passes.
+- `make check`: 84 tests pass, and it runs Ruff, mypy, and TypeScript. The test run has one upstream FastAPI/Starlette `TestClient` deprecation warning only.
 - Browser QA: empty and configured project states were captured at 1440×900; the configured flow imported local synthetic audio, recorded authorization, imported/editable subtitle cues, retained a compact cue timeline at 375×812, and kept Export gated without accepted candidates. An isolated `opendub.test` QA fixture also verified candidate evaluation, acceptance persistence, and WAV download; it is not a product model or demo asset.
 - DOCX: `original/output/种子计划_OpenDub_申报表_草案.docx` is generated from the original template by `tools/grant-docx/`, OpenXML-validated, and visually checked as a two-page A4 PDF.
 - Docker: `docker compose config --quiet` passes. Image build was not run in this environment because access to the Docker daemon is denied.
