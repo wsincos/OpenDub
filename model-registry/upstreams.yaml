@@ -46,10 +46,10 @@ models:
     source:
       repository: https://github.com/HD-Dub/HDCode
       commit: d08839848cf17805bb598abf468968f8fc7a28f7
-      license: unknown
+      license: MIT
     artifacts: []
     paper: "Dubbing Movies via Hierarchical Phoneme Modeling and Acoustic Diffusion Denoising"
-    review: "Source ownership, license, weights, and runtime require audit."
+    review: "Audit 2026-07-25: MIT source includes training/inference entry points at 22.05 kHz, but README marks dataset features and three checkpoints as not uploaded; vocoder link has no recorded terms/SHA-256."
   - id: galaxycong/cosyncdit
     display_name: CoSyncDiT
     maturity: planned

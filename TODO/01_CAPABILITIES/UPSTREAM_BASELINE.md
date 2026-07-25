@@ -47,9 +47,13 @@
 - URL：`https://github.com/GalaxyCong/HD-Dub`
 - 当前代码地址：`https://github.com/HD-Dub/HDCode`
 - 定位：层次音素建模与声学扩散去噪。
-- 公开状态：GalaxyCong 仓库主要用于迁移指引，约 7 Stars。
-- 关键限制：代码所有权、许可证、权重和独立组织状态需重新审计。
-- OpenDub 结论：Planned，不进入首版承诺。
+- 公开状态：GalaxyCong 仓库主要用于迁移指引；HDCode 固定 commit 为
+  `d08839848cf17805bb598abf468968f8fc7a28f7`，根目录为 MIT，包含训练与推理入口。
+- 已知契约：README 将数据/特征声明为 22050 Hz，并分别列出 CHEM、GRID、V2C-Animation
+  的训练和推理命令。
+- 关键限制：README 明确将预处理特征和三个 checkpoint 标记为“待上传”；HiFi-GAN 链接未提供
+  可审计的权重条款、版本或 SHA-256，且未完成隔离环境真实推理。
+- OpenDub 结论：Planned，不进入首版承诺；详见 `docs/audits/hdcode-d088398.md`。
 
 ### CoSyncDiT
 

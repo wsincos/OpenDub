@@ -9,7 +9,7 @@ and real inference evidence are all recorded.
 
 | Area | Delivered evidence |
 | --- | --- |
-| Governance and provenance | Apache-2.0 project governance, fixed upstream commits, registry validation, EmoDubber/HPM/StyleDubber audits |
+| Governance and provenance | Apache-2.0 project governance, fixed upstream commits, registry validation, EmoDubber/HPM/StyleDubber/HDCode audits |
 | Project core | UUIDv7 IDs, microsecond ranges, versioned `project.json`, optimistic concurrency, rebuildable index, content-addressed assets |
 | Media foundation | Safe FFprobe/FFmpeg calls, audio normalization, SRT/VTT import, deterministic audio assembly and muxing tests |
 | Authorization | A voice reference requires an in-project audio asset and a material-source declaration before a segment can bind to it |
