@@ -5,6 +5,7 @@ from __future__ import annotations
 import base64
 import binascii
 import json
+import tempfile
 from collections.abc import Iterator
 from pathlib import Path
 from typing import Literal
@@ -32,6 +33,7 @@ from opendub.domain.segments import DubbingSegment, EmotionLabel, EmotionSpec
 from opendub.domain.time import TimeRange
 from opendub.jobs.models import JobEvent, JobRecord
 from opendub.jobs.repository import JobRepository
+from opendub.media.probe import probe_media
 from opendub.media.timeline import import_srt, import_vtt
 from opendub.models.registry import ModelRegistry, UpstreamModel
 from opendub.storage.artifact_store import ArtifactStore
@@ -311,6 +313,12 @@ def create_app(*, workspace: Path | None = None) -> FastAPI:
                     message="Project was changed by another operation.",
                     action="Reload the project and retry the change.",
                 )
+            duration_us = _validated_upload_duration(
+                data=data,
+                extension=extension,
+                kind=request.kind,
+                project_root=store.project_dir(project.id),
+            )
             asset = artifacts.ingest_bytes(
                 project.id,
                 kind=request.kind,
@@ -318,6 +326,8 @@ def create_app(*, workspace: Path | None = None) -> FastAPI:
                 data=data,
                 extension=extension,
             )
+            if duration_us is not None:
+                asset = asset.model_copy(update={"duration_us": duration_us})
             updated = project.add_asset(asset, expected_revision=request.expected_revision)
             store.save(updated, expected_revision=request.expected_revision)
         except DomainError as error:
@@ -609,6 +619,50 @@ def create_app(*, workspace: Path | None = None) -> FastAPI:
         return model_registry.discover()
 
     return app
+
+
+def _validated_upload_duration(
+    *,
+    data: bytes,
+    extension: str,
+    kind: AssetKind,
+    project_root: Path,
+) -> int | None:
+    """Probe user-supplied audio/video before it becomes a declared project asset."""
+    if kind not in {"audio", "video"}:
+        return None
+    temporary_path: Path | None = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            dir=project_root,
+            prefix=".upload-",
+            suffix=f".{extension}",
+            delete=False,
+        ) as temporary:
+            temporary.write(data)
+            temporary_path = Path(temporary.name)
+        probe = probe_media(temporary_path)
+    except (OSError, RuntimeError, ValueError) as error:
+        raise DomainError(
+            code="INPUT_INVALID",
+            message="The uploaded file is not a readable media asset.",
+            action="Choose an audio or video file that FFprobe can inspect.",
+        ) from error
+    finally:
+        if temporary_path is not None:
+            temporary_path.unlink(missing_ok=True)
+
+    if kind == "audio" and probe.audio_sample_rate is None:
+        raise DomainError(
+            code="INPUT_INVALID",
+            message="The uploaded audio asset has no readable audio stream.",
+        )
+    if kind == "video" and probe.video_width is None:
+        raise DomainError(
+            code="INPUT_INVALID",
+            message="The uploaded video asset has no readable video stream.",
+        )
+    return probe.duration_us
 
 
 def _http_error(error: DomainError) -> HTTPException:

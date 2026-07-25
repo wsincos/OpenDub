@@ -11,7 +11,7 @@ and real inference evidence are all recorded.
 | --- | --- |
 | Governance and provenance | Apache-2.0 project governance, fixed upstream commits, registry validation, enforceable research-backend admission gate, EmoDubber/HPM/StyleDubber/HDCode audits |
 | Project core | UUIDv7 IDs, microsecond ranges, versioned `project.json`, optimistic concurrency, rebuildable index, content-addressed assets |
-| Media foundation | Safe FFprobe/FFmpeg calls, audio normalization, SRT/VTT import, deterministic audio assembly, explicit mix policies, MP4 `AI-generated dubbing by OpenDub` metadata, and a matching traceable render manifest |
+| Media foundation | Safe FFprobe/FFmpeg calls, validated audio/video ingest with measured durations, audio normalization, SRT/VTT import, deterministic audio assembly, explicit mix policies, MP4 `AI-generated dubbing by OpenDub` metadata, and a matching traceable render manifest |
 | Authorization | A voice reference requires an in-project audio asset, material-source declaration, purpose, and explicit opt-in before generated output may be shared; every render records the aggregate distribution decision |
 | Runtime contracts | Capability contract, verified-weight manager, JSON Lines isolated runtime, persistent local job primitives, run manifests |
 | Recoverable pipeline | Four explicit prepare/generate/postprocess/evaluate stages, chained provenance cache keys, retry-safe atomic cache results, and cooperative cancellation |
@@ -37,7 +37,7 @@ and real inference evidence are all recorded.
 
 ## Current Verification
 
-- `make check`: 88 tests pass, including a real FFmpeg/FFprobe check of exported MP4 provenance metadata; it also runs Ruff, mypy, TypeScript, and local documentation-link validation. The test run has one upstream FastAPI/Starlette `TestClient` deprecation warning only.
+- `make check`: 89 tests pass, including real FFmpeg/FFprobe checks of uploaded media and exported MP4 provenance metadata; it also runs Ruff, mypy, TypeScript, and local documentation-link validation. The test run has one upstream FastAPI/Starlette `TestClient` deprecation warning only.
 - Browser QA: empty and configured project states were captured at 1440×900; the configured flow imported local synthetic audio, recorded authorization, imported/editable subtitle cues, retained a compact cue timeline at 375×812, and kept Export gated without accepted candidates. An isolated `opendub.test` QA fixture also verified candidate evaluation, acceptance persistence, audio-policy selection, WAV download, manifest link, and non-distributable export status; it is not a product model or demo asset.
 - DOCX: `original/output/种子计划_OpenDub_申报表_草案.docx` is generated from the original template by `tools/grant-docx/`, OpenXML-validated, and visually checked as a two-page A4 PDF.
 - Docker: `docker compose config --quiet` passes. Image build was not run in this environment because access to the Docker daemon is denied.
