@@ -12,7 +12,7 @@ and real inference evidence are all recorded.
 | Governance and provenance | Apache-2.0 project governance, fixed upstream commits, registry validation, enforceable research-backend admission gate, EmoDubber/HPM/StyleDubber/HDCode audits |
 | Project core | UUIDv7 IDs, microsecond ranges, versioned `project.json`, optimistic concurrency, rebuildable index, content-addressed assets |
 | Media foundation | Safe FFprobe/FFmpeg calls, audio normalization, SRT/VTT import, deterministic audio assembly, explicit mix policies, MP4 `AI-generated dubbing by OpenDub` metadata, and a matching traceable render manifest |
-| Authorization | A voice reference requires an in-project audio asset, material-source declaration, purpose, and explicit opt-in before generated output may be shared |
+| Authorization | A voice reference requires an in-project audio asset, material-source declaration, purpose, and explicit opt-in before generated output may be shared; every render records the aggregate distribution decision |
 | Runtime contracts | Capability contract, verified-weight manager, JSON Lines isolated runtime, persistent local job primitives, run manifests |
 | Recoverable pipeline | Four explicit prepare/generate/postprocess/evaluate stages, chained provenance cache keys, retry-safe atomic cache results, and cooperative cancellation |
 | Candidate quality reports | Deterministic duration, silence, and clipping checks plus local JSON/Markdown reports; unavailable neural metrics remain explicitly unavailable |

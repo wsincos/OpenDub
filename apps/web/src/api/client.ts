@@ -80,6 +80,7 @@ type RenderMutation = {
   project_revision: number;
   mix_mode: "preserve" | "duck" | "remove";
   sample_rate: number;
+  distribution_authorized: boolean;
   dubbing_audio_url: string;
   dubbed_video_url: string | null;
   manifest_url: string;

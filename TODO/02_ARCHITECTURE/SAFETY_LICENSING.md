@@ -75,7 +75,8 @@ OpenDub 不验证法律真实性，但必须阻止“未确认授权”的参考
 
 - 渲染清单以 `content_label: "AI-generated dubbing by OpenDub"` 标记生成内容。
 - MP4 写入同一非破坏性元数据字段；不保证所有平台保留该元数据。
-- `render.json` 记录项目 revision、混音策略、片段 ID 和导出位置；每个候选的 `result.json` 记录生成工具、模型和版本。
+- `render.json` 记录项目 revision、混音策略、片段 ID、导出位置与 `distribution_authorized`。后者仅在本次导出全部已接受片段的声音授权都明确允许分享生成结果时为 `true`。
+- `distribution_authorized=false` 允许本地审听，但不得用于公开示例、申请视频或发布素材；每个候选的 `result.json` 记录生成工具、模型和版本。
 - 可选音频水印列为 `v0.3.0+` 研究方向，未实现前不声称具备防伪能力。
 
 ## 隐私

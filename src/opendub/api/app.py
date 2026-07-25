@@ -177,6 +177,7 @@ class RenderResponse(BaseModel):
     project_revision: int = Field(ge=1)
     mix_mode: RenderMixMode
     sample_rate: int = Field(gt=0)
+    distribution_authorized: bool
     dubbing_audio_url: str
     dubbed_video_url: str | None
     manifest_url: str
@@ -529,6 +530,7 @@ def create_app(*, workspace: Path | None = None) -> FastAPI:
             project_revision=project.revision,
             mix_mode=request.mix_mode,
             sample_rate=result.sample_rate,
+            distribution_authorized=result.distribution_authorized,
             dubbing_audio_url=f"{export_root}/dubbing.wav",
             dubbed_video_url=(f"{export_root}/dubbed.mp4" if result.video is not None else None),
             manifest_url=f"{export_root}/render.json",

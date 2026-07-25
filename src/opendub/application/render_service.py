@@ -29,6 +29,7 @@ class RenderResult:
     manifest: Path
     sample_rate: int
     mode: MixMode
+    distribution_authorized: bool
 
 
 class RenderService:
@@ -79,6 +80,18 @@ class RenderService:
                 message="Accepted candidates must use one common sample rate for rendering.",
             )
         sample_rate = sample_rates.pop()
+        references = {reference.id: reference for reference in project.voice_references}
+        consents = {consent.id: consent for consent in project.consents}
+        distribution_authorized = all(
+            bool(
+                consents.get(references[segment.voice_reference_id].consent_id)
+                and consents[
+                    references[segment.voice_reference_id].consent_id
+                ].allow_generated_output_distribution
+            )
+            for segment in project.segments
+            if segment.accepted_candidate_id is not None
+        )
         output_dir = self.store.project_dir(project.id) / "exports" / f"revision-{project.revision}"
         dubbing_audio = output_dir / "dubbing.wav"
         try:
@@ -120,6 +133,7 @@ class RenderService:
                             manifest=manifest,
                             sample_rate=sample_rate,
                             mode=mode,
+                            distribution_authorized=distribution_authorized,
                         )
                     ),
                     "content_label": AI_DUBBING_LABEL,
@@ -141,6 +155,7 @@ class RenderService:
             manifest=manifest,
             sample_rate=sample_rate,
             mode=mode,
+            distribution_authorized=distribution_authorized,
         )
 
     def _asset_path(self, project_id: str, asset: MediaAsset) -> Path:

@@ -65,6 +65,7 @@ def test_api_accepts_current_candidate_with_optimistic_concurrency(tmp_path: Pat
 
     assert rendered.status_code == 201
     assert rendered.json()["dubbed_video_url"] is None
+    assert rendered.json()["distribution_authorized"] is False
     audio = TestClient(create_app(workspace=tmp_path)).get(rendered.json()["dubbing_audio_url"])
     assert audio.status_code == 200
     assert audio.content[:4] == b"RIFF"

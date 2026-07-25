@@ -26,7 +26,9 @@ def test_render_service_assembles_an_accepted_candidate_to_wav(tmp_path: Path) -
     )
     project = project.add_asset(reference_asset, expected_revision=project.revision)
     store.save(project, expected_revision=1)
-    consent = ConsentRecord(material_source="self_recorded")
+    consent = ConsentRecord(
+        material_source="self_recorded", allow_generated_output_distribution=True
+    )
     reference = VoiceReference(
         asset_id=reference_asset.id,
         consent_id=consent.id,
@@ -67,3 +69,4 @@ def test_render_service_assembles_an_accepted_candidate_to_wav(tmp_path: Path) -
     assert manifest["content_label"] == "AI-generated dubbing by OpenDub"
     assert manifest["mix_mode"] == "remove"
     assert manifest["project_revision"] == accepted.revision
+    assert manifest["distribution_authorized"] is True
