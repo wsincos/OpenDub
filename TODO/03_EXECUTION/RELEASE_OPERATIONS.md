@@ -1,5 +1,7 @@
 # Release and Operations
 
+> 本文保留已有 Python、Studio、Adapter 和容器发布的运维规则。`v0.1.0-atlas` 的内容制品、状态和静态部署优先级，以 [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md)、[QUALITY_PLAN.md](QUALITY_PLAN.md) 和 [../02_ARCHITECTURE/ATLAS_CONTRACTS.md](../02_ARCHITECTURE/ATLAS_CONTRACTS.md) 为准；旧的“一个 Stable 后端先行”顺序不再决定 Atlas 发布。
+
 ## 版本体系
 
 ### 平台版本
@@ -59,6 +61,14 @@ Adapter 版本包含：
 - 校验和清单；
 - 源码归档；
 - 发布说明。
+
+`v0.1.0-atlas` 额外发布：
+
+- 静态 Method Atlas；
+- 内容 Schema 与 `content-lock.json`；
+- 经权利审计的 Replay Bundle；
+- Evidence Room 导出；
+- 申报影片、字幕、shot log 和事实核验表。
 
 模型权重不默认打包，使用 Registry 下载并验证。许可允许且体积合理时，可作为单独 Release Asset 发布。
 

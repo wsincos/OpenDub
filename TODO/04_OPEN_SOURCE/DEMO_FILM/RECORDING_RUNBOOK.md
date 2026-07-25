@@ -1,110 +1,64 @@
 # Recording Runbook
 
-## 录制前 48 小时
+## 48 Hours Before Capture
 
-### 锁定演示项目
+1. Create `release/demo-film` from the intended tag and record its commit.
+2. Run `make check`, Atlas validation and Playwright; archive the results.
+3. Generate `content/content-lock.json` and record its SHA-256 in the shot log.
+4. Copy the approved case to an isolated demo directory; do not operate on research originals.
+5. Verify video, voice, text, music, fonts and screenshots against `ASSET_AND_RIGHTS.md`.
+6. Cache all Replay media locally. Disable notifications, desktop sync banners, personal bookmarks and browser autofill.
+7. Decide branch A or B of shots 17-18 by running the comparison gate.
 
-1. 从授权示例复制一份名为 `OpenDub Demo Film` 的项目。
-2. 固定视频、SRT、角色名称、参考声音、模型版本、权重哈希、随机种子和候选结果。
-3. 将所有要展示的生成结果预先运行完成；正式录屏不等待不可预测的长推理。
-4. 对每个候选运行四类指标，并保存报告。
-5. 将正式演示项目设为只读副本；录屏时不修改生产/研究原项目。
+## Environment
 
-### 准备三种配音结果
-
-- `plain_read`：无视频条件、无情感控制的基线朗读；必须明确其模型/方法来源。
-- `mismatched_candidate`：同一视频中刻意设置为不匹配的真实候选，例如 neutral；不能人工破坏音频。
-- `confirmed_candidate`：使用确认的 OpenDub 候选。
-
-三种音频都使用相同的响度处理规则，避免“更响”被误判为“更好”。
-
-### 清理环境
-
-- 操作系统开启勿扰；关闭消息、邮件、日历和下载通知。
-- 浏览器仅打开 OpenDub 和必要的本地文档页。
-- 隐藏个人用户名、桌面文件、绝对路径、令牌、私有模型 URL 和真实邮箱。
-- 使用独立的演示账户或本地匿名配置。
-- 清空任务队列，但保留已完成候选。
-- 预先下载并校验所有模型，不在录屏中展示等待下载。
-
-## 屏幕录制配置
-
-| 项目 | 设置 |
+| Item | Setting |
 |---|---|
-| 分辨率 | 3840×2160 采集，1920×1080 交付 |
-| 帧率 | 60 FPS 采集，30 FPS 时间线 |
-| 编码 | ProRes 422 LT、DNxHR HQX 或高码率 H.264 Intra |
-| 色彩 | Rec.709，屏幕录制禁用 HDR 自动切换 |
-| 鼠标 | 可见，使用小尺寸圆点高亮；禁止夸张轨迹 |
-| UI 缩放 | 125%，保证 1080p 成片中可读 |
-| 浏览器缩放 | 100%，应用内部缩放由产品控制 |
-| 字体平滑 | 使用默认系统设置，不使用录屏滤镜 |
+| Capture | 3840x2160, 60 FPS, Rec.709 |
+| Edit | 1920x1080, 30 FPS, 48kHz/24bit |
+| Browser | dedicated profile, 100% zoom, no extensions |
+| App | production build, not development overlays |
+| Cursor | visible small dot, no exaggerated trail |
+| Motion | default and reduced-motion plates both captured |
+| Audio | record system/app audio on separate tracks if available |
 
-## 实拍素材配置
+## Atlas Capture Passes
 
-- 4K、30 FPS、1/60 快门、固定白平衡、Rec.709。
-- 使用中近景，演员眼睛位于上三分之一，留出字幕安全区。
-- 背景干净，有轻微环境层次，不出现商标和版权海报。
-- 录制 10 秒无声底片、10 秒环境声和 3 次完整表演。
-- 参考声音在距离话筒 15–20cm 的安静环境录制，WAV、48kHz、24 bit、单一说话人。
+### Pass 1: Full narrative
 
-## Studio 操作录制顺序
+Perform the full 2:40 path without speaking. Capture from `/explore` to `/evidence`. This supplies the natural cursor rhythm and backup coverage.
 
-### Pass 1：连续主路径
+### Pass 2: Clean interaction plates
 
-从项目主页进入，完成导入、台词、声音、情感、生成、试听、确认、评测和导出。允许停顿，后期处理节奏；不要在每一步讲话。
+Record each shot in the table independently. Reset route and timeline cursor before every take. The operator may remove wait time in edit but cannot fabricate state changes.
 
-### Pass 2：精确镜头
+### Pass 3: State proof
 
-分别录制：
+Capture Evidence Room rows, content mode labels, comparison gate result, content-lock, and, only when applicable, Live run metadata. These are short inserts used to support voiceover claims.
 
-- 素材导入；
-- 时间线和播放头；
-- 参考声音授权；
-- 情感参数；
-- 任务抽屉；
-- 候选 A/B；
-- 指标报告；
-- 导出完成；
-- 模型能力面板；
-- 运行清单。
+### Pass 4: Failure plates
 
-每个镜头留 2 秒稳定开头和结尾，方便剪辑。
+Capture checkpoint unavailable, missing signal and comparison gate failed states. These plates are not mandatory in the master cut but prove that the product degrades honestly.
 
-### Pass 3：故障备选
+## Voiceover
 
-录制模型不可用、权重缺失或授权未确认的明确错误提示。正式版默认不使用，但可用于技术发布或故障说明视频。
+- Record at 48kHz/24bit with 10 seconds of room tone.
+- Speak in calm, precise Mandarin at 175 to 195 characters per minute.
+- Record each script section separately and leave 1.5 seconds of room after sections 0, 17A/17B and 22.
+- Do not add claims while recording; use the approved script exactly.
 
-## 旁白录制
-
-- 使用广播级电容麦或录音室 USB 麦克风，48kHz/24 bit WAV。
-- 离麦 15cm，使用防喷罩；录前录 10 秒房间底噪。
-- 一段一段录，按 `MASTER_SCRIPT.md` 的时间码命名。
-- 不在同一段里追求绝对机械时长；剪辑时以画面停顿优先。
-- 旁白降噪、去齿音和压缩保持轻度；不要让旁白比角色配音更“AI 化”。
-
-## 录制后整理
+## Editing Handoff
 
 ```text
 demo-film/
-├── 01_source-video/
-├── 02_screen-capture/
-├── 03_voiceover/
-├── 04_audio-comparisons/
-├── 05_graphics/
-├── 06_project-files/
-├── 07_exports/
-└── 08_licenses/
+  source-video/
+  screen-capture/
+  voiceover/
+  compare-audio/
+  graphics/
+  project-files/
+  exports/
+  evidence/
 ```
 
-每个素材文件在 `ASSET_AND_RIGHTS.md` 中登记来源、许可、拍摄日期、对应镜头和校验和。
-
-## 录制当天检查
-
-- [ ] 所有正式声称已由技术审查确认。
-- [ ] 开场三种音频响度一致。
-- [ ] 所有屏幕文字在 1080p 预览中可读。
-- [ ] 没有隐私、密钥、私有路径和未授权内容。
-- [ ] Studio 内显示的版本、模型和指标与报告一致。
-- [ ] 导出成片可从当前演示项目实际生成。
-- [ ] 已保留可复用的无旁白画面和干净音轨。
+The `evidence/shot-log.csv` row contains: shot ID, take, route, method/case, mode, commit, content-lock, source asset IDs, reviewer and approval status.

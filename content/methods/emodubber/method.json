@@ -1,0 +1,87 @@
+{
+  "schema_version": "opendub.method/v1",
+  "id": "galaxycong/emodubber",
+  "slug": "emodubber",
+  "title": "EmoDubber: Towards High Quality and Emotion Controllable Movie Dubbing",
+  "short_title": "EmoDubber",
+  "conference": "CVPR",
+  "year": 2025,
+  "question": {
+    "zh_cn": "如何在保持口型同步和发音清晰度的同时，允许用户指定配音情感方向？",
+    "en": "How can a method preserve lip synchronization and pronunciation clarity while allowing a user to specify an emotion direction?"
+  },
+  "contribution": {
+    "zh_cn": "将口型相关韵律对齐、发音增强、说话人适配和基于流的情感引导组织为完整配音方法。",
+    "en": "It organizes lip-related prosody alignment, pronunciation enhancement, speaker adaptation, and flow-based emotion guidance into a complete dubbing method."
+  },
+  "paper": {
+    "title": "EmoDubber: Towards High Quality and Emotion Controllable Movie Dubbing",
+    "url": "https://openaccess.thecvf.com/content/CVPR2025/html/Cong_EmoDubber_Towards_High_Quality_and_Emotion_Controllable_Movie_Dubbing_CVPR_2025_paper.html"
+  },
+  "source": {
+    "repository": "https://github.com/GalaxyCong/EmoDubber",
+    "commit": "553fa054160fed17e757125d185e5a61ef6ed437"
+  },
+  "runtime_status": "unavailable",
+  "content_modes": ["concept", "planned"],
+  "required_inputs": ["video", "text", "reference_speech"],
+  "optional_controls": [
+    {"id": "emotion_type", "label": {"zh_cn": "情感类别", "en": "Emotion type"}, "kind": "select", "explanation": {"zh_cn": "仅解释论文中的控制条件；当前公开运行时未准入。", "en": "Explains the paper control condition only; no public runtime is admitted."}},
+    {"id": "emotion_intensity", "label": {"zh_cn": "情感强度", "en": "Emotion intensity"}, "kind": "range", "explanation": {"zh_cn": "只在存在真实多强度 Replay 或 Live 证据后开放试听。", "en": "Listening becomes available only with real multi-intensity Replay or Live evidence."}}
+  ],
+  "signals": [
+    {"id": "video.lip_roi", "type": "video.lip_roi", "label": {"zh_cn": "唇部区域", "en": "Lip ROI"}, "time_binding": "media_pts", "renderer": "roi-overlay", "explanation": {"zh_cn": "口型相关韵律对齐的可观察视觉条件。", "en": "Observable visual condition for lip-related prosody alignment."}},
+    {"id": "text.phonemes", "type": "text.phonemes", "label": {"zh_cn": "视频级音素", "en": "Video-level phonemes"}, "time_binding": "intervals", "renderer": "phoneme-ruler", "explanation": {"zh_cn": "用于发音增强和对齐的音素路径。", "en": "A phoneme path used for pronunciation enhancement and alignment."}},
+    {"id": "audio.reference", "type": "audio.reference", "label": {"zh_cn": "参考语音", "en": "Reference speech"}, "time_binding": "media_pts", "renderer": "waveform", "explanation": {"zh_cn": "提供说话人身份适配所需的语音线索。", "en": "Provides speech cues for speaker identity adaptation."}},
+    {"id": "prosody.duration", "type": "prosody.duration", "label": {"zh_cn": "对齐时长", "en": "Aligned duration"}, "unit": "microseconds", "time_binding": "intervals", "renderer": "duration-track", "explanation": {"zh_cn": "LPA 中口型与音素韵律对应的时长信息。", "en": "Duration information relating lips and phoneme prosody in LPA."}},
+    {"id": "alignment.matrix", "type": "alignment.matrix", "label": {"zh_cn": "发音对齐", "en": "Pronunciation alignment"}, "time_binding": "intervals", "renderer": "alignment-matrix", "explanation": {"zh_cn": "PE 的概念性对齐解释；不展示未经导出的内部注意力。", "en": "A conceptual PE alignment explanation, not an unexported internal attention map."}},
+    {"id": "embedding.acoustic_prior", "type": "embedding.projection", "label": {"zh_cn": "声学先验", "en": "Acoustic prior"}, "unit": "conceptual projection", "time_binding": "none", "renderer": "embedding-lanes", "explanation": {"zh_cn": "说话人身份适配后的声学先验在 Concept 中的解释视图。", "en": "Concept explanation view of the acoustic prior after speaker identity adaptation."}},
+    {"id": "emotion.category", "type": "emotion.category", "label": {"zh_cn": "情感控制条件", "en": "Emotion control condition"}, "time_binding": "none", "renderer": "condition-chip", "explanation": {"zh_cn": "论文定义的情感方向控制条件。", "en": "Emotion-direction condition defined by the paper."}},
+    {"id": "flow.trajectory", "type": "flow.trajectory", "label": {"zh_cn": "流匹配轨迹", "en": "Flow trajectory"}, "unit": "conceptual trajectory", "time_binding": "uniform", "renderer": "flow-path", "explanation": {"zh_cn": "Concept 视图只解释 FUEC/PNGM 的信息流，不伪造真实采样轨迹。", "en": "The Concept view explains FUEC/PNGM information flow without fabricating a real sampling trajectory."}},
+    {"id": "audio.generated", "type": "audio.generated", "label": {"zh_cn": "目标配音语音", "en": "Target dubbed speech"}, "time_binding": "media_pts", "renderer": "waveform", "explanation": {"zh_cn": "完整 EmoDubber 方法的目标输出。", "en": "Target output of the complete EmoDubber method."}}
+  ],
+  "graph": {
+    "nodes": [
+      {"id": "video", "label": {"zh_cn": "视频", "en": "Video"}, "short_label": "Video", "kind": "input", "summary": {"zh_cn": "视频提供唇部相关视觉条件。", "en": "Video provides lip-related visual conditions."}, "solves": {"zh_cn": "建立同步信息。", "en": "Establishes synchronization information."}, "consumes": [], "produces": ["video.lip_roi"], "paper_refs": [{"section": "Method", "url": "https://openaccess.thecvf.com/content/CVPR2025/html/Cong_EmoDubber_Towards_High_Quality_and_Emotion_Controllable_Movie_Dubbing_CVPR_2025_paper.html"}], "code_refs": [], "visualization_slots": ["video.lip_roi"], "group": "inputs"},
+      {"id": "text", "label": {"zh_cn": "目标文本", "en": "Target text"}, "short_label": "Text", "kind": "input", "summary": {"zh_cn": "台词被构造成视频级音素条件。", "en": "The script is formed into video-level phoneme conditions."}, "solves": {"zh_cn": "定义需要发出的内容。", "en": "Defines the content to be spoken."}, "consumes": [], "produces": ["text.phonemes"], "paper_refs": [{"section": "Method", "url": "https://openaccess.thecvf.com/content/CVPR2025/html/Cong_EmoDubber_Towards_High_Quality_and_Emotion_Controllable_Movie_Dubbing_CVPR_2025_paper.html"}], "code_refs": [], "visualization_slots": ["text.phonemes"], "group": "inputs"},
+      {"id": "reference_speech", "label": {"zh_cn": "参考语音", "en": "Reference speech"}, "short_label": "Reference", "kind": "voice", "summary": {"zh_cn": "参考语音提供目标角色的身份线索。", "en": "Reference speech provides target-character identity cues."}, "solves": {"zh_cn": "确定声音身份。", "en": "Determines voice identity."}, "consumes": [], "produces": ["audio.reference"], "paper_refs": [{"section": "Method", "url": "https://openaccess.thecvf.com/content/CVPR2025/html/Cong_EmoDubber_Towards_High_Quality_and_Emotion_Controllable_Movie_Dubbing_CVPR_2025_paper.html"}], "code_refs": [], "visualization_slots": ["audio.reference"], "group": "inputs"},
+      {"id": "lpa", "label": {"zh_cn": "口型相关韵律对齐", "en": "Lip-related Prosody Aligning"}, "short_label": "LPA", "kind": "alignment", "summary": {"zh_cn": "将唇部运动与音素韵律时长建立对应。", "en": "Relates lip motion to phoneme-prosody duration."}, "solves": {"zh_cn": "降低口型与节奏不一致。", "en": "Reduces mismatch between lips and speaking rhythm."}, "consumes": ["video.lip_roi", "text.phonemes"], "produces": ["prosody.duration"], "paper_refs": [{"section": "Method", "url": "https://openaccess.thecvf.com/content/CVPR2025/html/Cong_EmoDubber_Towards_High_Quality_and_Emotion_Controllable_Movie_Dubbing_CVPR_2025_paper.html"}], "code_refs": [], "visualization_slots": ["video.lip_roi", "text.phonemes", "prosody.duration"], "group": "alignment_quality"},
+      {"id": "pe", "label": {"zh_cn": "发音增强", "en": "Pronunciation Enhancing"}, "short_label": "PE", "kind": "text", "summary": {"zh_cn": "增强视频级音素表示，以维护发音清晰度。", "en": "Enhances video-level phoneme representation to maintain pronunciation clarity."}, "solves": {"zh_cn": "在同步约束下保留可懂度。", "en": "Preserves intelligibility under synchronization constraints."}, "consumes": ["text.phonemes", "prosody.duration"], "produces": ["alignment.matrix"], "paper_refs": [{"section": "Method", "url": "https://openaccess.thecvf.com/content/CVPR2025/html/Cong_EmoDubber_Towards_High_Quality_and_Emotion_Controllable_Movie_Dubbing_CVPR_2025_paper.html"}], "code_refs": [], "visualization_slots": ["text.phonemes", "alignment.matrix"], "group": "alignment_quality"},
+      {"id": "speaker_identity", "label": {"zh_cn": "说话人身份适配", "en": "Speaker Identity Adapting"}, "short_label": "Voice", "kind": "voice", "summary": {"zh_cn": "参考语音的身份信息构成声学先验。", "en": "Identity information from reference speech forms an acoustic prior."}, "solves": {"zh_cn": "使目标语音保持角色身份。", "en": "Keeps target speech tied to the character identity."}, "consumes": ["audio.reference", "alignment.matrix"], "produces": ["embedding.acoustic_prior"], "paper_refs": [{"section": "Method", "url": "https://openaccess.thecvf.com/content/CVPR2025/html/Cong_EmoDubber_Towards_High_Quality_and_Emotion_Controllable_Movie_Dubbing_CVPR_2025_paper.html"}], "code_refs": [], "visualization_slots": ["audio.reference", "embedding.acoustic_prior"], "group": "identity_control"},
+      {"id": "emotion_control", "label": {"zh_cn": "情感控制条件", "en": "Emotion Control"}, "short_label": "Emotion", "kind": "emotion", "summary": {"zh_cn": "论文中的类别与强度控制被清楚区分为 Concept 条件。", "en": "The paper's category and intensity control is explicitly marked as a Concept condition."}, "solves": {"zh_cn": "解释用户情感方向如何进入方法。", "en": "Explains how a user emotion direction enters the method."}, "consumes": [], "produces": ["emotion.category"], "paper_refs": [{"section": "Emotion Controlling", "url": "https://openaccess.thecvf.com/content/CVPR2025/html/Cong_EmoDubber_Towards_High_Quality_and_Emotion_Controllable_Movie_Dubbing_CVPR_2025_paper.html"}], "code_refs": [], "visualization_slots": ["emotion.category"], "group": "identity_control"},
+      {"id": "fuec", "label": {"zh_cn": "基于流的用户情感控制", "en": "Flow-based User Emotion Controlling"}, "short_label": "FUEC", "kind": "generation", "summary": {"zh_cn": "声学先验与情感条件在流匹配生成路径中结合。", "en": "Acoustic prior and emotion conditions meet in a flow-matching generation path."}, "solves": {"zh_cn": "将身份、发音与情感条件汇合为输出路径。", "en": "Brings identity, pronunciation, and emotion conditions into one output path."}, "consumes": ["embedding.acoustic_prior", "emotion.category"], "produces": ["flow.trajectory"], "paper_refs": [{"section": "Emotion Controlling", "url": "https://openaccess.thecvf.com/content/CVPR2025/html/Cong_EmoDubber_Towards_High_Quality_and_Emotion_Controllable_Movie_Dubbing_CVPR_2025_paper.html"}], "code_refs": [], "visualization_slots": ["embedding.acoustic_prior", "emotion.category", "flow.trajectory"], "group": "generation"},
+      {"id": "pngm", "label": {"zh_cn": "正负引导机制", "en": "Positive / Negative Guidance"}, "short_label": "PNGM", "kind": "emotion", "summary": {"zh_cn": "方法以正负方向引导目标情感。", "en": "The method guides target emotion with positive and negative directions."}, "solves": {"zh_cn": "解释情感方向的引导作用。", "en": "Explains guidance over emotion direction."}, "consumes": ["flow.trajectory", "emotion.category"], "produces": ["audio.generated"], "paper_refs": [{"section": "Emotion Controlling", "url": "https://openaccess.thecvf.com/content/CVPR2025/html/Cong_EmoDubber_Towards_High_Quality_and_Emotion_Controllable_Movie_Dubbing_CVPR_2025_paper.html"}], "code_refs": [], "visualization_slots": ["flow.trajectory", "audio.generated"], "group": "generation"},
+      {"id": "dubbed_speech", "label": {"zh_cn": "目标配音语音", "en": "Dubbed speech"}, "short_label": "Speech", "kind": "output", "summary": {"zh_cn": "视频配音生成任务的目标语音。", "en": "Target speech for the video dubbing generation task."}, "solves": {"zh_cn": "形成可混流的语音输出。", "en": "Forms speech that can be muxed into the video."}, "consumes": ["audio.generated"], "produces": [], "paper_refs": [{"section": "Method", "url": "https://openaccess.thecvf.com/content/CVPR2025/html/Cong_EmoDubber_Towards_High_Quality_and_Emotion_Controllable_Movie_Dubbing_CVPR_2025_paper.html"}], "code_refs": [], "visualization_slots": ["audio.generated"], "group": "output"}
+    ],
+    "edges": [
+      {"id": "video-lpa", "source": "video", "target": "lpa", "signal_ids": ["video.lip_roi"]},
+      {"id": "text-lpa", "source": "text", "target": "lpa", "signal_ids": ["text.phonemes"]},
+      {"id": "lpa-pe", "source": "lpa", "target": "pe", "signal_ids": ["prosody.duration"]},
+      {"id": "text-pe", "source": "text", "target": "pe", "signal_ids": ["text.phonemes"]},
+      {"id": "pe-speaker", "source": "pe", "target": "speaker_identity", "signal_ids": ["alignment.matrix"]},
+      {"id": "reference-speaker", "source": "reference_speech", "target": "speaker_identity", "signal_ids": ["audio.reference"]},
+      {"id": "speaker-fuec", "source": "speaker_identity", "target": "fuec", "signal_ids": ["embedding.acoustic_prior"]},
+      {"id": "emotion-fuec", "source": "emotion_control", "target": "fuec", "signal_ids": ["emotion.category"]},
+      {"id": "fuec-pngm", "source": "fuec", "target": "pngm", "signal_ids": ["flow.trajectory"]},
+      {"id": "emotion-pngm", "source": "emotion_control", "target": "pngm", "signal_ids": ["emotion.category"]},
+      {"id": "pngm-output", "source": "pngm", "target": "dubbed_speech", "signal_ids": ["audio.generated"]}
+    ],
+    "groups": [
+      {"id": "inputs", "label": {"zh_cn": "共同输入", "en": "Common inputs"}, "node_ids": ["video", "text", "reference_speech"]},
+      {"id": "alignment_quality", "label": {"zh_cn": "同步与发音", "en": "Synchronization and pronunciation"}, "node_ids": ["lpa", "pe"]},
+      {"id": "identity_control", "label": {"zh_cn": "身份与控制", "en": "Identity and control"}, "node_ids": ["speaker_identity", "emotion_control"]},
+      {"id": "generation", "label": {"zh_cn": "情感引导生成", "en": "Emotion-guided generation"}, "node_ids": ["fuec", "pngm"]},
+      {"id": "output", "label": {"zh_cn": "目标输出", "en": "Target output"}, "node_ids": ["dubbed_speech"]}
+    ],
+    "overview_path": ["video", "lpa", "pe", "speaker_identity", "fuec", "pngm", "dubbed_speech"],
+    "layout": "left-to-right"
+  },
+  "chapters": [
+    {"id": "overview", "label": {"zh_cn": "概览", "en": "Overview"}, "node_ids": ["video", "text", "reference_speech", "dubbed_speech"]},
+    {"id": "alignment", "label": {"zh_cn": "同步与清晰度", "en": "Sync and clarity"}, "node_ids": ["lpa", "pe"]},
+    {"id": "identity_control", "label": {"zh_cn": "身份与情感", "en": "Identity and emotion"}, "node_ids": ["speaker_identity", "emotion_control", "fuec", "pngm"]}
+  ],
+  "citations": [
+    {"key": "cong2025emodubber", "label": "Cong et al., CVPR 2025", "url": "https://openaccess.thecvf.com/content/CVPR2025/html/Cong_EmoDubber_Towards_High_Quality_and_Emotion_Controllable_Movie_Dubbing_CVPR_2025_paper.html"}
+  ]
+}

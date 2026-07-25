@@ -1,51 +1,62 @@
 # OpenDub Implementation Status
 
-**Last updated:** 2026-07-25  
-**Repository state:** `v0.0.1-alpha.0` development baseline  
-**Truth rule:** a research upstream remains unavailable until source, weight, license, input contract,
-and real inference evidence are all recorded.
+**Last updated:** 2026-07-26
+**Repository state:** `v0.0.1-alpha.0` foundation complete; public Concept Atlas first slice implemented and under evidence review.
+**Planning source:** [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md)
 
-## Completed In This Alpha
+## 已完成的真实基础
 
-| Area | Delivered evidence |
-| --- | --- |
-| Governance and provenance | Apache-2.0 project governance, fixed upstream commits, registry validation, enforceable research-backend admission gate, EmoDubber/HPM/StyleDubber/HDCode audits |
-| Project core | UUIDv7 IDs, microsecond ranges, versioned `project.json`, optimistic concurrency, rebuildable index, content-addressed assets |
-| Media foundation | Safe FFprobe/FFmpeg calls, validated audio/video ingest with measured durations, audio normalization, SRT/VTT import, deterministic audio assembly, explicit mix policies, MP4 `AI-generated dubbing by OpenDub` metadata, and a matching traceable render manifest |
-| Authorization | A voice reference requires an in-project audio asset, material-source declaration, purpose, and explicit opt-in before generated output may be shared; every render records the aggregate distribution decision |
-| Runtime contracts | Capability contract, verified-weight manager, JSON Lines isolated runtime, persistent local job primitives, run manifests |
-| Recoverable pipeline | Four explicit prepare/generate/postprocess/evaluate stages, chained provenance cache keys, retry-safe atomic cache results, and cooperative cancellation |
-| Candidate quality reports | Deterministic duration, silence, and clipping checks plus local JSON/Markdown reports; unavailable neural metrics remain explicitly unavailable |
-| Test-only generation | Deterministic sine-wave fixture validates candidate persistence and traceability; it is not a user model |
-| API and CLI | Local project management, asset serving, authorization, segment creation, registry listing, candidate acceptance, accepted-candidate render/download API, candidate evaluation/report API, durable job list and SSE event replay, `init`, `create`, `list`, `doctor`, `evaluate`, `render`, `serve` |
-| Web Studio | Real local project list, media import, authorization recording, segment setup, local video preview, data-driven timeline, candidate audio review/evaluation/accept controls, explicit original-audio export policy, render evidence links, and visual QA |
-| Documentation and grant | Quick start, model-status guide, real-backend owner handoff, grant summary, evidence index, alpha demo script, validated separate DOCX draft |
-| Examples and delivery | Two FFmpeg-generated redistributable example projects, container definitions, Compose syntax check, documentation-link validation, and a GitHub Actions quality workflow |
+| 区域 | 已验证能力 |
+|---|---|
+| 治理与来源 | Apache-2.0 平台治理、固定上游提交、上游审计、权重准入规则 |
+| 项目与媒体 | project.json、原子存储、FFprobe/FFmpeg、字幕、时间线、混流和导出 manifest |
+| 授权 | 参考声音来源与分发许可记录 |
+| 运行基础 | 模型能力契约、权重 hash、隔离运行时、任务和可恢复流水线 |
+| 评测 | 时长、静音、削波等确定性指标；不可用神经指标明确标记 |
+| API/CLI | 项目、素材、片段、候选、评测、渲染、任务事件 |
+| Web Studio | 本地项目列表、媒体导入、授权、片段、时间线、候选和导出 |
+| 文档与申报 | 现有申报表草案、证据索引、上游审计 |
+| 自动化 | 最近一次记录为 89 tests passing；正式启动前重新运行确认 |
 
-## Deliberately Not Claimed As Complete
+## 新方向已完成的规划
 
-| Capability | Why it is blocked | Required evidence |
-| --- | --- | --- |
-| Real EmoDubber generation or emotion strength | Upstream code/weights do not yet meet the admission gate | Authorized immutable weights, license terms, isolated inference, control-effect test |
-| HPMDubbing raw-video inference | Published workflow depends on dataset-specific features and restricted material | Authorized preprocessing fixture, exact feature contract, real smoke |
-| StyleDubber backend | Checkpoints and preprocessing are not reproducibly admissible yet | Hashed weights, terms, fixture, isolated adapter, real smoke |
-| Stable vocoder | Weight terms and compatibility smoke are absent | Hashed weights, mel contract, output validation |
-| Candidate A/B product review | Requires a verified user-facing backend | Real candidates, metrics, acceptance/revision UI QA |
-| Full content/speaker/emotion evaluation | Metric models and reference fixtures are not yet pinned | Versioned model weights, language limits, direction tests |
-| Formal demonstration WAV/MP4 and film | The export service exists, but the public film must use genuine accepted candidates and authorized media | M2 adapter/metrics/export evidence and film QA |
-| `v0.1.0` release | Real model gate and release validation are incomplete | All M2/M3 requirements in `DEFINITION_OF_DONE.md` |
+- Task-first 的视频配音任务定义。
+- HPMDubbing、StyleDubber、EmoDubber 三套完整方法范围。
+- Concept、Replay、Live、Planned 内容状态。
+- Method Manifest、Case、Replay、Signal 数据契约。
+- Method Canvas、Comparison Lab、Evidence Room 产品设计。
+- 四份按测试和提交边界拆分的实施计划。
+- 申报影片新的任务解释和方法可视化主线。
 
-## Current Verification
+## 尚未实现
 
-- `make check`: 89 tests pass, including real FFmpeg/FFprobe checks of uploaded media and exported MP4 provenance metadata; it also runs Ruff, mypy, TypeScript, and local documentation-link validation. The test run has one upstream FastAPI/Starlette `TestClient` deprecation warning only.
-- Browser QA: empty and configured project states were captured at 1440×900; the configured flow imported local synthetic audio, recorded authorization, imported/editable subtitle cues, retained a compact cue timeline at 375×812, and kept Export gated without accepted candidates. An isolated `opendub.test` QA fixture also verified candidate evaluation, acceptance persistence, audio-policy selection, WAV download, manifest link, and non-distributable export status; it is not a product model or demo asset.
-- DOCX: `original/output/种子计划_OpenDub_申报表_草案.docx` is generated from the original template by `tools/grant-docx/`, OpenXML-validated, and visually checked as a two-page A4 PDF.
-- Docker: `docker compose config --quiet` passes. Image build was not run in this environment because access to the Docker daemon is denied.
+| 能力 | 当前状态 | 下一证据 |
+|---|---|---|
+| `/explore` Task Explorer | Concept 页面、输入/输出解释、时间线和方法入口已实现 | 真实案例与 E2E |
+| 三套 Method Manifest | 3 份结构化 manifest 已通过 `opendub atlas validate` | 论文作者或负责人语义复核 |
+| 三套 Method Canvas | 总览、三张可点击 Concept 画布和 Signal Dock 已实现 | manifest 驱动布局、真实或授权信号 |
+| 合法 Replay Bundle | 尚未选定 | 素材/声音权利审计和 hash |
+| 同输入 Comparison Lab 内容 | 证据门控界面已实现；没有公开 replay 结果 | 至少两个方法对同一输入的合法输出 |
+| Live Emo/HPM/Style | unavailable；已发现若干待审计 Drive 候选 | 明确许可的 checkpoint、hash、真实 smoke |
+| VisualizationProvider | 契约已规划 | 一套真实 Adapter 的中间产物 |
+| 新申报影片 | 脚本规划中 | 固定发布版本的 UI 录制与事实核验 |
 
-## Next Execution Gate
+## checkpoint 对项目进度的影响
 
-Do not advance to a “real generation” demo until the project owner supplies or identifies a
-redistributable checkpoint with explicit terms and SHA-256. The next implementation action is then
-to build a single isolated adapter around that exact artifact, smoke-test it on authorized media,
-and update `model-registry/upstreams.yaml`, its model card, the evidence index, and the demo script
-from `planned` to the verified state supported by the result.
+- **不需要 checkpoint**：Task Explorer、三套 Concept Canvas、论文与代码 Evidence、方法专属合法历史 Demo Replay。
+- **可能需要 checkpoint**：生成同一输入的多方法结果。
+- **必须需要 checkpoint**：修改输入后的现场 Live 生成、真实中间产物捕获。
+
+因此下一动作不是等待 checkpoint，而是完成 Concept 内容的权利记录、manifest 驱动客户端和作者复核，再审计可公开 Replay。候选详情见 `docs/atlas/checkpoint-audit-2026-07-26.md`。
+
+## 下一执行顺序
+
+1. 完成 Concept 资产权利记录和 manifest 驱动客户端。
+2. 进行三套方法的论文/代码语义复核。
+3. 审计并打包可公开 Replay。
+4. 只有通过相同输入门槛才解锁 Comparison Lab 的试听、信号和指标。
+5. checkpoint 条件满足后再升级一套方法为 Live。
+
+## 真实性规则
+
+当前任何研究模型都不能标为 Live。测试用正弦波和合成媒体只能作为自动化 fixture，不得出现在公开方法结果、申报片或“模型生成”叙事中。

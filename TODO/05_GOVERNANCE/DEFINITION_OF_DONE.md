@@ -1,131 +1,71 @@
 # Definition of Done
 
-## 单个代码任务
+## Content Unit
 
-一个任务只有满足以下条件才完成：
+A Method Manifest, Case or Replay Bundle is complete only when:
 
-- 行为由测试先定义；
-- 实现只覆盖任务范围；
-- 单元/契约/集成测试按风险通过；
-- Ruff、mypy、TypeScript 和 lint 通过；
-- 用户可见行为有文档或文案；
-- API/Schema 变化生成了跨端类型；
-- 上游代码变化更新 NOTICE 和许可记录；
-- 没有提交权重、用户素材、缓存和本地路径；
-- PR 描述说明验证命令与结果；
-- 形成独立、可回滚提交。
+- it passes the v1 schema and semantic validator;
+- all assets have relative paths, exact SHA-256 and media metadata;
+- all claims have primary paper/source references;
+- status follows evidence rules;
+- public assets have rights evidence and reviewer;
+- core method nodes have author/researcher approval;
+- UI rendering and deep links are covered by tests.
 
-## 模型 Adapter
+## Task Explorer
 
-Experimental：
+- Video, Text and Reference Speech are independently selectable.
+- Generated Speech and Dubbed Video are distinct outputs.
+- the formal equation agrees with the natural-language task definition.
+- one time cursor synchronizes media, tokens and signals.
+- auto-tour can be interrupted, paused and replayed.
+- desktop, tablet and mobile visual QA pass.
+- it works with static build and no API.
 
-- 固定上游 commit；
-- 源许可已识别；
-- 权重来源已记录；
-- 能力声明真实；
-- 环境报告可执行；
-- 契约测试通过；
-- 至少一次真实推理；
-- 有模型卡和限制；
-- 不修改全局 site-packages。
+## Method Canvas
 
-Stable：
+- each of the three core methods has an approved full path from inputs to output.
+- every core node provides problem, inputs, outputs, evidence and mode-aware signal slots.
+- all graph edges are real information dependencies.
+- selecting a node and pinning a signal are keyboard accessible.
+- missing signals degrade to an explicit reason.
+- Concept values are labelled Illustrative.
+- React Flow canvas is nonblank and readable at target viewports.
 
-- Experimental 全部条件；
-- 权重许可明确；
-- 自动或受控真实 smoke；
-- 官方授权示例成功；
-- 控制参数有效性验证；
-- 错误与取消测试；
-- 峰值显存和运行时间记录；
-- 维护者和升级策略明确；
-- 至少两台干净环境安装验证，或一台原生加一台容器验证。
+## Comparison Lab
 
-## Web 功能
+- public candidate tracks pass same-input gate.
+- at most one candidate audio plays.
+- switching preserves time within 50ms.
+- equal listening-gain policy is visible.
+- metrics compare only equal IDs, versions and preprocessing hashes.
+- unavailable and not-applicable states are not replaced by zeros.
+- blind listening hides method identity until explicit reveal.
+- exported report contains hashes, modes and scope limitation.
 
-- 加载、空、成功、失败、取消和无权限/能力状态齐全；
-- 键盘可操作，焦点可见；
-- 文案中英文不溢出；
-- 1440×900、1280×720 和移动只读截图无重叠；
-- API 错误映射为可行动提示；
-- 不静默忽略参数；
-- Playwright 覆盖主路径；
-- 不直接读取本地文件系统或构建 FFmpeg 命令。
+## Live Method
 
-## 媒体功能
+- source commit, code license, weight terms and SHA-256 are recorded.
+- adapter runs isolated without mutating global site-packages.
+- real smoke test uses authorized media and creates target audio.
+- run manifest records environment, inputs, parameters and output hash.
+- VisualizationProvider outputs only genuine registered signals.
+- a failed Live run cannot surface as Replay or Live success.
 
-- 对输入格式进行探测和验证；
-- 文件名不进入 shell；
-- 保留原始素材；
-- 中间文件原子化；
-- 时间、采样率、声道和哈希记录；
-- 合成 fixture 集成测试；
-- 错误包含退出码、阶段和恢复动作；
-- 输出长度经过 sample 级检查。
+## Grant Film
 
-## 文档
+- shot log includes commit, content-lock, route, case, mode and approval.
+- every narration sentence has paper/source/test/run evidence.
+- all media is rights-approved.
+- all Concept/Replay/Live labels remain visible after edit.
+- branch A/B selection matches comparison gate result.
+- captions, video and audio pass final checks.
+- exported files and evidence archive have checksums.
 
-- 命令在干净环境实际运行；
-- 链接检查通过；
-- 不把 Planned 写为 Supported；
-- 包含限制和故障路径；
-- 中英文核心文档语义一致；
-- 示例素材许可可查；
-- 版本化截图来自真实产品。
+## Release `v0.1.0-atlas`
 
-## Milestone 完成
-
-### M1：统一基础
-
-- 主仓库可安装；
-- Domain、Schema、Store、Media 基础完成；
-- TestAdapter 完整闭环；
-- API/CLI 最小入口；
-- CI 通过；
-- 公开 README 准确描述 alpha 状态。
-
-### M2：真实闭环
-
-- 一个 Stable 真实模型；
-- 授权参考声音；
-- 情感能力真实生效；
-- 声码器与媒体渲染；
-- 四类指标；
-- WAV/MP4/报告；
-- 可取消、可恢复任务；
-- 真实 GPU 验证报告。
-
-### M3：公开发布
-
-- Web Studio 五阶段工作流；
-- Docker GPU 与原生安装；
-- 两套授权示例；
-- 中英文快速开始；
-- Adapter 教程；
-- SBOM 和许可证报告；
-- 完整视觉 QA；
-- `v0.1.0` Release。
-
-## `v0.1.0` 发布
-
-- `SCOPE_AND_SUCCESS.md` 所有“必须交付”均有证据；
-- 所有“不包含”未被隐藏实现或错误承诺；
-- P0/P1 为 0；
-- 支持矩阵完成真实验证；
-- 快速开始在 20 分钟内完成；
-- 真实情感控制通过作用测试；
-- 所有发布制品哈希可验证；
-- 申报材料与证据索引一致；
-- CHANGELOG、模型状态、限制、升级和安全文档齐全；
-- 标签、Release、容器与包版本一致。
-
-## 基金交付
-
-- DOCX 单独输出并通过 OpenXML 验证；
-- 项目名称、仓库、版本和许可证一致；
-- 每项“已有功能”有 Release 或测试证据；
-- 每项“阶段目标”映射到公开 milestone；
-- 演示视频只含授权素材；
-- 技术文档和演示链接可匿名访问；
-- 申报压缩包命名和内容符合通知要求；
-- 联系信息由负责人最终核验。
+- all required `SCOPE_AND_SUCCESS.md` items have objective evidence.
+- `make check`, content validation, web tests, build and Playwright pass.
+- README, citations, license, model status and known limitations agree.
+- no private paths, checkpoints, user content or tokens are committed.
+- release tag, static artifact and film shot log identify the same commit.

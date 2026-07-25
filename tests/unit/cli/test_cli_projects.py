@@ -5,6 +5,8 @@ from typer.testing import CliRunner
 from opendub.cli.app import app
 from opendub.storage.project_store import ProjectStore
 
+REPOSITORY_ROOT = Path(__file__).resolve().parents[3]
+
 
 def test_cli_creates_a_project_in_explicit_workspace(tmp_path: Path) -> None:
     result = CliRunner().invoke(app, ["create", "Authorized demo", "--workspace", str(tmp_path)])
@@ -45,3 +47,12 @@ def test_cli_evaluate_reports_a_missing_candidate_with_a_stable_error(tmp_path: 
 
     assert result.exit_code == 1
     assert "ASSET_NOT_FOUND" in result.output
+
+
+def test_cli_validates_the_public_method_atlas_content() -> None:
+    result = CliRunner().invoke(
+        app, ["atlas", "validate", "--content", str(REPOSITORY_ROOT / "content")]
+    )
+
+    assert result.exit_code == 0
+    assert "3 method manifests validated" in result.output

@@ -1,5 +1,7 @@
 # Domain Contracts
 
+> 本文保留当前 `v0.0.1-alpha.0` 的项目、模型运行和评测契约。Method Atlas 新增的内容、图谱、案例、Replay 和信号契约见 [ATLAS_CONTRACTS.md](ATLAS_CONTRACTS.md)。两组契约通过 `run_id`、`method_id` 和 `case_id` 关联，不能把内容状态混入模型运行成熟度字段。
+
 ## 版本约定
 
 - 项目清单 Schema：`opendub.project/v1`

@@ -1,0 +1,83 @@
+{
+  "schema_version": "opendub.method/v1",
+  "id": "galaxycong/styledubber",
+  "slug": "styledubber",
+  "title": "StyleDubber: Towards Multi-Scale Style Learning for Movie Dubbing",
+  "short_title": "StyleDubber",
+  "conference": "Findings of ACL",
+  "year": 2024,
+  "question": {
+    "zh_cn": "如何在音素级和话语级保持配音的局部发音风格与整体角色风格？",
+    "en": "How can a dubbing method preserve local pronunciation style and global character style at phoneme and utterance scales?"
+  },
+  "contribution": {
+    "zh_cn": "以多模态音素适配、音素引导口型对齐和话语级风格学习，构成完整的多尺度风格路径。",
+    "en": "It combines a multimodal phoneme adaptor, phoneme-guided lip alignment, and utterance-level style learning into a complete multi-scale style path."
+  },
+  "paper": {
+    "title": "StyleDubber: Towards Multi-Scale Style Learning for Movie Dubbing",
+    "url": "https://aclanthology.org/2024.findings-acl.404/"
+  },
+  "source": {
+    "repository": "https://github.com/GalaxyCong/StyleDubber",
+    "commit": "bc431c8f67e885433c5c23163a8eaccb0dd41175"
+  },
+  "runtime_status": "unavailable",
+  "content_modes": ["concept", "planned"],
+  "required_inputs": ["video", "text", "reference_speech"],
+  "optional_controls": [],
+  "signals": [
+    {"id": "video.scene", "type": "video.scene", "label": {"zh_cn": "视频帧", "en": "Video frames"}, "time_binding": "media_pts", "renderer": "scene-strip", "explanation": {"zh_cn": "提供多模态视频条件。", "en": "Provides multimodal video conditions."}},
+    {"id": "video.lip_roi", "type": "video.lip_roi", "label": {"zh_cn": "唇部区域", "en": "Lip ROI"}, "time_binding": "media_pts", "renderer": "roi-overlay", "explanation": {"zh_cn": "用于音素与唇部动作的对齐解释。", "en": "Explains phoneme-to-lip alignment."}},
+    {"id": "text.phonemes", "type": "text.phonemes", "label": {"zh_cn": "音素序列", "en": "Phoneme sequence"}, "time_binding": "intervals", "renderer": "phoneme-ruler", "explanation": {"zh_cn": "从帧级视图切换到音素级表达的基础。", "en": "The basis for moving from frame-level to phoneme-level representation."}},
+    {"id": "audio.reference", "type": "audio.reference", "label": {"zh_cn": "参考语音", "en": "Reference speech"}, "time_binding": "media_pts", "renderer": "waveform", "explanation": {"zh_cn": "提供身份和局部发音风格线索。", "en": "Provides identity and local pronunciation-style cues."}},
+    {"id": "alignment.matrix", "type": "alignment.matrix", "label": {"zh_cn": "音素-口型对齐", "en": "Phoneme-lip alignment"}, "time_binding": "intervals", "renderer": "alignment-matrix", "explanation": {"zh_cn": "显示音素与可观察口型区间的对应。", "en": "Shows correspondence between phonemes and observable lip intervals."}},
+    {"id": "embedding.phoneme_style", "type": "embedding.projection", "label": {"zh_cn": "局部音素风格", "en": "Local phoneme style"}, "unit": "conceptual projection", "time_binding": "intervals", "renderer": "embedding-lanes", "explanation": {"zh_cn": "MPA 的局部多模态风格表示仅在 Concept 中解释。", "en": "The MPA local multimodal style representation is explained only in Concept mode."}},
+    {"id": "embedding.utterance_style", "type": "embedding.projection", "label": {"zh_cn": "话语级风格", "en": "Utterance-level style"}, "unit": "conceptual projection", "time_binding": "none", "renderer": "style-envelope", "explanation": {"zh_cn": "USL 的全句风格条件。", "en": "The global line-level condition in USL."}},
+    {"id": "acoustic.mel", "type": "acoustic.mel", "label": {"zh_cn": "梅尔频谱", "en": "Mel-spectrogram"}, "unit": "normalized log-mel", "time_binding": "uniform", "renderer": "spectrogram", "explanation": {"zh_cn": "被局部与全局风格条件化的声学表示。", "en": "An acoustic representation conditioned by local and global style."}},
+    {"id": "audio.generated", "type": "audio.generated", "label": {"zh_cn": "目标配音语音", "en": "Target dubbed speech"}, "time_binding": "media_pts", "renderer": "waveform", "explanation": {"zh_cn": "完整 StyleDubber 方法的输出。", "en": "Output of the complete StyleDubber method."}}
+  ],
+  "graph": {
+    "nodes": [
+      {"id": "video", "label": {"zh_cn": "视频", "en": "Video"}, "short_label": "Video", "kind": "input", "summary": {"zh_cn": "视频提供表情和唇部相关条件。", "en": "Video provides facial and lip-related conditions."}, "solves": {"zh_cn": "建立视觉侧输入。", "en": "Establishes visual-side input."}, "consumes": [], "produces": ["video.scene", "video.lip_roi"], "paper_refs": [{"section": "Method", "url": "https://aclanthology.org/2024.findings-acl.404/"}], "code_refs": [], "visualization_slots": ["video.scene", "video.lip_roi"], "group": "inputs"},
+      {"id": "text", "label": {"zh_cn": "目标文本", "en": "Target text"}, "short_label": "Text", "kind": "input", "summary": {"zh_cn": "目标台词进入音素视图。", "en": "The target script enters a phoneme view."}, "solves": {"zh_cn": "确定内容。", "en": "Determines content."}, "consumes": [], "produces": ["text.phonemes"], "paper_refs": [{"section": "Method", "url": "https://aclanthology.org/2024.findings-acl.404/"}], "code_refs": [], "visualization_slots": ["text.phonemes"], "group": "inputs"},
+      {"id": "reference_speech", "label": {"zh_cn": "参考语音", "en": "Reference speech"}, "short_label": "Reference", "kind": "voice", "summary": {"zh_cn": "参考语音用于建模角色声音与发音风格。", "en": "Reference speech models character voice and pronunciation style."}, "solves": {"zh_cn": "提供声音身份与风格线索。", "en": "Supplies voice-identity and style cues."}, "consumes": [], "produces": ["audio.reference"], "paper_refs": [{"section": "Method", "url": "https://aclanthology.org/2024.findings-acl.404/"}], "code_refs": [], "visualization_slots": ["audio.reference"], "group": "inputs"},
+      {"id": "phoneme_view", "label": {"zh_cn": "音素视图", "en": "Phoneme View"}, "short_label": "Phoneme", "kind": "text", "summary": {"zh_cn": "系统将文本从逐帧表示转为音素级时间单元。", "en": "The system moves from frame-oriented text to phoneme-level time units."}, "solves": {"zh_cn": "给局部风格学习提供稳定的对齐单位。", "en": "Provides stable alignment units for local style learning."}, "consumes": ["text.phonemes"], "produces": ["text.phonemes"], "paper_refs": [{"section": "Introduction", "url": "https://aclanthology.org/2024.findings-acl.404/"}], "code_refs": [], "visualization_slots": ["text.phonemes"], "group": "phoneme_style"},
+      {"id": "mpa", "label": {"zh_cn": "多模态音素适配器", "en": "Multimodal Phoneme Adaptor"}, "short_label": "MPA", "kind": "style", "summary": {"zh_cn": "在音素尺度汇聚参考语音和多模态条件。", "en": "It fuses reference speech and multimodal conditions at phoneme scale."}, "solves": {"zh_cn": "为每个发音单元建立局部风格条件。", "en": "Establishes local style conditions for each pronunciation unit."}, "consumes": ["text.phonemes", "audio.reference", "video.scene"], "produces": ["embedding.phoneme_style"], "paper_refs": [{"section": "Multi-scale Style Learning", "url": "https://aclanthology.org/2024.findings-acl.404/"}], "code_refs": [], "visualization_slots": ["audio.reference", "text.phonemes", "embedding.phoneme_style"], "group": "phoneme_style"},
+      {"id": "pla", "label": {"zh_cn": "音素引导口型对齐", "en": "Phoneme-guided Lip Aligner"}, "short_label": "PLA", "kind": "alignment", "summary": {"zh_cn": "显式对齐唇部运动与音素路径。", "en": "It explicitly aligns lip motion with the phoneme path."}, "solves": {"zh_cn": "保持发音节奏和口型的可解释联系。", "en": "Keeps an explainable relation between speaking rhythm and lips."}, "consumes": ["video.lip_roi", "text.phonemes"], "produces": ["alignment.matrix"], "paper_refs": [{"section": "Multi-scale Style Learning", "url": "https://aclanthology.org/2024.findings-acl.404/"}], "code_refs": [], "visualization_slots": ["video.lip_roi", "text.phonemes", "alignment.matrix"], "group": "phoneme_style"},
+      {"id": "usl", "label": {"zh_cn": "话语级风格学习", "en": "Utterance-level Style Learning"}, "short_label": "USL", "kind": "style", "summary": {"zh_cn": "局部条件被扩展为整句一致的角色风格。", "en": "Local conditions are extended into a coherent line-level character style."}, "solves": {"zh_cn": "避免每个音素独立变化造成的风格割裂。", "en": "Avoids a fragmented style caused by isolated phoneme changes."}, "consumes": ["embedding.phoneme_style", "alignment.matrix"], "produces": ["embedding.utterance_style"], "paper_refs": [{"section": "Multi-scale Style Learning", "url": "https://aclanthology.org/2024.findings-acl.404/"}], "code_refs": [], "visualization_slots": ["embedding.phoneme_style", "embedding.utterance_style"], "group": "phoneme_style"},
+      {"id": "mel_decoder", "label": {"zh_cn": "梅尔解码器", "en": "Mel Decoder"}, "short_label": "Mel", "kind": "acoustic", "summary": {"zh_cn": "局部和全局风格条件共同解码为频谱。", "en": "Local and global style conditions are jointly decoded into a spectrum."}, "solves": {"zh_cn": "形成声学输出。", "en": "Forms the acoustic output."}, "consumes": ["embedding.phoneme_style", "embedding.utterance_style"], "produces": ["acoustic.mel"], "paper_refs": [{"section": "Method", "url": "https://aclanthology.org/2024.findings-acl.404/"}], "code_refs": [], "visualization_slots": ["acoustic.mel"], "group": "acoustic_generation"},
+      {"id": "refinement", "label": {"zh_cn": "声学细化", "en": "Refinement"}, "short_label": "Refine", "kind": "generation", "summary": {"zh_cn": "频谱输出经方法定义的细化路径形成可播放语音。", "en": "The spectrum follows the method-defined refinement path into playable speech."}, "solves": {"zh_cn": "完成声学到语音的输出阶段。", "en": "Completes the acoustic-to-speech output stage."}, "consumes": ["acoustic.mel"], "produces": ["audio.generated"], "paper_refs": [{"section": "Method", "url": "https://aclanthology.org/2024.findings-acl.404/"}], "code_refs": [], "visualization_slots": ["acoustic.mel", "audio.generated"], "group": "acoustic_generation"},
+      {"id": "dubbed_speech", "label": {"zh_cn": "目标配音语音", "en": "Dubbed speech"}, "short_label": "Speech", "kind": "output", "summary": {"zh_cn": "视频配音任务的目标语音输出。", "en": "Target speech output for the video dubbing task."}, "solves": {"zh_cn": "提供可试听和混流的语音。", "en": "Provides speech that can be listened to and muxed."}, "consumes": ["audio.generated"], "produces": [], "paper_refs": [{"section": "Method", "url": "https://aclanthology.org/2024.findings-acl.404/"}], "code_refs": [], "visualization_slots": ["audio.generated"], "group": "output"}
+    ],
+    "edges": [
+      {"id": "text-phoneme-view", "source": "text", "target": "phoneme_view", "signal_ids": ["text.phonemes"]},
+      {"id": "phoneme-mpa", "source": "phoneme_view", "target": "mpa", "signal_ids": ["text.phonemes"]},
+      {"id": "video-mpa", "source": "video", "target": "mpa", "signal_ids": ["video.scene"]},
+      {"id": "reference-mpa", "source": "reference_speech", "target": "mpa", "signal_ids": ["audio.reference"]},
+      {"id": "video-pla", "source": "video", "target": "pla", "signal_ids": ["video.lip_roi"]},
+      {"id": "phoneme-pla", "source": "phoneme_view", "target": "pla", "signal_ids": ["text.phonemes"]},
+      {"id": "mpa-usl", "source": "mpa", "target": "usl", "signal_ids": ["embedding.phoneme_style"]},
+      {"id": "pla-usl", "source": "pla", "target": "usl", "signal_ids": ["alignment.matrix"]},
+      {"id": "usl-mel", "source": "usl", "target": "mel_decoder", "signal_ids": ["embedding.utterance_style"]},
+      {"id": "mel-refinement", "source": "mel_decoder", "target": "refinement", "signal_ids": ["acoustic.mel"]},
+      {"id": "refinement-output", "source": "refinement", "target": "dubbed_speech", "signal_ids": ["audio.generated"]}
+    ],
+    "groups": [
+      {"id": "inputs", "label": {"zh_cn": "共同输入", "en": "Common inputs"}, "node_ids": ["video", "text", "reference_speech"]},
+      {"id": "phoneme_style", "label": {"zh_cn": "多尺度风格", "en": "Multi-scale style"}, "node_ids": ["phoneme_view", "mpa", "pla", "usl"]},
+      {"id": "acoustic_generation", "label": {"zh_cn": "声学生成", "en": "Acoustic generation"}, "node_ids": ["mel_decoder", "refinement"]},
+      {"id": "output", "label": {"zh_cn": "目标输出", "en": "Target output"}, "node_ids": ["dubbed_speech"]}
+    ],
+    "overview_path": ["text", "phoneme_view", "mpa", "usl", "mel_decoder", "refinement", "dubbed_speech"],
+    "layout": "left-to-right"
+  },
+  "chapters": [
+    {"id": "overview", "label": {"zh_cn": "概览", "en": "Overview"}, "node_ids": ["video", "text", "reference_speech", "dubbed_speech"]},
+    {"id": "phoneme_style", "label": {"zh_cn": "音素与风格", "en": "Phonemes and style"}, "node_ids": ["phoneme_view", "mpa", "pla", "usl"]},
+    {"id": "acoustic", "label": {"zh_cn": "声学生成", "en": "Acoustic generation"}, "node_ids": ["mel_decoder", "refinement"]}
+  ],
+  "citations": [
+    {"key": "cong2024styledubber", "label": "Cong et al., Findings of ACL 2024", "url": "https://aclanthology.org/2024.findings-acl.404/"}
+  ]
+}

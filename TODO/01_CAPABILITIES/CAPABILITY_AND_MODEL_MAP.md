@@ -1,134 +1,116 @@
-# Capability and Model Map
+# Capability and Complete-Method Map
 
-## 设计原则
+## 基本原则
 
-用户购买的是能力，不是论文名称。OpenDub 将已有成果重新组织为稳定的产品能力，每个模型通过适配器声明自己支持的输入、控制和输出。一个模型可以支撑多个能力，一个能力也可以由不同模型实现。
+OpenDub 中的“能力”用于帮助用户理解和筛选完整方法，不用于将不同方法的内部组件重新拼装。
 
-## 七项产品能力
-
-### 1. Visual Sync Engine
-
-根据嘴部运动、视频时间窗和音素结构控制语音时长与节奏。
-
-- HPMDubbing：分层建模口型、面部表情和场景信息，作为首要视频韵律参考。
-- HD-Dub：面向层次音素建模和声学扩散去噪，代码已迁移到独立组织；通过许可与可复现核验后接入。
-- CoSyncDiT：认知同步扩散 Transformer；当前 GalaxyCong 仓库仅有 README，代码与权重未形成可接入资产，因此列为 Planned。
-
-### 2. Emotion Director
-
-通过离散情感、强度或 valence/arousal 控制角色表达。
-
-- EmoDubber：首选能力来源，承担 `v0.1.0` 第一个真实模型适配。
-- HPMDubbing：从人脸与场景中提取情感条件，作为自动情感建议来源。
-- LLM-Flow-Dubber：现有仓库主要是演示网页，没有可验证模型接口，列为 Planned。
-
-### 3. Style Director
-
-保持角色在局部音素、词语、句子和更长上下文上的说话风格。
-
-- StyleDubber：核心来源，计划在 `v0.2.0` 接入。
-- 产品呈现为“风格参考”和“风格强度”，不暴露论文内部张量或训练配置。
-
-### 4. Character Voice
-
-使用经授权的参考音频保持角色音色，并记录说话人相似度。
-
-- EmoDubber、StyleDubber 和 HPMDubbing 中的说话人建模能力通过统一 `VoiceReference` 接口使用。
-- 首版不提供声音库交易、公开声音检索或未经授权的名人声音模板。
-
-### 5. Acoustic Renderer
-
-将 mel-spectrogram 或模型声学输出转换为可播放波形。
-
-- HPMDubbing_Vocoder：提供 16kHz 与 22050Hz HiFi-GAN 路径，作为独立 VocoderAdapter。
-- 各模型自带声码器保留为可选适配器，不能将采样率和 hop length 不匹配的模型强行组合。
-
-### 6. Media Composer
-
-负责 FFmpeg 探测、代理文件、音频抽取、片段切分、响度标准化、配音轨拼接和视频混流。该能力由 OpenDub 原生实现，不依赖论文仓库。
-
-### 7. Quality Lab
-
-统一计算和展示：
-
-- 内容：WER/CER 或 ASR 一致性；
-- 音色：speaker embedding cosine similarity；
-- 情感：分类一致性或 valence/arousal 偏差；
-- 同步：目标时长偏差、可用时口型同步指标；
-- 音频：响度、削波、静音比例和基础质量检查。
-
-## 仓库归类
-
-| 现有仓库 | OpenDub 角色 | 首次目标版本 | 初始成熟度 | 进入 Stable 的条件 |
-|---|---|---:|---|---|
-| `EmoDubber` | Emotion Director + Character Voice | `v0.1.0` | Experimental | 真实权重可下载、授权明确、端到端推理通过、情感控制非占位 |
-| `HPMDubbing` | Visual Sync Engine + 自动情感条件 | `v0.2.0` | Experimental | 视频预处理可自动化、推理路径无硬编码、样例可复现 |
-| `StyleDubber` | Style Director | `v0.2.0` | Experimental | 风格参考输入契约明确、权重可复现、指标与限制齐全 |
-| `HPMDubbing_Vocoder` | Acoustic Renderer | `v0.1.0` | Experimental | 权重校验、采样率契约、mel 参数校验和真实音频测试通过 |
-| `HD-Dub` / `HDCode` | Visual Sync Engine 候选后端 | `v0.3.0` | Planned | 上游许可、代码、权重、依赖和论文状态全部核验 |
-| `CoSyncDiT` | 高级同步扩散后端 | `v0.3.0+` | Planned | 代码和权重正式发布后再设计适配 |
-| `LLM-Flow-Dubber` | 上下文/指令控制候选 | `v0.3.0+` | Planned | 从演示页升级为可运行、可许可、可引用的模型资产 |
-| `EmoDub` | EmoDubber 演示素材来源 | 不作为适配器 | Reference | 合法示例可迁移，保留来源和授权说明 |
-| `HPMDubbing-how-to-get-face-and-lip-` | Vision preprocessing 参考 | `v0.2.0` | Reference | 将流程重写为可测试组件，不能直接依赖手工步骤 |
-| `More-Details-about-the-V2C-Animation-dataset.` | 数据与挑战说明 | 文档 | Reference | 仅用于说明和引用，不自动分发版权数据 |
-| `V2C_24KHz` | 数据/音频参考 | 后续评估 | Reference | 许可与用途核验后决定是否纳入 |
-
-`LS-GAN` 与视频配音主线无关，不进入 OpenDub 能力图。
-
-## 适配优先级
-
-### 第一优先级：真实可用闭环
-
-1. EmoDubberAdapter
-2. HPMVocoderAdapter，或 EmoDubber 官方推理所需的原生声码器适配
-3. OpenDub 原生 Media Composer
-4. 基础 Quality Lab
-
-### 第二优先级：体现视频配音特色
-
-1. HPMDubbingAdapter
-2. 自动口型、人脸和场景特征流水线
-3. StyleDubberAdapter
-4. 同一片段的模型比较
-
-### 第三优先级：研究预览
-
-1. HD-Dub/HDCode
-2. CoSyncDiT
-3. LLM-Flow-Dubber
-
-## 能力声明
-
-每个适配器必须显式声明：
+允许：
 
 ```text
-languages
-requires_video
-requires_face
-requires_lip_roi
-requires_reference_audio
-supports_emotion_labels
-supports_emotion_strength
-supports_valence_arousal
-supports_style_reference
-supports_duration_control
-output_type
-sample_rate
-minimum_vram_gb
-license
-weights_license
-runtime_isolation
+User need -> filter complete methods -> run or replay one complete method
 ```
 
-UI 根据能力声明展示或禁用控件。任何适配器不得接受一个参数却在内部忽略它。
+禁止：
 
-## 产品命名规则
+```text
+HPMDubbing lip module
+  + StyleDubber style module
+  + EmoDubber emotion module
+  -> an unvalidated hybrid model
+```
 
-界面使用能力名作为一级名称，模型名作为二级技术信息：
+## 一级对象
 
-- “情感导演 / EmoDubber”
-- “视觉同步 / HPMDubbing”
-- “风格导演 / StyleDubber”
-- “波形渲染 / HPM HiFi-GAN”
+### Complete Dubbing Method
 
-这使项目既能体现系列研究成果，又不会让用户面对论文仓库结构。
+可独立描述输入、输出、架构和论文结果的视频配音方法。首版只有：
+
+- `galaxycong/hpmdubbing`
+- `galaxycong/styledubber`
+- `galaxycong/emodubber`
+
+### Supporting Infrastructure
+
+服务于完整方法但不能独立完成 Video + Text + Reference Speech 到目标配音的资产：
+
+- `HPMDubbing_Vocoder`
+- 人脸和口型预处理仓库
+- 数据转换脚本
+- 指标与媒体工具
+
+### Reference / Planned
+
+只有论文、静态 Demo、相关研究或尚未达到接入门槛的仓库。它们可以出现在 Evidence Room 和路线图，不出现在核心三方法选择器。
+
+## 能力筛选维度
+
+| 能力维度 | 用户问题 | HPMDubbing | StyleDubber | EmoDubber |
+|---|---|---:|---:|---:|
+| Video awareness | 是否使用视频信息 | 是 | 是 | 是 |
+| Lip-duration sync | 是否显式建模口型和时长 | 是 | 是 | 是 |
+| Facial prosody | 是否从面部表情获得韵律或情感线索 | 是 | 是 | 是 |
+| Scene context | 是否显式使用全局场景情感 | 是 | 以论文实际实现为准 | 以论文实际实现为准 |
+| Reference identity | 是否使用参考语音保持说话人 | 是 | 是 | 是 |
+| Phoneme-level modeling | 是否突出音素级建模 | 部分 | 核心 | 核心 |
+| Multi-scale style | 是否突出音素级和话语级风格 | 否 | 核心 | 否 |
+| User emotion category | 是否接受用户指定情感 | 否 | 否 | 是 |
+| User emotion intensity | 是否接受用户指定强度 | 否 | 否 | 是 |
+| Direct waveform generation | 方法主干是否直接生成波形 | 否 | 否 | 是，按论文 FUEC 描述 |
+
+表格中的“否”表示该方法没有将其作为明确的用户能力或核心贡献，不表示模型输出完全不存在相关属性。
+
+## 需求到方法的选择逻辑
+
+OpenDub 可以提供规则化筛选，但不能给出无条件全局排名：
+
+| 首要需求 | 推荐查看 | 推荐理由的表达边界 |
+|---|---|---|
+| 理解视频的 Lip、Face、Scene 如何影响韵律 | HPMDubbing | 论文将三层视觉信息分别关联到 duration、pitch/energy 和 global emotion |
+| 观察音素级与话语级风格学习 | StyleDubber | 论文以 MPA、PLA、USL 处理发音、对齐和整体风格 |
+| 用户指定情感类型和强度 | EmoDubber | 三套方法中只有 EmoDubber 将此定义为显式用户控制 |
+| 比较不同研究演进 | 三套方法 | 使用同案例 Replay 或共同支持的 Live 输入 |
+
+UI 文案应使用“适合查看”“支持该控制”“本案例指标更高/更低”，不使用“绝对最佳”。
+
+## 状态与可用性
+
+方法的运行状态与内容状态分别记录：
+
+### 运行状态
+
+- `unavailable`：没有满足许可与运行门槛的适配器。
+- `experimental`：真实运行成功，但环境或输入限制较强。
+- `stable`：通过发布门槛和真实回归测试。
+
+### 内容状态
+
+- `concept`：有论文依据的交互解释。
+- `replay`：有授权结果包。
+- `live`：可运行且可导出信号。
+- `planned`：尚无足够内容。
+
+一个方法可以同时是 `runtime=unavailable` 和 `content=concept,replay`。页面不得因为没有 Live 而隐藏已经可信的 Concept 或 Replay。
+
+## 首版准入表
+
+| 方法 | Concept | Replay | Live | 首版动作 |
+|---|---:|---:|---:|---|
+| HPMDubbing | 必须 | 至少争取一个 | 条件项 | 完成完整 Method Canvas |
+| StyleDubber | 必须 | 至少争取一个 | 条件项 | 完成完整 Method Canvas |
+| EmoDubber | 必须 | 至少争取一个 | 第一优先条件项 | 完成完整 Method Canvas 和情感控制解释 |
+| HPMDubbing_Vocoder | Supporting | 可作为信号阶段 | 条件项 | 只在方法输出阶段和 Evidence Room 出现 |
+| LLM-Flow-Dubber | Planned | 不承诺 | 不承诺 | 路线图或相关成果 |
+| HDCode | Reference | 不承诺 | 不承诺 | Evidence Room |
+| CoSyncDiT | Planned | 不承诺 | 不承诺 | 路线图 |
+
+## 完整方法接入门槛
+
+一个第三方或团队后续方法只有满足以下条件才能加入核心 Method Atlas：
+
+1. 有明确论文或技术报告。
+2. 有稳定方法 ID、输入和输出定义。
+3. 能作为完整方法独立运行，或有合法 Replay Bundle。
+4. 有至少四个可解释组件和对应来源。
+5. 代码、权重、素材和结果许可分别记录。
+6. 支持统一时间轴或能提供明确的静态非时序解释。
+7. 不要求 OpenDub 与另一方法内部组件拼接才能成立。

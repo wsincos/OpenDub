@@ -1,0 +1,85 @@
+{
+  "schema_version": "opendub.method/v1",
+  "id": "galaxycong/hpmdubbing",
+  "slug": "hpmdubbing",
+  "title": "Learning to Dub Movies via Hierarchical Prosody Models",
+  "short_title": "HPMDubbing",
+  "conference": "CVPR",
+  "year": 2023,
+  "question": {
+    "zh_cn": "如何让口型、面部表情与场景氛围在不同尺度上共同约束配音韵律？",
+    "en": "How can lip motion, facial affect, and scene context jointly constrain dubbing prosody at different visual scales?"
+  },
+  "contribution": {
+    "zh_cn": "以口型、面部和场景三层视觉线索分别建模时长、局部音高/能量与全局情感条件。",
+    "en": "It models duration, local pitch/energy, and global emotional conditioning from lip, face, and scene cues respectively."
+  },
+  "paper": {
+    "title": "Learning to Dub Movies via Hierarchical Prosody Models",
+    "url": "https://openaccess.thecvf.com/content/CVPR2023/html/Cong_Learning_To_Dub_Movies_via_Hierarchical_Prosody_Models_CVPR_2023_paper.html"
+  },
+  "source": {
+    "repository": "https://github.com/GalaxyCong/HPMDubbing",
+    "commit": "f50dfa7df649208c674f151e52ad0a38d0b0bd43"
+  },
+  "runtime_status": "unavailable",
+  "content_modes": ["concept", "planned"],
+  "required_inputs": ["video", "text", "reference_speech"],
+  "optional_controls": [],
+  "signals": [
+    {"id": "video.scene", "type": "video.scene", "label": {"zh_cn": "场景帧", "en": "Scene frames"}, "time_binding": "media_pts", "renderer": "scene-strip", "explanation": {"zh_cn": "提供全局场景上下文。", "en": "Supplies global scene context."}},
+    {"id": "video.face_roi", "type": "video.face_roi", "label": {"zh_cn": "人脸区域", "en": "Face ROI"}, "time_binding": "media_pts", "renderer": "roi-overlay", "explanation": {"zh_cn": "用于解释面部情感线索。", "en": "Explains facial affect cues."}},
+    {"id": "video.lip_roi", "type": "video.lip_roi", "label": {"zh_cn": "唇部区域", "en": "Lip ROI"}, "time_binding": "media_pts", "renderer": "roi-overlay", "explanation": {"zh_cn": "用于观察局部口型运动。", "en": "Observes local lip motion."}},
+    {"id": "text.phonemes", "type": "text.phonemes", "label": {"zh_cn": "音素", "en": "Phonemes"}, "time_binding": "intervals", "renderer": "phoneme-ruler", "explanation": {"zh_cn": "目标台词的音素时间单元。", "en": "Phoneme timing units for the target script."}},
+    {"id": "audio.reference", "type": "audio.reference", "label": {"zh_cn": "参考语音", "en": "Reference speech"}, "time_binding": "media_pts", "renderer": "waveform", "explanation": {"zh_cn": "提供说话人信息。", "en": "Provides speaker information."}},
+    {"id": "prosody.duration", "type": "prosody.duration", "label": {"zh_cn": "音素时长", "en": "Phoneme duration"}, "unit": "microseconds", "time_binding": "intervals", "renderer": "duration-track", "explanation": {"zh_cn": "口型关联的音素时长约束。", "en": "Lip-related phoneme duration constraints."}},
+    {"id": "prosody.f0", "type": "prosody.f0", "label": {"zh_cn": "基频", "en": "F0"}, "unit": "Hz", "time_binding": "uniform", "renderer": "prosody-line", "explanation": {"zh_cn": "由面部情感调制的局部音高轨迹。", "en": "A local pitch trajectory conditioned by facial affect."}},
+    {"id": "prosody.energy", "type": "prosody.energy", "label": {"zh_cn": "能量", "en": "Energy"}, "unit": "dB", "time_binding": "uniform", "renderer": "prosody-line", "explanation": {"zh_cn": "由面部情感调制的局部能量轨迹。", "en": "A local energy trajectory conditioned by facial affect."}},
+    {"id": "emotion.category", "type": "emotion.category", "label": {"zh_cn": "场景情感条件", "en": "Scene emotion condition"}, "time_binding": "none", "renderer": "condition-chip", "explanation": {"zh_cn": "场景级的全局情感条件。", "en": "A scene-level global emotional condition."}},
+    {"id": "acoustic.mel", "type": "acoustic.mel", "label": {"zh_cn": "梅尔频谱", "en": "Mel-spectrogram"}, "unit": "normalized log-mel", "time_binding": "uniform", "renderer": "spectrogram", "explanation": {"zh_cn": "用于声码器之前的声学表示。", "en": "Acoustic representation before vocoding."}},
+    {"id": "audio.generated", "type": "audio.generated", "label": {"zh_cn": "目标配音语音", "en": "Target dubbed speech"}, "time_binding": "media_pts", "renderer": "waveform", "explanation": {"zh_cn": "完整方法的研究输出。", "en": "The research output of the complete method."}}
+  ],
+  "graph": {
+    "nodes": [
+      {"id": "video", "label": {"zh_cn": "视频", "en": "Video"}, "short_label": "Video", "kind": "input", "summary": {"zh_cn": "同一段视频同时提供口型、人脸和场景线索。", "en": "One video provides lip, face, and scene cues."}, "solves": {"zh_cn": "建立视觉条件。", "en": "Establish visual conditions."}, "consumes": [], "produces": ["video.scene", "video.face_roi", "video.lip_roi"], "paper_refs": [{"section": "Method overview", "url": "https://openaccess.thecvf.com/content/CVPR2023/html/Cong_Learning_To_Dub_Movies_via_Hierarchical_Prosody_Models_CVPR_2023_paper.html"}], "code_refs": [], "visualization_slots": ["video.scene", "video.face_roi", "video.lip_roi"], "group": "inputs"},
+      {"id": "text", "label": {"zh_cn": "目标文本", "en": "Target text"}, "short_label": "Text", "kind": "input", "summary": {"zh_cn": "台词被表示为可对齐的音素序列。", "en": "The script is represented as alignable phonemes."}, "solves": {"zh_cn": "定义要说什么。", "en": "Defines what is said."}, "consumes": [], "produces": ["text.phonemes"], "paper_refs": [{"section": "Method overview", "url": "https://openaccess.thecvf.com/content/CVPR2023/html/Cong_Learning_To_Dub_Movies_via_Hierarchical_Prosody_Models_CVPR_2023_paper.html"}], "code_refs": [], "visualization_slots": ["text.phonemes"], "group": "inputs"},
+      {"id": "reference_speech", "label": {"zh_cn": "参考语音", "en": "Reference speech"}, "short_label": "Reference", "kind": "voice", "summary": {"zh_cn": "参考语音提供说话人信息。", "en": "Reference speech provides speaker information."}, "solves": {"zh_cn": "定义谁在说话。", "en": "Defines who speaks."}, "consumes": [], "produces": ["audio.reference"], "paper_refs": [{"section": "Method overview", "url": "https://openaccess.thecvf.com/content/CVPR2023/html/Cong_Learning_To_Dub_Movies_via_Hierarchical_Prosody_Models_CVPR_2023_paper.html"}], "code_refs": [], "visualization_slots": ["audio.reference"], "group": "inputs"},
+      {"id": "lip_duration", "label": {"zh_cn": "口型时长建模", "en": "Lip Motion"}, "short_label": "Lip", "kind": "alignment", "summary": {"zh_cn": "局部唇部运动约束音素时长和停顿。", "en": "Local lip movement constrains phoneme duration and pauses."}, "solves": {"zh_cn": "让发音节奏贴合嘴部运动。", "en": "Keeps speaking rhythm aligned with the mouth."}, "consumes": ["video.lip_roi", "text.phonemes"], "produces": ["prosody.duration"], "paper_refs": [{"section": "Hierarchical Prosody Modeling", "url": "https://openaccess.thecvf.com/content/CVPR2023/html/Cong_Learning_To_Dub_Movies_via_Hierarchical_Prosody_Models_CVPR_2023_paper.html"}], "code_refs": [], "visualization_slots": ["video.lip_roi", "text.phonemes", "prosody.duration"], "group": "visual_prosody"},
+      {"id": "face_affect", "label": {"zh_cn": "面部情感建模", "en": "Face Affect"}, "short_label": "Face", "kind": "prosody", "summary": {"zh_cn": "面部效价和唤醒度调制局部音高与能量。", "en": "Facial valence and arousal condition local pitch and energy."}, "solves": {"zh_cn": "让局部韵律响应表情。", "en": "Makes local prosody respond to facial expression."}, "consumes": ["video.face_roi"], "produces": ["prosody.f0", "prosody.energy"], "paper_refs": [{"section": "Hierarchical Prosody Modeling", "url": "https://openaccess.thecvf.com/content/CVPR2023/html/Cong_Learning_To_Dub_Movies_via_Hierarchical_Prosody_Models_CVPR_2023_paper.html"}], "code_refs": [], "visualization_slots": ["video.face_roi", "prosody.f0", "prosody.energy"], "group": "visual_prosody"},
+      {"id": "scene_emotion", "label": {"zh_cn": "场景情感建模", "en": "Scene Emotion"}, "short_label": "Scene", "kind": "emotion", "summary": {"zh_cn": "全局场景线索提供情感条件。", "en": "Global scene cues provide an emotional condition."}, "solves": {"zh_cn": "保持整段台词的场景一致性。", "en": "Keeps the line coherent with scene context."}, "consumes": ["video.scene"], "produces": ["emotion.category"], "paper_refs": [{"section": "Hierarchical Prosody Modeling", "url": "https://openaccess.thecvf.com/content/CVPR2023/html/Cong_Learning_To_Dub_Movies_via_Hierarchical_Prosody_Models_CVPR_2023_paper.html"}], "code_refs": [], "visualization_slots": ["video.scene", "emotion.category"], "group": "visual_prosody"},
+      {"id": "hierarchical_prosody", "label": {"zh_cn": "分层韵律融合", "en": "Hierarchical Prosody"}, "short_label": "Prosody", "kind": "prosody", "summary": {"zh_cn": "时长、音高、能量和场景情感在分层路径中汇合。", "en": "Duration, pitch, energy, and scene emotion meet in a hierarchical path."}, "solves": {"zh_cn": "统一不同视觉尺度的韵律信息。", "en": "Unifies prosody information across visual scales."}, "consumes": ["prosody.duration", "prosody.f0", "prosody.energy", "emotion.category", "audio.reference"], "produces": ["acoustic.mel"], "paper_refs": [{"section": "Hierarchical Prosody Modeling", "url": "https://openaccess.thecvf.com/content/CVPR2023/html/Cong_Learning_To_Dub_Movies_via_Hierarchical_Prosody_Models_CVPR_2023_paper.html"}], "code_refs": [], "visualization_slots": ["prosody.duration", "prosody.f0", "prosody.energy"], "group": "acoustic_generation"},
+      {"id": "mel_decoder", "label": {"zh_cn": "梅尔解码器", "en": "Mel Decoder"}, "short_label": "Mel", "kind": "acoustic", "summary": {"zh_cn": "条件化表示被解码为声学频谱。", "en": "Conditioned representations are decoded into acoustic spectra."}, "solves": {"zh_cn": "形成可声码化的声学表示。", "en": "Forms an acoustic representation ready for vocoding."}, "consumes": ["acoustic.mel"], "produces": ["acoustic.mel"], "paper_refs": [{"section": "Acoustic Generation", "url": "https://openaccess.thecvf.com/content/CVPR2023/html/Cong_Learning_To_Dub_Movies_via_Hierarchical_Prosody_Models_CVPR_2023_paper.html"}], "code_refs": [], "visualization_slots": ["acoustic.mel"], "group": "acoustic_generation"},
+      {"id": "vocoder", "label": {"zh_cn": "声码器", "en": "Vocoder"}, "short_label": "Vocoder", "kind": "generation", "summary": {"zh_cn": "声学频谱被转换成可播放语音。", "en": "The acoustic spectrum is converted to playable speech."}, "solves": {"zh_cn": "完成从频谱到波形的转换。", "en": "Completes the spectrum-to-waveform transition."}, "consumes": ["acoustic.mel"], "produces": ["audio.generated"], "paper_refs": [{"section": "Implementation Details", "url": "https://openaccess.thecvf.com/content/CVPR2023/html/Cong_Learning_To_Dub_Movies_via_Hierarchical_Prosody_Models_CVPR_2023_paper.html"}], "code_refs": [], "visualization_slots": ["acoustic.mel", "audio.generated"], "group": "acoustic_generation"},
+      {"id": "dubbed_speech", "label": {"zh_cn": "目标配音语音", "en": "Dubbed speech"}, "short_label": "Speech", "kind": "output", "summary": {"zh_cn": "视频配音研究任务的最终语音输出。", "en": "The final speech output of the video dubbing task."}, "solves": {"zh_cn": "输出可混流进视频的目标语音。", "en": "Outputs target speech that can be muxed into video."}, "consumes": ["audio.generated"], "produces": [], "paper_refs": [{"section": "Method overview", "url": "https://openaccess.thecvf.com/content/CVPR2023/html/Cong_Learning_To_Dub_Movies_via_Hierarchical_Prosody_Models_CVPR_2023_paper.html"}], "code_refs": [], "visualization_slots": ["audio.generated"], "group": "output"}
+    ],
+    "edges": [
+      {"id": "video-lip", "source": "video", "target": "lip_duration", "signal_ids": ["video.lip_roi"]},
+      {"id": "text-lip", "source": "text", "target": "lip_duration", "signal_ids": ["text.phonemes"]},
+      {"id": "video-face", "source": "video", "target": "face_affect", "signal_ids": ["video.face_roi"]},
+      {"id": "video-scene", "source": "video", "target": "scene_emotion", "signal_ids": ["video.scene"]},
+      {"id": "lip-prosody", "source": "lip_duration", "target": "hierarchical_prosody", "signal_ids": ["prosody.duration"]},
+      {"id": "face-prosody", "source": "face_affect", "target": "hierarchical_prosody", "signal_ids": ["prosody.f0", "prosody.energy"]},
+      {"id": "scene-prosody", "source": "scene_emotion", "target": "hierarchical_prosody", "signal_ids": ["emotion.category"]},
+      {"id": "reference-prosody", "source": "reference_speech", "target": "hierarchical_prosody", "signal_ids": ["audio.reference"]},
+      {"id": "prosody-mel", "source": "hierarchical_prosody", "target": "mel_decoder", "signal_ids": ["acoustic.mel"]},
+      {"id": "mel-vocoder", "source": "mel_decoder", "target": "vocoder", "signal_ids": ["acoustic.mel"]},
+      {"id": "vocoder-output", "source": "vocoder", "target": "dubbed_speech", "signal_ids": ["audio.generated"]}
+    ],
+    "groups": [
+      {"id": "inputs", "label": {"zh_cn": "共同输入", "en": "Common inputs"}, "node_ids": ["video", "text", "reference_speech"]},
+      {"id": "visual_prosody", "label": {"zh_cn": "分层视觉韵律", "en": "Hierarchical visual prosody"}, "node_ids": ["lip_duration", "face_affect", "scene_emotion", "hierarchical_prosody"]},
+      {"id": "acoustic_generation", "label": {"zh_cn": "声学生成", "en": "Acoustic generation"}, "node_ids": ["mel_decoder", "vocoder"]},
+      {"id": "output", "label": {"zh_cn": "目标输出", "en": "Target output"}, "node_ids": ["dubbed_speech"]}
+    ],
+    "overview_path": ["video", "lip_duration", "hierarchical_prosody", "mel_decoder", "vocoder", "dubbed_speech"],
+    "layout": "left-to-right"
+  },
+  "chapters": [
+    {"id": "overview", "label": {"zh_cn": "概览", "en": "Overview"}, "node_ids": ["video", "text", "reference_speech", "dubbed_speech"]},
+    {"id": "visual_prosody", "label": {"zh_cn": "视觉韵律", "en": "Visual prosody"}, "node_ids": ["lip_duration", "face_affect", "scene_emotion", "hierarchical_prosody"]},
+    {"id": "acoustic", "label": {"zh_cn": "声学生成", "en": "Acoustic generation"}, "node_ids": ["mel_decoder", "vocoder"]}
+  ],
+  "citations": [
+    {"key": "cong2023hpm", "label": "Cong et al., CVPR 2023", "url": "https://openaccess.thecvf.com/content/CVPR2023/html/Cong_Learning_To_Dub_Movies_via_Hierarchical_Prosody_Models_CVPR_2023_paper.html"}
+  ]
+}

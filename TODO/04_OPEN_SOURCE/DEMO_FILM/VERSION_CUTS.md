@@ -1,55 +1,33 @@
 # Version Cuts
 
-## 正式版：2 分 40 秒
+## 2:40 Master
 
-使用 `MASTER_SCRIPT.md` 的全部镜头。用途：基金申报、正式发布、技术演示、路演。
+Use all sections of [MASTER_SCRIPT.md](MASTER_SCRIPT.md). Required: task definition, three methods, status honesty, Evidence Room and final output. Use comparison branch A only after gate pass, otherwise use branch B.
 
-必须包含：
+## 60 Second Cut
 
-- 开场普通朗读与确认候选的公平对比；
-- 视频、文本、参考声音、情感和时间窗的统一工作流；
-- A/B 试听；
-- 四类真实指标；
-- 开源能力图与真实状态；
-- 最终成片和片尾链接。
-
-## 预告版：60 秒
-
-| 时间 | 内容 |
+| Time | Content |
 |---|---|
-| 00:00–00:06 | 普通朗读与确认候选冷开场 |
-| 00:06–00:15 | 口型、表情、场景、文本、声音汇聚 |
-| 00:15–00:32 | Studio 导入、情感设置和生成 |
-| 00:32–00:43 | A/B 试听与候选确认 |
-| 00:43–00:53 | 四类指标与导出成片 |
-| 00:53–01:00 | OpenDub 片尾与仓库链接 |
+| 00:00-00:06 | Same scene, two voices |
+| 00:06-00:15 | Video + Text + Reference Speech task |
+| 00:15-00:27 | HPM Lip/Face/Scene |
+| 00:27-00:39 | Style phoneme scale |
+| 00:39-00:50 | Emo controls and status label |
+| 00:50-00:57 | Comparison or gate honesty |
+| 00:57-01:00 | OpenDub end card |
 
-旁白压缩为：
+Suggested voiceover:
 
-> 视频配音不是把台词读出来。OpenDub 让口型、表情、场景、角色声音和目标时间在同一条时间线上协同工作。设定情感，比较候选，检查内容、音色、情感与同步，再导出属于画面的声音。OpenDub，让声音看见画面。
+> 视频配音不是朗读。OpenDub 把视频、台词和参考声音放在同一时间线上，交互地解释 HPMDubbing、StyleDubber 和 EmoDubber 三种完整方法，并用可追溯的 Concept、Replay 和 Live 状态展示每一份证据。
 
-用途：社交媒体、会议开场、首页视频。
+## 30 Second Loop
 
-## 静音循环版：30 秒
-
-| 时间 | 内容 | 屏幕文字 |
+| Time | Visual | Screen copy |
 |---|---|---|
-| 00:00–00:05 | 开场对比的画面切换 | `Same line. Different understanding.` |
-| 00:05–00:12 | 多模态汇聚图 | `Visual sync · Voice · Emotion · Timing` |
-| 00:12–00:21 | Studio 设置情感和生成 | `Direct the performance.` |
-| 00:21–00:27 | 指标和导出 | `Generate. Verify. Render.` |
-| 00:27–00:30 | 片尾 | `OpenDub · github.com/GalaxyCong/OpenDub` |
+| 00:00-00:05 | Task Explorer inputs converge | `Video + Text + Reference Speech` |
+| 00:05-00:13 | HPM hierarchy | `Lip · Face · Scene` |
+| 00:13-00:20 | Style phoneme scale | `Phoneme-level style` |
+| 00:20-00:26 | Emo guidance | `Emotion control, honestly labeled` |
+| 00:26-00:30 | Evidence and end card | `OpenDub · github.com/wsincos/OpenDub` |
 
-用途：展台循环、README GIF 源、PPT 背景。无旁白，必须烧录英文文字和可选中文字幕。
-
-## README GIF：20 秒
-
-从 60 秒版截取：导入 2 秒、情感设置 4 秒、生成 4 秒、A/B 4 秒、指标 3 秒、导出 3 秒。输出 1440×810 MP4 作为主媒体，额外导出不高于 8MB 的 GIF。GIF 不承担声音对比，README 同时链接完整 MP4。
-
-## 竖屏版：不作为首发必需品
-
-首发不强行裁切正式工作台。需要 9:16 版本时，重新设计为人物近景、竖向能力图和局部 Studio 放大，不直接把 16:9 时间线压窄。
-
-## 每个版本的事实要求
-
-所有版本都必须保留：OpenDub 名称、仓库链接、授权素材规则和真实功能边界。短版本可以删去研究基础细节，但不能把 Planned Adapter 剪成已支持能力。
+The loop has no narration and no claim that a selected signal is Live unless the visual badge says Live.

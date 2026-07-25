@@ -1,50 +1,57 @@
 # Shot List
 
-## 技术基准
+## Capture Baseline
 
-- 时间码格式：`MM:SS:FF`，30 FPS。
-- 录屏素材采集为 4K、60 FPS、无鼠标平滑滤镜；剪辑时裁切到 1080p、30 FPS。
-- 实拍素材采集为 4K、24 或 30 FPS；同一成片内统一解释为 30 FPS。
-- Studio 录屏使用 125% UI 缩放、隐藏系统通知、浏览器全屏、无个人路径和账户信息。
+- Screen capture: 3840x2160 at 60 FPS; editorial master: 1920x1080 at 30 FPS.
+- Browser zoom: 100%; OpenDub controls scale itself.
+- Recording viewport: 1920x1080 for full canvas, 1440x900 for supporting screenshots.
+- Every shot log records route, Git commit, content-lock hash, case ID and content mode.
 
-| # | 时间码 | 画面与动作 | 采集要求 | 声音与文字 | 转场 |
+| # | Time | Route / Action | Required evidence | Sound | Transition |
 |---:|---|---|---|---|---|
-| 01 | 00:00:00–00:02:15 | 演员近景，普通朗读版本 | 固定机位，保留原始无字幕版本 | 仅普通朗读；字幕“你终于来了。” | 硬切回起点 |
-| 02 | 00:02:15–00:05:15 | 同一画面，OpenDub 确认候选 | 与镜头 01 像素级对齐 | 仅确认候选 | 播放头闪切 |
-| 03 | 00:05:15–00:08:00 | 暖白标题卡 | 动态播放头横穿文字 | “同一句台词。画面决定它该怎样被说出。” | 细线 wipe |
-| 04 | 00:08:00–00:13:00 | 表情变化帧，嘴部与眼部细线标注 | 导出干净视频帧，图层独立 | 旁白第一句 | match cut |
-| 05 | 00:13:00–00:20:00 | 口型 ROI、表情、场景、文本、参考声音依次汇聚 | 所有线条从真实时间码开始 | 旁白第二句；功能标签 | 时间线推进 |
-| 06 | 00:20:00–00:28:00 | 五项条件对齐到时间线 | 平面图形，避免 3D | 旁白 | 画面缩放进入 Studio |
-| 07 | 00:28:00–00:40:00 | Studio 新建项目和导入视频 | 一次录成，后期裁掉等待时间 | 无旁白起始，后接旁白 | 快切 |
-| 08 | 00:40:00–00:50:00 | 导入台词、角色、授权参考声音 | 授权状态真实显示 | “Video · Script · Authorized voice” | 面板推入 |
-| 09 | 00:50:00–01:02:00 | 时间线片段、播放头、检查器 | 片段名与台词可读 | 旁白 | 时间码 match cut |
-| 10 | 01:02:00–01:12:00 | 选择片段并设定 neutral | 录制真实控制项 | 旁白 | 直接切 |
-| 11 | 01:12:00–01:20:00 | 切换 happy 0.82，显示目标时长 | 参数必须由模型真实支持 | 旁白 | Coral 状态切换 |
-| 12 | 01:20:00–01:28:00 | 提交两个候选，任务抽屉显示真实进度 | 可加速但不得伪造进度 | 旁白 | 音乐淡出 |
-| 13 | 01:28:00–01:34:00 | 候选 A 播放 | 视频、波形、时间线同步 | 仅候选 A 音频 | 硬切 |
-| 14 | 01:34:00–01:40:00 | 候选 B 播放 | 同上，保持相同画面 | 仅候选 B 音频 | 硬切 |
-| 15 | 01:40:00–01:48:00 | A/B 指标摘要与确认操作 | 不遮挡视频关键表情 | 无旁白，保留试听尾音 | click 后进入报告 |
-| 16 | 01:48:00–01:57:00 | Content/Voice/Emotion/Sync 四项真实指标 | 每项来自报告截图或 API 数据 | 旁白 | 指标依次淡入 |
-| 17 | 01:57:00–02:07:00 | run.json、权重哈希、版本与时长偏差 | 数据需脱敏且真实 | 旁白 | 时间线拉远 |
-| 18 | 02:07:00–02:16:00 | 能力图：Emotion、Visual Sync、Style、Acoustic | 只用已核验模型标识 | 旁白 | 分层出现 |
-| 19 | 02:16:00–02:25:00 | 仓库 README、Adapter 文档、真实 Release | 不滚动过快，不展示 Stars 炫耀 | 旁白 | 淡回最终视频 |
-| 20 | 02:25:00–02:36:00 | 最终成片连续播放 | 不加信息图，画面优先 | 最终音频与一句旁白 | 淡出 |
-| 21 | 02:36:00–02:40:00 | 片尾静帧 | 4 秒稳定展示 | 片尾旁白和尾音 | 结束 |
+| 01 | 00:00-00:03 | Same video, flat reference reading | rights ID and source label | source A only | hard return |
+| 02 | 00:03-00:06 | Same video, target speech | Replay or Live badge | source B only | playhead flash |
+| 03 | 00:06-00:09 | Title and timeline | title render | no music | fine-line wipe |
+| 04 | 00:09-00:14 | `/explore`, select Video | case manifest | voiceover | direct cut |
+| 05 | 00:14-00:19 | select Text and phonemes | transcript timing | voiceover | cursor match |
+| 06 | 00:19-00:24 | select Reference Speech | voice rights | voiceover | cursor match |
+| 07 | 00:24-00:34 | Generated Speech to Dubbed Video | output separation | voiceover | tab transition |
+| 08 | 00:34-00:41 | `/methods/hpmdubbing`, Lip | paper anchor | voiceover | graph focus |
+| 09 | 00:41-00:48 | HPM Face and Scene | F0/Energy and Scene signal mode | voiceover | pinned tracks |
+| 10 | 00:48-00:56 | HPM full path | method manifest | voiceover | line follow |
+| 11 | 00:56-01:04 | `/methods/styledubber`, frame view | paper anchor | voiceover | scale fold |
+| 12 | 01:04-01:11 | Style phoneme view and PLA | token timing | voiceover | cursor match |
+| 13 | 01:11-01:17 | Style MPA and USL | mode label | voiceover | graph focus |
+| 14 | 01:17-01:24 | `/methods/emodubber`, LPA and PE | paper anchor | voiceover | line follow |
+| 15 | 01:24-01:31 | Speaker identity and FUEC | source/mode label | voiceover | graph focus |
+| 16 | 01:31-01:38 | emotion control | only actual available controls | voiceover | slider cue |
+| 17A | 01:38-01:50 | `/compare/:caseId`, candidate A/B/C | comparison gate pass | candidates only | hard cuts |
+| 18A | 01:50-02:01 | blind reveal and metrics | equal input hashes | voiceover | compact fade |
+| 17B | 01:38-02:01 | comparison gate explanation | failed gate reason | voiceover | no ranking |
+| 19 | 02:01-02:12 | `/evidence`, HPM/Style/Emo rows | paper, commit, license | voiceover | vertical scan |
+| 20 | 02:12-02:21 | mode matrix and run/replay details | content status | voiceover | time cursor |
+| 21 | 02:21-02:36 | return to dubbed video | final media rights | voiceover then output | gentle fade |
+| 22 | 02:36-02:40 | End card | repository URL | tail tone | hold |
 
-## 录制命名
+Use branch A only if the public case passes the comparison gate. Branch B is a first-class professional scene, not a failure screen.
+
+## Recording Names
 
 ```text
-YYYYMMDD_opendub_demo_s01_plain_read_4k60.mov
-YYYYMMDD_opendub_demo_s02_confirmed_take01_4k60.mov
-YYYYMMDD_opendub_studio_import_take01_4k60.mov
-YYYYMMDD_opendub_studio_generation_take01_4k60.mov
-YYYYMMDD_opendub_studio_report_take01_4k60.mov
-YYYYMMDD_opendub_vo_master_take01_48k24.wav
+YYYYMMDD_opendub_s01_flat-source_4k60.mov
+YYYYMMDD_opendub_s02_target-speech_4k60.mov
+YYYYMMDD_opendub_explore_take01_4k60.mov
+YYYYMMDD_opendub_hpm-canvas_take01_4k60.mov
+YYYYMMDD_opendub_style-canvas_take01_4k60.mov
+YYYYMMDD_opendub_emo-canvas_take01_4k60.mov
+YYYYMMDD_opendub_compare_take01_4k60.mov
+YYYYMMDD_opendub_evidence_take01_4k60.mov
+YYYYMMDD_opendub_vo_master_48k24.wav
 ```
 
-## 拍摄提醒
+## Capture Notes
 
-- 镜头 01 和 02 是整支影片的证明中心，必须使用同一帧、同一音量基准、同一字幕位置。
-- 镜头 13 和 14 至少留 300ms 无旁白头尾，便于观众判断听感。
-- 镜头 16 的指标不要使用大红大绿“胜负”设计；显示名称、数值、单位和状态即可。
-- 镜头 18 的模型图形是功能归类，不应暗示所有模型已经统一运行。
+- 每个交互镜头前后留 2 秒稳定帧。
+- Method Canvas 录制时只高亮一条主路径，避免观众同时追踪所有边。
+- 概念曲线在录屏中保持 `Illustrative`，不在后期擦除标签。
+- 片尾仓库地址使用 `github.com/wsincos/OpenDub`。

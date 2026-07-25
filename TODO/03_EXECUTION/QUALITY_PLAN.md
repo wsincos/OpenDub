@@ -1,241 +1,223 @@
-# Quality and Validation Plan
+# Method Atlas Quality Plan
 
-## 质量策略
+## 质量目标
 
-OpenDub 的质量不能只由单元测试覆盖率表示。发布必须同时证明：
+质量不是页面无报错，而是同时满足：
 
-1. 领域状态和项目文件不会损坏；
-2. 媒体时间线与音频长度正确；
-3. 模型适配器使用真实权重可运行；
-4. 控制参数对输出产生真实作用；
-5. Web、CLI 与 API 得到一致结果；
-6. 新用户可按照文档完成首次生成；
-7. 示例、权重和代码具备清楚许可。
+1. 任务和方法表述准确。
+2. Concept、Replay、Live 状态可信。
+3. 时间同步、播放和比较行为正确。
+4. 五个目标视口可读、可操作、无重叠。
+5. 素材、声音、论文、代码和权重来源可追溯。
+6. 没有 GPU 和 API 时核心 Atlas 仍然完整。
 
-## 测试层级
+## 自动化层级
 
-### Unit
-
-运行时间目标：5 分钟内。
+### Python 单元测试
 
 覆盖：
 
-- UUID、TimeRange、情感范围与状态转换；
-- 项目 revision 和候选确认；
-- 原子文件写入；
-- FFmpeg 参数构建；
-- 字幕解析和时间线；
-- 能力声明与适配器选择；
-- 缓存键；
-- 指标数学；
-- 错误码与日志脱敏；
-- React 组件、store 和格式化。
+- Atlas Pydantic models。
+- graph referential integrity。
+- asset path、hash、rights。
+- Concept illustrative rules。
+- Replay pack 和 comparison gate。
+- author review 和 content lock。
 
-核心模块覆盖率不低于 85%，其余新增业务代码不低于 75%。覆盖率不能替代边界测试。
+目标：`src/opendub/atlas` 分支覆盖率不低于 90%。
 
-### Contract
+### Web 单元测试
 
-每个 ModelAdapter、VocoderAdapter、MetricPlugin 和 JobBackend 都运行同一组契约测试：
+覆盖：
 
-- 能力声明结构合法；
-- 环境缺失时返回可执行报告；
-- prepare 确定；
-- 不支持参数明确拒绝；
-- 取消可终止；
-- 输出文件存在、可解析、哈希一致；
-- 运行清单完整；
-- 清理可重复；
-- 错误映射稳定。
+- content loader 和 runtime guards。
+- TimelineController。
+- method layout。
+- signal renderer registry。
+- comparison media registry。
+- metric compatibility policy。
+- blind order 和 report export。
 
-### Integration
+必须使用确定性 fixture，不使用网络和真实浏览器媒体时钟。
 
-使用真实 FFmpeg、SQLite、项目目录和 TestAdapter，验证：
+### Web 组件测试
 
-- 素材导入到候选生成；
-- 进程中断和恢复；
-- API revision 冲突；
-- SSE 重连；
-- 项目索引重建；
-- 最终音轨长度；
-- 报告生成。
+覆盖：
 
-### Real-model smoke
+- Task Explorer 三项输入和两类输出。
+- Method Inspector 的完整字段。
+- 缺失信号降级。
+- status honesty。
+- Compare 的 N/A、Unavailable 和 blind reveal。
 
-在受控 NVIDIA GPU runner 上运行：
+### Python 集成测试
 
-- EmoDubber 一个短片段；
-- 选定声码器一个短 mel；
-- HPMDubbing/StyleDubber 在各自进入 Experimental 后各一个短片段。
+覆盖：
 
-每次记录：
+- 真实 FFprobe/FFmpeg 媒体探测。
+- Replay Bundle pack/inspect。
+- Live run 到 Replay 导出。
+- API 不可用和权重缺失。
 
-- GPU 型号、显存；
-- NVIDIA 驱动和 CUDA；
-- Python、torch 和 adapter 版本；
-- 权重 SHA-256；
-- 峰值显存；
-- 墙钟时间；
-- 输出 SHA-256；
-- 指标状态。
+### Playwright E2E
 
-真实模型烟雾测试不要求跨 GPU 位级一致，但要求输出有限、可播放、非静音、元数据完整。
+覆盖：
 
-### End-to-end
+- `/explore` 完整导览和手动接管。
+- `/methods` 到三个深链接。
+- 节点选择、信号固定和 Evidence。
+- Comparison 互斥播放和盲听。
+- Studio 基线不回归。
+- 浏览器刷新、后退、离线静态构建。
 
-Playwright + API + TestAdapter 每次 CI 运行；Playwright + 真实模型在发布前运行。场景包括：
+## 内容正确性
 
-1. 新建项目；
-2. 导入合法示例；
-3. 编辑片段和情感；
-4. 生成两个候选；
-5. 取消一个任务并重试；
-6. 确认候选；
-7. 查看四类指标；
-8. 导出 WAV/MP4/报告；
-9. 重启应用后重新打开项目。
+### 论文一致性检查
 
-## 测试数据
+每个方法建立节点级核验表：
 
-### 合成 fixtures
+- 节点名称。
+- 问题描述。
+- consumes/produces。
+- 入边/出边。
+- 可视化信号。
+- 论文章节。
+- 代码入口。
+- reviewer decision。
 
-测试代码在运行时生成：
+发布构建要求三套方法所有核心节点均为 `approved` 或修改后 `approved`。
 
-- 3 秒色块视频，含可验证帧率和正弦音；
-- 不同采样率、声道、静音、削波的 WAV；
-- 正常、重叠、非法和中文 SRT/VTT；
-- 确定性 TestAdapter 输出。
+### 禁用表达扫描
 
-合成 fixture 不依赖网络。
+CI 扫描公开内容中的高风险词：
 
-### 授权示例
+- `best model`
+- `perfect lip sync`
+- `real-time`
+- `live generation`
+- `state of the art`
 
-两套人工可感知示例：
+出现后必须在 allowlist 中附证据和限定范围，否则构建失败。
 
-- 角色示例：同一说话人以不同情感说两句台词；
-- 同步示例：明显不同的目标时长和嘴部节奏。
+### 状态检查
 
-每套包含 `ASSET_LICENSE.md`。真实模型测试只使用这些素材。
+- `Live` 必须有 ready runtime、固定 commit、weight hash 和 real smoke。
+- `Replay` 必须有合法 bundle、hash 和 rights。
+- `Concept` 数值示意必须有 `Illustrative`。
+- `Planned` 不提供可点击运行按钮。
 
-## 指标验证
+## 时间与媒体正确性
 
-### 内容指标
+### 时间基准
 
-- 使用人工确认文本和清晰语音验证 ASR 误差方向；
-- 中英文指标使用对应 tokenizer；
-- 未支持语言返回 `not_applicable`。
+- manifest 时间为整数微秒。
+- 视频使用真实 PTS。
+- 音频使用 sample 和 sample rate。
+- token interval 必须满足 `0 <= start_us < end_us <= case.duration_us`。
+- 等间隔信号的最后一个 sample 不得越过案例范围超过一个 hop。
 
-### 音色指标
+### 同步门槛
 
-- 同一说话人不同句子应显著高于不同说话人；
-- 阈值仅用于示例质量门，不宣传为身份识别准确率。
+- seek 后活动音频与全局游标误差小于 50ms。
+- 候选切换后误差小于 50ms。
+- 视频帧、token 高亮和信号游标在一个浏览器动画帧内更新。
+- 页面隐藏或路由变化后所有媒体暂停。
+- 任意时刻最多一个比较音频处于播放状态。
 
-### 情感指标
+### 媒体有效性
 
-- 对每个受支持标签至少有一个授权参考样本；
-- 验证 neutral 与目标情感控制输出具有可测差异；
-- 模型不支持情感时不能通过后处理伪造成支持。
-
-### 同步指标
-
-- duration error 使用 sample 精确时长；
-- 视觉口型指标只有在输入和指标模型适用时计算；
-- 片段提示阈值为 80ms/200ms，报告保留原始数值。
-
-## 性能预算
-
-以下是产品工程预算，不是模型质量承诺：
-
-| 场景 | 预算 |
-|---|---:|
-| 打开 10 分钟代理项目 | 3 秒内进入可操作 |
-| 保存仅文本修改 | 500ms 内完成 |
-| 任务事件 UI 延迟 | 1 秒内显示 |
-| 100 个片段时间线交互 | 60 FPS 目标，最低不低于 30 FPS |
-| 模型首次装载状态反馈 | 2 秒内开始显示阶段 |
-| 取消任务 | 10 秒内终止子进程或升级强制终止 |
-| 生成报告 | 100 片段 5 秒内，不含神经指标计算 |
-
-神经生成速度按模型、GPU 和片段记录，不设虚假的统一实时率。
+- 视频可解码且至少包含 10 个非黑帧。
+- 音频包含有限 sample，非全静音，采样率与 manifest 一致。
+- 波形 peaks 与源音频时长一致。
+- 代理文件不覆盖原始 hash。
 
 ## 视觉 QA
 
-检查视口：
+### 视口
 
-- 1440×900；
-- 1280×720；
-- 1920×1080；
-- 390×844 只读移动模式。
+- 1920x1080
+- 1440x900
+- 1280x720
+- 768x1024
+- 390x844
 
-每次发布保存以下截图：
+### 必查项目
 
-- 项目主页；
-- 空项目；
-- 完整 Studio；
-- 正在生成；
-- 候选比较；
-- 评测报告；
-- 导出完成；
-- 输入错误；
-- 模型不可用；
-- 移动结果页。
+- 无横向页面溢出。
+- 节点和边不遮挡核心文字。
+- 最长方法和组件名完整换行。
+- 图谱 Canvas 有非背景像素。
+- 时间轴、播放头和媒体有稳定尺寸。
+- 没有空白视频、频谱或波形。
+- status 标签始终可见。
+- hover、focus 和 selected 不改变布局尺寸。
+- 弹层不超出视口。
 
-检查：
+截图基线只用于发现回归，人工检查必须确认媒体内容和语义没有错位。
 
-- 无文字截断和控件重叠；
-- 时间线、播放器和检查器尺寸稳定；
-- 图标有 tooltip；
-- 键盘焦点可见；
-- 不依赖颜色表达状态；
-- 视频和波形非空白；
-- 中英文文案均不溢出。
+## 可访问性
 
-## 安全测试
+- WCAG AA 对比度。
+- 所有图谱节点可聚焦并可用 Enter/Space 选择。
+- Space、方向键、Home、End 的行为有测试。
+- focus 不被 Canvas 或 Drawer 吞掉。
+- status 不只靠颜色。
+- 波形、曲线和 heatmap 有文本摘要。
+- `prefers-reduced-motion` 无路径飞行动画。
+- 自动导览有暂停、前后和重播。
 
-- 文件名命令注入；
-- 路径穿越；
-- ZIP 解压逃逸；
-- 超大上传；
-- 损坏媒体；
-- 模型下载哈希不匹配；
-- SSE 事件越界；
-- 远程绑定默认阻断；
-- 日志和诊断包隐私扫描；
-- 权重许可未接受；
-- 参考声音授权未确认。
+使用 axe 扫描 `/explore`、三个方法页、Compare 和 Evidence，阻断 critical 和 serious 问题。
 
-## 支持矩阵
+## 性能
 
-正式发布至少验证：
+在生产构建、关闭 DevTools 条件下测试：
 
-| 维度 | 配置 |
-|---|---|
-| OS | Ubuntu 22.04、Ubuntu 24.04 |
-| Python | 3.11 |
-| 浏览器 | 当前稳定 Chrome、Firefox |
-| GPU | 至少一款 24GB NVIDIA GPU；低显存能力按真实结果记录 |
-| FFmpeg | 6.x、7.x 中至少各一项 |
-| 安装 | 原生 uv、Docker GPU |
+- 首次内容绘制目标 < 1.5s。
+- 首屏关键 JS gzip 目标 < 250KB。
+- 方法图交互响应 < 100ms。
+- 1440x900 游标拖动 > 50 FPS。
+- 单个初始 manifest < 200KB。
+- 长信号不创建超过 2,000 个 DOM 节点。
+- 重复切换候选不重复下载缓存媒体。
 
-未验证配置放在“社区反馈”，不能放进官方支持矩阵。
+如果超标：
 
-## 发布阻断级别
+1. 检查路由拆包。
+2. 检查 JSON 是否加载了完整数值信号。
+3. 将大数组改为二进制和按需加载。
+4. 将长波形、频谱和矩阵移到 Canvas/WebGL。
 
-- P0：素材泄漏、任意代码执行、项目损坏、错误覆盖原素材。立即阻断。
-- P1：主路径无法完成、Stable 模型不能运行、导出错误、许可不清。阻断发布。
-- P2：次要功能错误、有明确绕行方法。记录后可由维护者决定。
-- P3：视觉细节、低影响文案或非阻断增强。进入公开 Issue。
+## 安全与许可
 
-## 发布验证命令
+- 内容 path traversal 测试。
+- manifest 富文本消毒测试。
+- 公开构建不得包含本地绝对路径。
+- Replay 只有 `publicDisplayAllowed=true` 才可展示。
+- 下载包另需 `redistributionAllowed=true`。
+- 参考声音授权与每个结果关联。
+- 外部 URL 使用 allowlisted `https`。
+
+## 申报影片 QA
+
+- 每个镜头记录路由、模式、案例、commit 和 content-lock。
+- 每句旁白有 evidence。
+- Replay/Concept/Live 标签在画面中可读。
+- 不通过剪辑制造不存在的实时速度。
+- 不同输入结果不进入 A/B/C 同输入叙事。
+- 音频响度一致但不改变原始结果文件。
+- 中文字幕在 1080p 和手机预览中可读。
+
+## 发布检查命令
 
 ```bash
-uv sync --all-groups --frozen
-pnpm install --frozen-lockfile
 make check
-uv run pytest tests/integration tests/e2e -v
-pnpm --filter web exec playwright test
-docker compose build
-docker compose run --rm api opendub doctor --json
-docker compose run --rm worker ./scripts/smoke_emodubber.sh
+uv run opendub atlas validate content
+uv run pytest --cov=opendub.atlas --cov-report=term-missing
+pnpm --filter @opendub/web test -- --run
+pnpm --filter @opendub/web build
+pnpm --filter @opendub/web exec playwright test
+uv run python scripts/check_docs_links.py
+git diff --check
 ```
 
-命令和退出状态写入 `reports/v0.1.0-validation.md`。不得只写“测试通过”而缺少环境和范围。
+任何阻断失败都不得通过“只在本机看起来正常”豁免。

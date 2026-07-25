@@ -1,130 +1,86 @@
-# Decisions, Gates, and Risks
+# Decisions, Gates and Risks
 
-## 固定决策
+## Accepted Decisions
 
-| ID | 决策 | 原因 |
+| ID | Decision | Reason |
 |---|---|---|
-| ADR-001 | 项目名称使用 OpenDub | 简洁、直接描述开放视频配音工具，适合作为统一主仓库 |
-| ADR-002 | 新增平台代码使用 Apache-2.0 | OSI 认可，包含明确专利授权；上游许可独立保留 |
-| ADR-003 | 新建统一主仓库，不直接合并旧仓库历史 | 保持项目边界、贡献记录和许可清晰 |
-| ADR-004 | 产品能力优先，论文模型作为 Adapter | 用户依赖稳定功能，后端模型可以演进 |
-| ADR-005 | `v0.1.0` 首先打通一个真实模型 | 可用闭环比模型数量更重要 |
-| ADR-006 | EmoDubber 是首选核心后端 | 最贴近情感可控定位，已有公开代码与权重基础 |
-| ADR-007 | EmoDubber 未验证的情感能力不得宣传 | 公开 README 显示情感控制仍可能不完整，必须以真实代码为准 |
-| ADR-008 | HPMDubbing 与 StyleDubber 进入 `v0.2.0` | 它们能强化视频韵律和风格特色，但不应拖慢首版闭环 |
-| ADR-009 | CoSyncDiT、LLM-Flow-Dubber 初始为 Planned | 当前公开资产不足以支持可靠适配 |
-| ADR-010 | 核心包不依赖 PyTorch | 让项目编辑、媒体、API 和文档可在非 GPU 环境运行 |
-| ADR-011 | 模型默认子进程隔离 | 解决旧项目 Python/CUDA/依赖冲突，并可可靠取消 |
-| ADR-012 | 使用本地任务队列，不引入 Redis | 首版是单机本地工具，减少无必要运维 |
-| ADR-013 | Project JSON 为真相源，SQLite 可重建 | 项目可移植、可检查、可恢复 |
-| ADR-014 | Web 使用专业时间线工作台 | 视频配音是后期创作任务，不适合表单堆叠或营销首页 |
-| ADR-015 | 首版仅正式支持 Linux NVIDIA | 与现有模型现实环境一致，避免虚假兼容 |
-| ADR-016 | 默认零遥测和 localhost | 保护声音、视频和台词隐私 |
-| ADR-017 | 授权声明是生成前置条件 | 声音克隆和影视素材具有明确权益风险 |
-| ADR-018 | 官方演示只使用可再分发素材 | 申报、README 和测试制品必须长期可公开 |
+| ADR-001 | The unified project is named OpenDub | One project, one main repository and a clear grant boundary |
+| ADR-002 | New platform code uses Apache-2.0 | OSI-recognized license with patent grant; upstream licenses remain separate |
+| ADR-003 | Original method repositories remain independent | Preserve research history, licenses and authorship |
+| ADR-004 | The product is Method Atlas, not a hybrid model | Combining internal modules would create an unvalidated system |
+| ADR-005 | HPMDubbing, StyleDubber and EmoDubber are the only core methods | Strong technical continuity and manageable first release scope |
+| ADR-006 | Task Explorer is the public default route | The task must be understood before a reviewer sees model names |
+| ADR-007 | Concept, Replay, Live and Planned are separate content states | Avoid conflating paper explanation, history and running code |
+| ADR-008 | Atlas works without API/GPU/checkpoint | The grant demo must remain accessible and resilient |
+| ADR-009 | Replay is exportable only with media/voice rights evidence | Public demos must be legally sustainable |
+| ADR-010 | Same-input hashes gate Comparison Lab | Different upstream demos cannot justify model ranking |
+| ADR-011 | Live uses the existing isolated Adapter Runtime | Legacy Python/CUDA dependencies cannot contaminate the core app |
+| ADR-012 | Visualization signals are declared and evidence-bound | No invented tensor animations or random values |
+| ADR-013 | HPMDubbing_Vocoder is supporting infrastructure | It is not a fourth full video dubbing method |
+| ADR-014 | Static Atlas and local Studio are separate experiences | Education/review should not depend on a GPU workflow |
+| ADR-015 | The official film is task-first and status-labeled | A professional film must be impressive without overstating Live capability |
+| ADR-016 | Main repository is `wsincos/OpenDub` | This is the owner-provided grant repository |
 
-## 启动核验
+## Execution Gates
 
-后续正式实现的第一轮必须在写产品代码前完成以下核验。每项有明确结果和处理方式，不重新讨论总体架构。
+### Gate A: Core Method Accuracy
 
-### Gate A：EmoDubber 情感控制真实性
+Before public Method Canvas release, a method reviewer approves every core node, edge, input/output description and citation for HPMDubbing, StyleDubber and EmoDubber.
 
-验证：
+Failing result: retain internal drafts; do not publish the affected Method Canvas as factual content.
 
-- 公开或团队内部可发布代码是否接收情感标签/强度；
-- 对输出是否产生可测、可听变化；
-- 对应权重是否可公开使用或由用户自行下载；
-- 是否能消除手工替换 site-packages 的安装方式。
+### Gate B: Public Replay Rights
 
-处理：
+Every public bundle must pass asset-source, public-display, redistribution, hash and reviewer checks.
 
-- 全部通过：EmoDubber 作为首个 Stable 后端。
-- 仅基本生成通过：EmoDubber 先为 Experimental，不对外声称情感控制。
-- 团队可提供可发布情感实现：先完成适配和许可审计再继续发布。
-- 无可发布情感实现：`v0.1.0` 不得使用“情感可控”名称，或改由经验证的 HPMDubbing/其他团队模型承担核心能力；这是唯一会触发项目副标题调整的条件。
+Failing result: display a Concept-only method page or keep Replay local; do not use it in film or downloadable release.
 
-### Gate B：上游许可证与权重
+### Gate C: Same-Input Comparison
 
-验证每个首版 Adapter 的源代码和权重条款。
+At least two result bundles must reference identical video, text, reference speech, crop and time-range hashes.
 
-处理：
+Failing result: Comparison Lab code remains available for fixtures, but public navigation shows the gate explanation rather than candidates.
 
-- 可再分发：可制作独立 Release Asset。
-- 仅允许用户下载：Registry 保存来源和哈希，镜像不包含。
-- 条款不清：不得进入 Stable，也不得用于官方公开 Demo。
+### Gate D: Live Admission
 
-### Gate C：真实硬件
+One candidate method must provide a fixed source commit, explicit weight terms, SHA-256, authorized input fixture, isolated environment and real smoke evidence.
 
-至少确认一台可用于开发和发布验证的 NVIDIA GPU 机器及可用显存。
+Failing result: runtime stays unavailable; Concept/Replay film path remains the release path.
 
-处理：
+### Gate E: Film Freeze
 
-- 显存满足模型：记录支持配置。
-- 显存不足：优化候选数、精度或分段，但任何降级必须公开。
-- 无稳定 GPU：可以完成核心、Web 和 TestAdapter，但真实版本发布保持阻断。
+All recorded routes, asset rights, state labels, commit and content-lock are logged before editing.
 
-### Gate D：示例授权
+Failing result: do not submit the film.
 
-确认两套视频、声音、文本和背景音的授权来源。
+## Risk Register
 
-处理：
+| ID | Risk | Trigger | Response |
+|---|---|---|---|
+| R-001 | Paper-to-UI wording drift | reviewer corrects a node/edge | make manifests the source of truth and require author review |
+| R-002 | Visual effects imply unavailable model data | Concept signal has no label | enforce `illustrative=true` and render mode badge |
+| R-003 | Historical Demo lacks public rights | audit status unknown | exclude it; use self-created Concept assets |
+| R-004 | No shared input outputs exist | comparison gate fails | do not rank methods; use branch B in film |
+| R-005 | Checkpoint license is unclear | no explicit weight terms/hash | do not add Live and do not mirror weights |
+| R-006 | Three methods become a superficial gallery | no deep node/signal interaction | require minimum nodes, signals, paper anchors and reviewer approval |
+| R-007 | Graph is visually impressive but unreadable | overflow or overlap in visual QA | deterministic layout, stable node sizes and target viewports |
+| R-008 | Media synchronization drifts | seek/switch exceeds 50ms | single TimelineController and browser E2E assertions |
+| R-009 | Large signals freeze browser | low FPS or blank Canvas | lazy route loading, Canvas/WebGL and binary/on-demand arrays |
+| R-010 | Scope expands to a production dubbing SaaS | account/cloud/realtime features appear | keep Atlas and local Studio scope, reject unrelated features |
+| R-011 | Film overclaims current status | narration lacks evidence row | fact-check every sentence and retain badges |
+| R-012 | Grant form claims planned UI as completed | application wording diverges from STATUS | use APPLICATION_FAST_TRACK wording table |
 
-- 团队自制优先；
-- 明确可再分发许可可用；
-- 无法确认时重新录制，不使用网络电影片段替代。
+## Change Rules
 
-## 风险登记
+Create a new ADR and update product, contracts, tests and grant material when changing:
 
-| ID | 风险 | 概率 | 影响 | 触发信号 | 缓解与应对 |
-|---|---|---:|---:|---|---|
-| R-001 | EmoDubber 情感控制未公开或不完整 | 高 | 高 | Adapter 无有效情感参数 | 执行 Gate A；不虚假声明；优先获得团队可发布实现 |
-| R-002 | 不同仓库依赖冲突 | 高 | 高 | Python/CUDA 版本无法共存 | 子进程/容器隔离；核心不依赖 torch；每 Adapter 独立 lock |
-| R-003 | 权重许可不清 | 中 | 高 | 上游仅给下载链接无条款 | 不打包；要求用户确认；无法核验则保持 Experimental/Planned |
-| R-004 | 影视数据版权 | 高 | 高 | Demo 使用商业电影片段 | 只用自制/授权示例；受限数据仅文档引用 |
-| R-005 | 项目范围膨胀 | 高 | 高 | 同时适配三项以上模型 | 首版只保证一个真实后端；其他按版本门槛推进 |
-| R-006 | “平台”只有文档没有闭环 | 中 | 高 | 主仓库仅 README/链接 | 首个 alpha 前必须有媒体到成片的 TestAdapter 闭环 |
-| R-007 | 模型参数名义支持但无效果 | 中 | 高 | 改参数输出不变 | 参数作用测试；能力声明 false；真实情感/风格指标 |
-| R-008 | 模型输出质量不稳定 | 中 | 高 | 静音、削波、内容错误 | 候选机制、基础质量检查、真实 smoke、保留失败原因 |
-| R-009 | 长视频导致资源失控 | 中 | 中 | 项目超过 10 分钟或片段过长 | 代理媒体、片段限制、队列、缓存；首版明确规模 |
-| R-010 | Web 时间线复杂度拖延首版 | 中 | 中 | 编辑器持续重构 | 先固定片段边界编辑，复杂多轨功能进入后续 |
-| R-011 | 评测模型引入额外重量 | 高 | 中 | 安装体积和显存增加 | Metric Plugin 按需安装；状态允许 unavailable |
-| R-012 | API 暴露造成素材泄漏 | 低 | 高 | 用户绑定 0.0.0.0 | localhost 默认；远程显式警告；文档禁止公网暴露 |
-| R-013 | 项目文件损坏 | 低 | 高 | 中断时 JSON 半写 | 原子替换、revision、备份、索引可重建 |
-| R-014 | 上游更新破坏适配 | 高 | 中 | main 分支变化 | 固定 commit、契约测试、受控升级 |
-| R-015 | 申报表夸大当前能力 | 中 | 高 | 文案与 Release 不一致 | 证据索引；无证据功能只写路线 |
-| R-016 | 国产硬件要求超出能力 | 中 | 中 | 评审关注适配 | 如实写后续计划；只有真实验证才宣布支持 |
-| R-017 | 声音冒用争议 | 中 | 高 | 用户使用未授权声音 | ConsentRecord、默认阻断、负责任使用说明、不提供名人模板 |
-| R-018 | 社区难以接入 Adapter | 中 | 中 | 外部贡献者无法完成最小示例 | 稳定协议、TestAdapter、契约套件、完整教程 |
+- core method set;
+- task input/output definition;
+- content state semantics;
+- replay rights policy;
+- comparison gate;
+- Adapter/VisualizationProvider protocol;
+- public repository, license or release promise;
+- grant-film claims.
 
-## 变更规则
-
-以下变更必须新增 ADR 并同步更新规格、计划、测试和申报材料：
-
-- 项目名称或核心定位；
-- 许可证；
-- 首版支持平台；
-- 项目 Schema 破坏性变化；
-- 模型 Adapter 协议；
-- 数据是否离开本机；
-- 声音授权流程；
-- 首版 Stable 模型；
-- 申报承诺。
-
-小型实现选择可以直接在 PR 说明中记录，例如具体图标、内部函数名或无外部行为的重构。
-
-## 决策模板
-
-```markdown
-# ADR-NNN: Title
-
-Date:
-Status: proposed | accepted | superseded
-Context:
-Decision:
-Alternatives:
-Consequences:
-Affected specifications:
-Migration:
-```
-
-在实现阶段新增 ADR 应放在 `docs/governance/decisions/`。
+Small internal visual changes may use a normal PR description only if they do not change meaning or status.

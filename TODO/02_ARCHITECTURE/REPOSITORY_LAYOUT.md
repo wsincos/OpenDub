@@ -1,266 +1,217 @@
-# Repository Layout
+# Target Repository Layout
 
-## 顶层结构
+## 原则
+
+- 现有 Python 核心、API 和 Studio 保持在原有目录。
+- Atlas 内容与 React 组件分离。
+- 方法事实写入 manifest，不散落在 JSX。
+- Replay 大文件与源代码分离，可用 Git LFS、Release 或对象存储。
+- 三个完整方法分别拥有适配器和内容目录，不建立跨方法内部模块目录。
+
+## 目标结构
 
 ```text
 OpenDub/
-├── .github/
-│   ├── ISSUE_TEMPLATE/
-│   ├── workflows/
-│   ├── CODEOWNERS
-│   └── pull_request_template.md
 ├── apps/
 │   └── web/
-├── src/
-│   └── opendub/
-├── adapters/
-│   ├── emodubber/
-│   ├── hpmdubbing/
-│   ├── styledubber/
-│   └── hpm_vocoder/
+│       ├── public/
+│       │   └── atlas/
+│       │       ├── content-lock.json
+│       │       ├── concept/
+│       │       └── replays/
+│       └── src/
+│           ├── app/
+│           │   ├── App.tsx
+│           │   ├── AppRouter.tsx
+│           │   ├── AppShell.tsx
+│           │   └── routes.ts
+│           ├── content/
+│           │   ├── client.ts
+│           │   ├── types.ts
+│           │   ├── guards.ts
+│           │   └── assetUrl.ts
+│           ├── features/
+│           │   ├── explore/
+│           │   ├── methods/
+│           │   ├── timeline/
+│           │   ├── signals/
+│           │   ├── compare/
+│           │   ├── evidence/
+│           │   └── studio/
+│           ├── components/
+│           │   ├── controls/
+│           │   ├── media/
+│           │   ├── status/
+│           │   └── layout/
+│           ├── styles/
+│           └── test/
+├── content/
+│   ├── index.json
+│   ├── methods/
+│   │   ├── hpmdubbing/
+│   │   │   ├── method.json
+│   │   │   ├── copy.zh-CN.json
+│   │   │   ├── copy.en.json
+│   │   │   └── concept/
+│   │   ├── styledubber/
+│   │   └── emodubber/
+│   ├── cases/
+│   │   └── authorized-demo/
+│   │       ├── case.json
+│   │       ├── rights.md
+│   │       └── inputs/
+│   ├── replays/
+│   │   └── authorized-demo/
+│   │       ├── hpmdubbing/
+│   │       ├── styledubber/
+│   │       └── emodubber/
+│   └── citations/
+│       ├── papers.json
+│       └── bibliography.bib
 ├── schemas/
-├── tests/
-│   ├── unit/
-│   ├── contract/
-│   ├── integration/
-│   ├── e2e/
-│   └── fixtures/
-├── examples/
-│   ├── authorized-demo/
-│   └── lecture-demo/
-├── docs/
-│   ├── getting-started/
-│   ├── concepts/
-│   ├── adapters/
-│   ├── reference/
-│   └── governance/
-├── deploy/
-│   └── docker/
-├── scripts/
-├── licenses/
-├── model-registry/
-├── pyproject.toml
-├── uv.lock
-├── package.json
-├── pnpm-workspace.yaml
-├── docker-compose.yml
-├── LICENSE
-├── NOTICE
-├── CITATION.cff
-├── SECURITY.md
-├── CONTRIBUTING.md
-├── CODE_OF_CONDUCT.md
-└── README.md
-```
-
-## Python 包
-
-```text
-src/opendub/
-├── __init__.py
-├── config.py
-├── domain/
-│   ├── ids.py
-│   ├── time.py
-│   ├── project.py
-│   ├── assets.py
-│   ├── segments.py
-│   ├── candidates.py
-│   ├── jobs.py
-│   ├── metrics.py
-│   ├── errors.py
-│   └── transitions.py
-├── application/
-│   ├── project_service.py
-│   ├── ingest_service.py
-│   ├── generation_service.py
-│   ├── evaluation_service.py
-│   ├── render_service.py
-│   └── doctor_service.py
-├── storage/
-│   ├── project_store.py
-│   ├── artifact_store.py
-│   ├── sqlite_index.py
-│   └── atomic.py
-├── media/
-│   ├── probe.py
-│   ├── ffmpeg.py
-│   ├── proxy.py
-│   ├── audio.py
-│   ├── waveform.py
-│   ├── timeline.py
-│   └── render.py
-├── models/
-│   ├── capabilities.py
-│   ├── protocols.py
-│   ├── registry.py
-│   ├── manifests.py
-│   ├── weights.py
-│   ├── runtime.py
-│   └── subprocess_worker.py
-├── pipeline/
-│   ├── stages.py
-│   ├── cache.py
-│   ├── planner.py
-│   ├── executor.py
-│   └── cancellation.py
-├── evaluation/
-│   ├── protocols.py
-│   ├── registry.py
-│   ├── content.py
-│   ├── speaker.py
-│   ├── emotion.py
-│   ├── sync.py
-│   ├── audio_quality.py
-│   └── report.py
-├── jobs/
-│   ├── models.py
-│   ├── repository.py
-│   ├── scheduler.py
-│   └── events.py
-├── api/
-│   ├── app.py
-│   ├── dependencies.py
-│   ├── errors.py
-│   ├── schemas.py
-│   └── routes/
-├── cli/
-│   ├── app.py
-│   ├── output.py
-│   └── commands/
-└── observability/
-    ├── logging.py
-    ├── redaction.py
-    └── diagnostics.py
-```
-
-每个文件只承担一个明确职责。领域层禁止导入 `api`、`media`、`models` 和外部框架。
-
-## 模型适配器包
-
-```text
-adapters/emodubber/
-├── pyproject.toml
-├── README.md
-├── MODEL_CARD.md
-├── LICENSES.md
-├── adapter.yaml
-├── src/opendub_adapter_emodubber/
-│   ├── __init__.py
-│   ├── adapter.py
-│   ├── environment.py
-│   ├── inputs.py
-│   ├── runner.py
-│   └── outputs.py
-└── tests/
-    ├── test_capabilities.py
-    ├── test_inputs.py
-    ├── test_contract.py
-    └── test_real_smoke.py
-```
-
-适配器不直接复制上游整个仓库。优先采用：
-
-1. 明确提交版本的依赖；
-2. 独立补丁文件；
-3. 最小必要兼容层；
-4. 无法避免复制时保留原许可证、版权头和来源说明。
-
-## Web Studio
-
-```text
-apps/web/src/
-├── app/
-│   ├── router.tsx
-│   ├── providers.tsx
-│   └── shell/
-├── features/
-│   ├── projects/
-│   ├── assets/
-│   ├── player/
-│   ├── timeline/
-│   ├── segments/
-│   ├── voices/
-│   ├── emotion/
+│   ├── method-v1.json
+│   ├── atlas-index-v1.json
+│   ├── case-v1.json
+│   ├── replay-v1.json
+│   └── signals-v1.json
+├── src/opendub/
+│   ├── atlas/
+│   │   ├── models.py
+│   │   ├── validation.py
+│   │   ├── hashing.py
+│   │   ├── pack.py
+│   │   ├── export_run.py
+│   │   └── cli.py
+│   ├── api/
+│   ├── application/
+│   ├── domain/
+│   ├── media/
 │   ├── models/
-│   ├── candidates/
-│   ├── jobs/
-│   ├── evaluation/
-│   └── export/
-├── components/
-│   ├── ui/
-│   └── layout/
-├── api/
-│   ├── client.ts
-│   ├── generated/
-│   └── events.ts
-├── store/
-├── styles/
-│   ├── tokens.css
-│   └── globals.css
-├── test/
-└── main.tsx
+│   ├── pipeline/
+│   └── storage/
+├── adapters/
+│   ├── hpmdubbing/
+│   │   ├── adapter.yaml
+│   │   ├── adapter.py
+│   │   ├── visualization.py
+│   │   ├── MODEL_CARD.md
+│   │   └── tests/
+│   ├── styledubber/
+│   └── emodubber/
+├── tests/
+│   ├── fixtures/atlas/
+│   ├── unit/atlas/
+│   ├── integration/atlas/
+│   └── e2e/atlas/
+├── docs/
+│   ├── atlas/
+│   ├── methods/
+│   ├── grant/
+│   └── audits/
+└── TODO/
 ```
 
-按产品功能组织前端，避免按“pages/components/utils”形成超大通用目录。OpenAPI 生成 API 类型，前端不手写重复 DTO。
+## 前端文件责任
 
-## 配置与状态路径
+### `features/explore`
 
-遵循 XDG：
+```text
+TaskExplorerPage.tsx
+TaskEquation.tsx
+InputLanes.tsx
+VideoCueInspector.tsx
+TaskOutput.tsx
+GuidedTourMachine.ts
+task-explorer.css
+```
 
-- 配置：`$XDG_CONFIG_HOME/opendub/config.toml`
-- 数据：`$XDG_DATA_HOME/opendub/`
-- 缓存：`$XDG_CACHE_HOME/opendub/`
-- 状态：`$XDG_STATE_HOME/opendub/`
+`TaskExplorerPage` 只编排组件。导览状态机和时间控制不能写成页面内的一组互相影响的 `useState`。
 
-环境变量统一使用 `OPENDUB_` 前缀。测试必须使用临时目录，不能读取开发者真实用户目录。
+### `features/methods`
 
-## 依赖选择
+```text
+MethodAtlasPage.tsx
+MethodCard.tsx
+MethodCanvasPage.tsx
+MethodGraph.tsx
+MethodNode.tsx
+MethodInspector.tsx
+MethodChapterNav.tsx
+method-layout.ts
+```
 
-### Python
+方法内容全部来自 `MethodManifest`。只允许 renderer registry 根据 `NodeKind` 或 `SignalType` 选择组件。
 
-- Python `>=3.11`
-- `uuid6`：生成 UUIDv7 领域标识
-- `pydantic` v2：配置和 API Schema
-- `fastapi`：本地 API
-- `typer` + `rich`：CLI
-- `sqlalchemy` + SQLite：索引与任务状态
-- `httpx`：模型清单和下载
-- `soundfile` / `numpy`：音频 I/O 与基础处理
-- `torch`：仅在需要的适配器或指标环境中安装
-- `pytest`、`ruff`、`mypy`：质量工具
+### `features/timeline`
 
-### Web
+```text
+TimelineController.ts
+TimelineContext.tsx
+useTimeline.ts
+PlaybackTransport.tsx
+GlobalTimeline.tsx
+time.ts
+```
 
-- React + TypeScript + Vite
-- TanStack Query：服务端状态
-- Zustand：纯 UI/编辑会话状态
-- Radix primitives：可访问交互
-- Lucide：图标
-- WaveSurfer：波形
-- Vitest + Testing Library
-- Playwright：端到端
+时间转换集中在 `time.ts`。禁止在各页面重复 `seconds * 1000` 或浮点时间比较。
 
-核心包避免依赖 PyTorch，使不具备 GPU 的用户也能编辑项目、查看报告和运行媒体工具。
+### `features/signals`
 
-## 命名
+```text
+SignalPanel.tsx
+SignalRendererRegistry.ts
+WaveformRenderer.tsx
+SpectrogramRenderer.tsx
+PhonemeRenderer.tsx
+ProsodyRenderer.tsx
+AlignmentRenderer.tsx
+RoiRenderer.tsx
+signal-renderers.css
+```
 
-- Python 模块、CLI 参数、JSON 字段：`snake_case`
-- TypeScript 变量：`camelCase`
-- React 组件：`PascalCase`
-- API 路径：复数名词和 kebab-case
-- Adapter ID：`publisher/model-name`
-- Metric ID：`category.metric_name`
-- Git 分支：`feat/`、`fix/`、`docs/`、`release/`
+每个 renderer 只处理一种数据契约和绘图，不加载方法内容。
 
-## Git 提交
+### `features/compare`
 
-采用 Conventional Commits：
+```text
+ComparisonLabPage.tsx
+CandidateTrack.tsx
+BlindListening.tsx
+MetricComparison.tsx
+ComparisonSummary.tsx
+compare-store.ts
+```
 
-- `feat(core): add project manifest validation`
-- `feat(adapter-emodubber): add generation runtime`
-- `fix(media): preserve exact output duration`
-- `docs(adapter): document capability contract`
-- `test(e2e): cover authorized demo workflow`
+### `features/studio`
 
-每个实施任务结束时形成一个可评审提交，不将生成权重、用户素材、缓存和本地日志提交到 Git。
+将当前 `StudioApp.tsx` 和 `StudioShell.tsx` 移入此目录，先只调整 import，不在 Atlas 首个任务中重写 Studio。
+
+## 内容文件责任
+
+- `method.json`：方法事实、图节点、边、章节和信号槽。
+- `copy.*.json`：多语言解释文案。
+- `concept/`：自制图标、示意信号和经过复核的结构素材。
+- `case.json`：共同输入和权利。
+- `replay.json`：一次方法结果及证据。
+- `content-lock.json`：构建产物，不手工编辑。
+
+## 命名规则
+
+- Method ID 使用 `owner/name`。
+- URL slug 使用小写仓库名。
+- TypeScript 类型和 React 组件使用 `PascalCase`。
+- TypeScript 函数和变量使用 `camelCase`。
+- Python、JSON 字段和 CLI 参数使用 `snake_case`。
+- Signal ID 使用点分层级，如 `prosody.f0.predicted`。
+- 时间字段以 `_us` 结尾。
+- hash 字段明确算法，如 `sha256`。
+
+## 不进入 Git 的内容
+
+- checkpoint 和未经允许分发的权重。
+- 未经授权的视频、声音和字幕。
+- 私有 Live 运行目录。
+- 原始数据集。
+- node_modules、缓存、构建产物和本地数据库。
+
+允许通过 Release 或外部存储分发的 Replay Bundle 必须在 `content/index.json` 记录 URL、hash、大小和权利状态。

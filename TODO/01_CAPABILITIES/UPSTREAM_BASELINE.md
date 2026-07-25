@@ -22,7 +22,7 @@
 - 公开状态：Python、MIT、约 110 commits、112 Stars。
 - 已公开说明：模型、预处理、数据特征、推理和演示较完整。
 - 关键限制：流程存在旧环境、硬编码路径和复杂手工预处理；部分影视数据受版权限制。
-- OpenDub 结论：最能体现视频配音区别于普通 TTS 的技术基础，计划作为 `v0.2.0` Visual Sync Engine。
+- OpenDub 结论：作为首版三套完整 Method Canvas 之一。其 Lip、Face、Scene 分层结构用于任务解释与可视化；真实 Live 适配仍需独立准入。
 
 ### StyleDubber
 
@@ -31,7 +31,7 @@
 - 公开状态：Python、MIT、约 58 commits、98 Stars。
 - 已公开说明：训练/推理、权重、数据特征和部分指标。
 - 关键限制：环境基于 Python 3.8/CUDA 11.5，模型输入与数据配置偏研究复现。
-- OpenDub 结论：作为 `v0.2.0` Style Director，通过独立环境适配，不能直接与核心依赖混装。
+- OpenDub 结论：作为首版三套完整 Method Canvas 之一。其 MPA、PLA、USL 用于方法解释与可视化；真实 Live 适配必须在独立环境中完成。
 
 ### HPMDubbing_Vocoder
 

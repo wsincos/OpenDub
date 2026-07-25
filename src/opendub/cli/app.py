@@ -12,11 +12,30 @@ import uvicorn
 from opendub.application.doctor_service import run_doctor
 from opendub.application.evaluation_service import EvaluationService
 from opendub.application.render_service import RenderService
+from opendub.atlas.validation import validate_content
 from opendub.domain.errors import DomainError
 from opendub.media.render import MixMode
 from opendub.storage.project_store import ProjectStore
 
 app = typer.Typer(add_completion=False, help="OpenDub local video dubbing workspace.")
+atlas_app = typer.Typer(add_completion=False, help="Validate and inspect Method Atlas content.")
+app.add_typer(atlas_app, name="atlas")
+
+
+@atlas_app.command("validate")
+def validate_atlas(
+    content: Annotated[
+        Path,
+        typer.Option(help="Directory containing Method Atlas manifests."),
+    ] = Path("content"),
+) -> None:
+    """Validate every public Method Atlas manifest before a build or recording."""
+    report = validate_content(content)
+    for issue in report.issues:
+        typer.echo(f"{issue.code}\t{issue.path}\t{issue.message}", err=True)
+    if report.issues:
+        raise typer.Exit(code=2)
+    typer.echo(f"{report.method_count} method manifests validated")
 
 
 @app.command()
