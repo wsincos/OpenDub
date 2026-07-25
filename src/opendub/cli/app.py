@@ -7,6 +7,7 @@ from typing import Annotated
 
 import typer
 
+from opendub.application.doctor_service import run_doctor
 from opendub.storage.project_store import ProjectStore
 
 app = typer.Typer(add_completion=False, help="OpenDub local video dubbing workspace.")
@@ -35,3 +36,29 @@ def list_projects(
     """List projects in a local workspace."""
     for project in ProjectStore(workspace).iter_projects():
         typer.echo(f"{project.id}\t{project.name}\trevision={project.revision}")
+
+
+@app.command()
+def doctor(
+    workspace: Annotated[
+        Path,
+        typer.Option(help="Local OpenDub workspace directory."),
+    ] = Path(".opendub"),
+    json_output: Annotated[
+        bool,
+        typer.Option("--json", help="Emit machine-readable JSON without terminal styling."),
+    ] = False,
+) -> None:
+    """Check the local workspace, FFmpeg, and upstream registry evidence."""
+    repository_root = Path(__file__).resolve().parents[3]
+    report = run_doctor(
+        workspace=workspace,
+        registry_path=repository_root / "model-registry" / "upstreams.yaml",
+    )
+    if json_output:
+        typer.echo(report.model_dump_json())
+    else:
+        for check in report.checks:
+            typer.echo(f"{check.status.upper()}\t{check.id}\t{check.message}")
+    if not report.ready:
+        raise typer.Exit(code=1)
