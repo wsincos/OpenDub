@@ -47,6 +47,18 @@ docker compose up --build
 Open the Studio at `http://127.0.0.1:8080`. The API is available at
 `http://127.0.0.1:8000/api/docs`.
 
+## Redistributable Examples
+
+Build two synthetic, no-model alpha projects with FFmpeg test media:
+
+```bash
+uv run python scripts/build_examples.py --workspace /tmp/opendub-examples
+```
+
+See [examples/ASSET_LICENSES.md](examples/ASSET_LICENSES.md) for the media policy. These examples
+exercise the current project, authorization, and timeline workflow; they do not provide real
+dubbing output.
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md). Security issues must be reported through [SECURITY.md](SECURITY.md), not public issues.
