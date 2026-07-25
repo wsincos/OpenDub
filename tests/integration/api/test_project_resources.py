@@ -90,3 +90,66 @@ def test_api_serves_only_the_requested_local_project_asset(tmp_path: Path) -> No
 
     assert response.status_code == 200
     assert response.content == b"local video fixture"
+
+
+def test_api_imports_updates_and_removes_authorized_subtitle_segments(tmp_path: Path) -> None:
+    client = TestClient(create_app(workspace=tmp_path))
+    project = client.post("/api/v1/projects", json={"name": "Subtitle workflow"}).json()
+    audio = client.post(
+        f"/api/v1/projects/{project['id']}/assets",
+        json={
+            "kind": "audio",
+            "filename": "narrator.wav",
+            "content_base64": base64.b64encode(b"local audio fixture").decode("ascii"),
+            "expected_revision": project["revision"],
+        },
+    ).json()
+    reference = client.post(
+        f"/api/v1/projects/{project['id']}/voice-references",
+        json={
+            "asset_id": audio["id"],
+            "speaker_label": "Narrator",
+            "material_source": "self_recorded",
+            "expected_revision": audio["project_revision"],
+        },
+    ).json()
+    subtitles = client.post(
+        f"/api/v1/projects/{project['id']}/assets",
+        json={
+            "kind": "subtitle",
+            "filename": "dialogue.srt",
+            "content_base64": base64.b64encode(
+                b"1\n00:00:00,000 --> 00:00:01,000\nFirst line.\n\n"
+                b"2\n00:00:01,100 --> 00:00:02,000\nSecond line.\n"
+            ).decode("ascii"),
+            "expected_revision": reference["project_revision"],
+        },
+    ).json()
+
+    imported = client.post(
+        f"/api/v1/projects/{project['id']}/segments/import-subtitles",
+        json={
+            "asset_id": subtitles["id"],
+            "language": "en",
+            "voice_reference_id": reference["id"],
+            "adapter_id": "galaxycong/emodubber",
+            "expected_revision": subtitles["project_revision"],
+        },
+    )
+    first_segment = imported.json()["segments"][0]
+    edited = client.patch(
+        f"/api/v1/projects/{project['id']}/segments/{first_segment['id']}",
+        json={"text": "Edited line.", "expected_revision": imported.json()["revision"]},
+    )
+    removed = client.request(
+        "DELETE",
+        f"/api/v1/projects/{project['id']}/segments/{first_segment['id']}",
+        json={"expected_revision": edited.json()["project_revision"]},
+    )
+
+    assert imported.status_code == 200
+    assert len(imported.json()["segments"]) == 2
+    assert edited.status_code == 200
+    assert edited.json()["text"] == "Edited line."
+    assert removed.status_code == 200
+    assert len(removed.json()["segments"]) == 1

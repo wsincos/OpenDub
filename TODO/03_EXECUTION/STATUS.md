@@ -35,7 +35,7 @@ and real inference evidence are all recorded.
 
 ## Current Verification
 
-- `make check`: 69 tests pass, Ruff and mypy pass.
+- `make check`: 71 tests pass, Ruff and mypy pass.
 - `make web-check`: TypeScript passes.
 - Browser QA: empty and configured project states were captured at 1440×900; the configured flow imported local synthetic audio, recorded authorization, and created a timeline segment.
 - DOCX: `original/output/种子计划_OpenDub_申报表_草案.docx` is generated from the original template by `tools/grant-docx/`, OpenXML-validated, and visually checked as a two-page A4 PDF.
@@ -48,4 +48,3 @@ redistributable checkpoint with explicit terms and SHA-256. The next implementat
 to build a single isolated adapter around that exact artifact, smoke-test it on authorized media,
 and update `model-registry/upstreams.yaml`, its model card, the evidence index, and the demo script
 from `planned` to the verified state supported by the result.
-

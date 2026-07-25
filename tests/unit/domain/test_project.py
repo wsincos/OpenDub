@@ -82,3 +82,39 @@ def test_project_requires_authorized_audio_reference_for_new_segment() -> None:
     updated = configured.add_segment(new_segment, expected_revision=configured.revision)
 
     assert updated.segments[-1].voice_reference_id == reference.id
+
+
+def test_project_edit_invalidates_accepted_candidate_and_advances_segment_revision() -> None:
+    project, segment, candidate = make_project()
+    asset = MediaAsset(
+        id=new_id(),
+        kind="audio",
+        display_name="authorized.wav",
+        relative_path="assets/authorized.wav",
+        sha256="1" * 64,
+        size_bytes=1,
+    )
+    with_asset = project.add_asset(asset, expected_revision=project.revision)
+    consent = ConsentRecord(id=new_id(), material_source="self_recorded")
+    reference = VoiceReference(
+        id=segment.voice_reference_id,
+        asset_id=asset.id,
+        consent_id=consent.id,
+        speaker_label="Narrator",
+    )
+    authorized = with_asset.add_voice_reference(
+        consent, reference, expected_revision=with_asset.revision
+    )
+    accepted = authorized.accept_candidate(
+        segment.id, candidate.id, expected_revision=authorized.revision
+    )
+
+    updated = accepted.update_segment(
+        segment.model_copy(update={"text": "A newly directed line."}),
+        expected_revision=accepted.revision,
+    )
+
+    assert updated.segments[0].text == "A newly directed line."
+    assert updated.segments[0].accepted_candidate_id is None
+    assert updated.segments[0].revision == segment.revision + 2
+    assert updated.segments[0].status == "ready"

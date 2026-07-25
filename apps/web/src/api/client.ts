@@ -146,6 +146,67 @@ export function createSegment(
   });
 }
 
+export function updateSegment(
+  projectId: string,
+  segmentId: string,
+  input: {
+    text: string;
+    startUs: number;
+    endUs: number;
+    language: string;
+    voiceReferenceId: string;
+    emotionLabel: EmotionLabel;
+    emotionIntensity: number;
+    expectedRevision: number;
+  },
+): Promise<SegmentMutation> {
+  return request<SegmentMutation>(`/api/v1/projects/${projectId}/segments/${segmentId}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      text: input.text,
+      start_us: input.startUs,
+      end_us: input.endUs,
+      language: input.language,
+      voice_reference_id: input.voiceReferenceId,
+      emotion_label: input.emotionLabel,
+      emotion_intensity: input.emotionIntensity,
+      expected_revision: input.expectedRevision,
+    }),
+  });
+}
+
+export function importSubtitleSegments(
+  projectId: string,
+  input: {
+    assetId: string;
+    language: string;
+    voiceReferenceId: string;
+    adapterId: string;
+    expectedRevision: number;
+  },
+): Promise<Project> {
+  return request<Project>(`/api/v1/projects/${projectId}/segments/import-subtitles`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      asset_id: input.assetId,
+      language: input.language,
+      voice_reference_id: input.voiceReferenceId,
+      adapter_id: input.adapterId,
+      expected_revision: input.expectedRevision,
+    }),
+  });
+}
+
+export function deleteSegment(projectId: string, segmentId: string, expectedRevision: number): Promise<Project> {
+  return request<Project>(`/api/v1/projects/${projectId}/segments/${segmentId}`, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ expected_revision: expectedRevision }),
+  });
+}
+
 async function fileToBase64(file: File): Promise<string> {
   const bytes = new Uint8Array(await file.arrayBuffer());
   const chunks: string[] = [];

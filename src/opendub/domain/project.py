@@ -109,6 +109,92 @@ class Project(BaseModel):
             }
         )
 
+    def add_segments(
+        self, segments_to_add: tuple[DubbingSegment, ...], expected_revision: int
+    ) -> Project:
+        """Append a subtitle-derived batch as one revisioned project change."""
+        if expected_revision != self.revision:
+            raise DomainError(
+                code="PROJECT_CONFLICT",
+                message="Project was changed by another operation.",
+                action="Reload the project and retry the change.",
+            )
+        ids = [segment.id for segment in segments_to_add]
+        if len(ids) != len(set(ids)) or any(item.id in ids for item in self.segments):
+            raise DomainError(code="INPUT_INVALID", message="Segment identifier is already in use.")
+        reference_ids = {reference.id for reference in self.voice_references}
+        if any(segment.voice_reference_id not in reference_ids for segment in segments_to_add):
+            raise DomainError(
+                code="ASSET_NOT_FOUND",
+                message=(
+                    "Every segment must reference an authorized voice reference in this project."
+                ),
+            )
+        return self.model_copy(
+            update={
+                "segments": (*self.segments, *segments_to_add),
+                "revision": self.revision + 1,
+                "updated_at": datetime.now(UTC),
+            }
+        )
+
+    def update_segment(self, segment: DubbingSegment, expected_revision: int) -> Project:
+        """Update a segment and invalidate any candidate that targets its old revision."""
+        if expected_revision != self.revision:
+            raise DomainError(
+                code="PROJECT_CONFLICT",
+                message="Project was changed by another operation.",
+                action="Reload the project and retry the change.",
+            )
+        previous = next((item for item in self.segments if item.id == segment.id), None)
+        if previous is None:
+            raise DomainError(code="ASSET_NOT_FOUND", message="Dubbing segment was not found.")
+        if not any(
+            reference.id == segment.voice_reference_id for reference in self.voice_references
+        ):
+            raise DomainError(
+                code="ASSET_NOT_FOUND",
+                message="Segment must reference an authorized voice reference in this project.",
+            )
+        updated_segment = segment.model_copy(
+            update={
+                "status": "ready",
+                "accepted_candidate_id": None,
+                "revision": previous.revision + 1,
+            }
+        )
+        segments = tuple(
+            updated_segment if item.id == segment.id else item for item in self.segments
+        )
+        return self.model_copy(
+            update={
+                "segments": segments,
+                "revision": self.revision + 1,
+                "updated_at": datetime.now(UTC),
+            }
+        )
+
+    def remove_segment(self, segment_id: str, expected_revision: int) -> Project:
+        """Remove a timeline segment and candidate records without deleting audio artifacts."""
+        if expected_revision != self.revision:
+            raise DomainError(
+                code="PROJECT_CONFLICT",
+                message="Project was changed by another operation.",
+                action="Reload the project and retry the change.",
+            )
+        if not any(item.id == segment_id for item in self.segments):
+            raise DomainError(code="ASSET_NOT_FOUND", message="Dubbing segment was not found.")
+        return self.model_copy(
+            update={
+                "segments": tuple(item for item in self.segments if item.id != segment_id),
+                "candidates": tuple(
+                    item for item in self.candidates if item.segment_id != segment_id
+                ),
+                "revision": self.revision + 1,
+                "updated_at": datetime.now(UTC),
+            }
+        )
+
     def add_asset(self, asset: MediaAsset, expected_revision: int) -> Project:
         """Attach a content-addressed local asset using optimistic concurrency control."""
         if expected_revision != self.revision:
