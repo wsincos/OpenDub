@@ -9,6 +9,9 @@ import typer
 import uvicorn
 
 from opendub.application.doctor_service import run_doctor
+from opendub.application.render_service import RenderService
+from opendub.domain.errors import DomainError
+from opendub.media.render import MixMode
 from opendub.storage.project_store import ProjectStore
 
 app = typer.Typer(add_completion=False, help="OpenDub local video dubbing workspace.")
@@ -76,6 +79,32 @@ def doctor(
             typer.echo(f"{check.status.upper()}\t{check.id}\t{check.message}")
     if not report.ready:
         raise typer.Exit(code=1)
+
+
+@app.command()
+def render(
+    project_id: Annotated[str, typer.Argument(help="Project UUIDv7 identifier.")],
+    workspace: Annotated[
+        Path,
+        typer.Option(help="Local OpenDub workspace directory."),
+    ] = Path(".opendub"),
+    mix_mode: Annotated[
+        MixMode,
+        typer.Option(
+            "--mix-mode", help="How to combine accepted dubbing with original video audio."
+        ),
+    ] = "remove",
+) -> None:
+    """Render accepted candidate audio and, when present, a local project video."""
+    try:
+        result = RenderService(ProjectStore(workspace)).render(project_id, mode=mix_mode)
+    except DomainError as error:
+        typer.echo(f"{error.code}\t{error.message}", err=True)
+        raise typer.Exit(code=1) from error
+    typer.echo(f"Dubbing audio\t{result.dubbing_audio}")
+    if result.video is not None:
+        typer.echo(f"Dubbed video\t{result.video}")
+    typer.echo(f"Render manifest\t{result.manifest}")
 
 
 @app.command()
