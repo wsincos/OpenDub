@@ -6,6 +6,7 @@ from subprocess import CompletedProcess
 from opendub.media.audio import normalize_reference_audio
 from opendub.media.ffmpeg import FfmpegRunner
 from opendub.media.probe import parse_probe_output
+from opendub.media.render import mux_video
 
 
 def test_ffmpeg_runner_keeps_hostile_filename_as_one_argument(monkeypatch) -> None:  # type: ignore[no-untyped-def]
@@ -67,3 +68,25 @@ def test_parse_probe_output_reads_machine_json() -> None:
     assert probe.duration_us == 1_250_000
     assert probe.video_width == 1920
     assert probe.audio_sample_rate == 48_000
+
+
+def test_mux_video_marks_ai_generated_dubbing_for_every_audio_policy(tmp_path: Path) -> None:
+    captured: list[tuple[str, ...]] = []
+
+    class FakeRunner:
+        def run(self, arguments: tuple[str, ...]) -> None:
+            captured.append(arguments)
+
+    for mode in ("remove", "preserve", "duck"):
+        mux_video(
+            Path("source.mp4"),
+            Path("dubbing.wav"),
+            tmp_path / f"{mode}.mp4",
+            mode=mode,
+            runner=FakeRunner(),  # type: ignore[arg-type]
+        )
+
+    assert len(captured) == 3
+    for command in captured:
+        metadata_index = command.index("-metadata")
+        assert command[metadata_index + 1] == "comment=AI-generated dubbing by OpenDub"

@@ -13,6 +13,7 @@ from opendub.domain.time import TimeRange
 from opendub.media.ffmpeg import CommandRunner, FfmpegRunner, ensure_parent
 
 MixMode = Literal["preserve", "duck", "remove"]
+AI_DUBBING_METADATA = "comment=AI-generated dubbing by OpenDub"
 
 
 @dataclass(frozen=True)
@@ -78,6 +79,8 @@ def mux_video(
                 "copy",
                 "-c:a",
                 "aac",
+                "-metadata",
+                AI_DUBBING_METADATA,
                 str(destination),
             )
         )
@@ -101,6 +104,8 @@ def mux_video(
             "copy",
             "-c:a",
             "aac",
+            "-metadata",
+            AI_DUBBING_METADATA,
             str(destination),
         )
     )
