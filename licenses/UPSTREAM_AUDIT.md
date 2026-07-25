@@ -34,3 +34,15 @@ No source in this table is copied into OpenDub by this audit. Each future adapte
   includes V2C material subject to copyright restrictions.
 - OpenDub disposition: both remain `planned`; detailed contracts and release
   gates are in [`docs/audits/hpmdubbing-f50dfa7.md`](../docs/audits/hpmdubbing-f50dfa7.md).
+
+## StyleDubber
+
+- Pinned source: `bc431c8f67e885433c5c23163a8eaccb0dd41175`.
+- Source license: MIT, confirmed from the root `LICENSE`.
+- Published scope: dataset-specific training/evaluation scripts and checkpoint links for
+  GRID and V2C-Animation; the stated workflow uses precomputed features and a 22.05 kHz,
+  hop-256, window-1024 acoustic configuration.
+- Blocking gaps: checkpoint terms, immutable hashes, authorized fixtures, reproducible raw-video
+  preprocessing and an isolated real inference remain unverified.
+- OpenDub disposition: `planned`; detailed evidence and promotion gate are in
+  [`docs/audits/styledubber-bc431c8.md`](../docs/audits/styledubber-bc431c8.md).

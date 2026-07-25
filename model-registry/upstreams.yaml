@@ -29,7 +29,7 @@ models:
       license: MIT
     artifacts: []
     paper: "StyleDubber: Towards Multi-Scale Style Learning for Movie Dubbing"
-    review: "Inference inputs, weights, and runtime isolation require adapter audit."
+    review: "Audit 2026-07-25: training/evaluation code and checkpoint links exist, but inputs are dataset-specific precomputed features; checkpoint terms/SHA-256 and isolated real inference remain unverified."
   - id: galaxycong/hpmdubbing-vocoder
     display_name: HPMDubbing Vocoder
     maturity: planned
