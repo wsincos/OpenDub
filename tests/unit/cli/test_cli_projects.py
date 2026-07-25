@@ -17,3 +17,12 @@ def test_cli_doctor_emits_machine_readable_json(tmp_path: Path) -> None:
 
     assert result.exit_code == 0
     assert '"ready"' in result.stdout
+
+
+def test_cli_init_creates_local_workspace(tmp_path: Path) -> None:
+    workspace = tmp_path / "workspace"
+    result = CliRunner().invoke(app, ["init", "--workspace", str(workspace)])
+
+    assert result.exit_code == 0
+    assert workspace.is_dir()
+    assert "Initialized" in result.stdout
