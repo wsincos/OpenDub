@@ -1,0 +1,21 @@
+:root {
+  color-scheme: light;
+  --ink: #151719;
+  --canvas: #f4f6f7;
+  --surface: #ffffff;
+  --surface-muted: #edf1f2;
+  --teal: #0f8f83;
+  --teal-soft: #d9f2ee;
+  --coral: #e96b5b;
+  --coral-soft: #fae6e1;
+  --amber: #c98a20;
+  --success: #2f8a55;
+  --error: #c94646;
+  --border: #d9dee1;
+  --muted: #697278;
+  --line: #bbc5c9;
+  --radius: 6px;
+  --shadow: 0 8px 24px rgb(21 23 25 / 8%);
+  --font-sans: Inter, "Noto Sans SC", "Source Han Sans SC", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}

@@ -15,6 +15,4 @@ test:
 	uv run pytest
 
 web-check:
-	corepack pnpm --dir apps/web lint
-	corepack pnpm --dir apps/web typecheck
-	corepack pnpm --dir apps/web test
+	npm exec --yes --package=pnpm@9.15.0 -- pnpm web:check

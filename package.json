@@ -1,0 +1,10 @@
+{
+  "name": "opendub-workspace",
+  "private": true,
+  "packageManager": "pnpm@9.15.0",
+  "scripts": {
+    "web:build": "pnpm --filter @opendub/web build",
+    "web:check": "pnpm --filter @opendub/web check",
+    "web:dev": "pnpm --filter @opendub/web dev"
+  }
+}
