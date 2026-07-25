@@ -10,7 +10,13 @@ import soundfile as sf  # type: ignore[import-untyped]
 
 from opendub.domain.assets import MediaAsset
 from opendub.domain.errors import DomainError
-from opendub.media.render import MixMode, TimelineAudioClip, assemble_dubbing_track, mux_video
+from opendub.media.render import (
+    AI_DUBBING_LABEL,
+    MixMode,
+    TimelineAudioClip,
+    assemble_dubbing_track,
+    mux_video,
+)
 from opendub.storage.project_store import ProjectStore
 
 
@@ -116,6 +122,8 @@ class RenderService:
                             mode=mode,
                         )
                     ),
+                    "content_label": AI_DUBBING_LABEL,
+                    "mix_mode": mode,
                     "project_id": project.id,
                     "project_revision": project.revision,
                     "segments": [clip.segment_id for clip in clips],

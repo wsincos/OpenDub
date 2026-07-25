@@ -13,7 +13,8 @@ from opendub.domain.time import TimeRange
 from opendub.media.ffmpeg import CommandRunner, FfmpegRunner, ensure_parent
 
 MixMode = Literal["preserve", "duck", "remove"]
-AI_DUBBING_METADATA = "comment=AI-generated dubbing by OpenDub"
+AI_DUBBING_LABEL = "AI-generated dubbing by OpenDub"
+AI_DUBBING_METADATA = f"comment={AI_DUBBING_LABEL}"
 
 
 @dataclass(frozen=True)

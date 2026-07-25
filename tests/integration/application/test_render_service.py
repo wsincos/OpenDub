@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 import soundfile as sf
@@ -62,3 +63,7 @@ def test_render_service_assembles_an_accepted_candidate_to_wav(tmp_path: Path) -
     assert result.video is None
     assert sample_rate == 24_000
     assert len(audio) == 24_000
+    manifest = json.loads(result.manifest.read_text(encoding="utf-8"))
+    assert manifest["content_label"] == "AI-generated dubbing by OpenDub"
+    assert manifest["mix_mode"] == "remove"
+    assert manifest["project_revision"] == accepted.revision
