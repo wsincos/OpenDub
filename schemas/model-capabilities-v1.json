@@ -1,0 +1,162 @@
+{
+  "additionalProperties": false,
+  "description": "Controls an adapter genuinely supports, without optimistic inference.",
+  "properties": {
+    "adapter_id": {
+      "minLength": 1,
+      "title": "Adapter Id",
+      "type": "string"
+    },
+    "display_name": {
+      "minLength": 1,
+      "title": "Display Name",
+      "type": "string"
+    },
+    "emotion_labels": {
+      "items": {
+        "enum": [
+          "neutral",
+          "happy",
+          "sad",
+          "angry",
+          "fearful",
+          "surprised",
+          "custom"
+        ],
+        "type": "string"
+      },
+      "title": "Emotion Labels",
+      "type": "array"
+    },
+    "languages": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Languages",
+      "type": "array"
+    },
+    "maturity": {
+      "enum": [
+        "stable",
+        "experimental",
+        "planned"
+      ],
+      "title": "Maturity",
+      "type": "string"
+    },
+    "minimum_vram_gb": {
+      "anyOf": [
+        {
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Minimum Vram Gb"
+    },
+    "output_type": {
+      "enum": [
+        "waveform",
+        "mel"
+      ],
+      "title": "Output Type",
+      "type": "string"
+    },
+    "requires_face": {
+      "title": "Requires Face",
+      "type": "boolean"
+    },
+    "requires_lip_roi": {
+      "title": "Requires Lip Roi",
+      "type": "boolean"
+    },
+    "requires_reference_audio": {
+      "title": "Requires Reference Audio",
+      "type": "boolean"
+    },
+    "requires_video": {
+      "title": "Requires Video",
+      "type": "boolean"
+    },
+    "runtime_isolation": {
+      "enum": [
+        "in_process",
+        "subprocess",
+        "container"
+      ],
+      "title": "Runtime Isolation",
+      "type": "string"
+    },
+    "sample_rates": {
+      "items": {
+        "type": "integer"
+      },
+      "minItems": 1,
+      "title": "Sample Rates",
+      "type": "array"
+    },
+    "schema_version": {
+      "default": "opendub.model-capabilities/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source_license": {
+      "minLength": 1,
+      "title": "Source License",
+      "type": "string"
+    },
+    "supports_duration_control": {
+      "title": "Supports Duration Control",
+      "type": "boolean"
+    },
+    "supports_emotion_strength": {
+      "title": "Supports Emotion Strength",
+      "type": "boolean"
+    },
+    "supports_style_reference": {
+      "title": "Supports Style Reference",
+      "type": "boolean"
+    },
+    "supports_valence_arousal": {
+      "title": "Supports Valence Arousal",
+      "type": "boolean"
+    },
+    "version": {
+      "minLength": 1,
+      "title": "Version",
+      "type": "string"
+    },
+    "weights_license": {
+      "minLength": 1,
+      "title": "Weights License",
+      "type": "string"
+    }
+  },
+  "required": [
+    "adapter_id",
+    "display_name",
+    "version",
+    "maturity",
+    "languages",
+    "requires_video",
+    "requires_face",
+    "requires_lip_roi",
+    "requires_reference_audio",
+    "emotion_labels",
+    "supports_emotion_strength",
+    "supports_valence_arousal",
+    "supports_style_reference",
+    "supports_duration_control",
+    "output_type",
+    "sample_rates",
+    "source_license",
+    "weights_license",
+    "runtime_isolation"
+  ],
+  "title": "ModelCapabilities",
+  "type": "object"
+}

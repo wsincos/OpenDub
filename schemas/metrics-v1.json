@@ -1,0 +1,73 @@
+{
+  "additionalProperties": false,
+  "description": "The result of one metric plugin invocation.",
+  "properties": {
+    "details": {
+      "additionalProperties": true,
+      "default": {},
+      "title": "Details",
+      "type": "object"
+    },
+    "higher_is_better": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Higher Is Better"
+    },
+    "metric_id": {
+      "title": "Metric Id",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "ok",
+        "not_applicable",
+        "unavailable",
+        "failed"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "unit": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Unit"
+    },
+    "value": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Value"
+    },
+    "version": {
+      "title": "Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "metric_id",
+    "version",
+    "status"
+  ],
+  "title": "MetricResult",
+  "type": "object"
+}

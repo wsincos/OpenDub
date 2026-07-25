@@ -1,0 +1,463 @@
+{
+  "$defs": {
+    "Candidate": {
+      "additionalProperties": false,
+      "description": "One reproducible audio result for a particular segment revision.",
+      "properties": {
+        "adapter_id": {
+          "minLength": 1,
+          "title": "Adapter Id",
+          "type": "string"
+        },
+        "audio_asset_id": {
+          "title": "Audio Asset Id",
+          "type": "string"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "model_id": {
+          "minLength": 1,
+          "title": "Model Id",
+          "type": "string"
+        },
+        "revision": {
+          "default": 1,
+          "minimum": 1,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "seed": {
+          "title": "Seed",
+          "type": "integer"
+        },
+        "segment_id": {
+          "title": "Segment Id",
+          "type": "string"
+        },
+        "segment_revision": {
+          "minimum": 1,
+          "title": "Segment Revision",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "segment_id",
+        "segment_revision",
+        "audio_asset_id",
+        "adapter_id",
+        "model_id",
+        "seed"
+      ],
+      "title": "Candidate",
+      "type": "object"
+    },
+    "ConsentRecord": {
+      "additionalProperties": false,
+      "description": "A locally stored declaration that permits a voice reference's use.",
+      "properties": {
+        "accepted_at": {
+          "format": "date-time",
+          "title": "Accepted At",
+          "type": "string"
+        },
+        "declaration_version": {
+          "default": "v1",
+          "title": "Declaration Version",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "material_source": {
+          "enum": [
+            "self_recorded",
+            "licensed",
+            "public_domain",
+            "authorized_other"
+          ],
+          "title": "Material Source",
+          "type": "string"
+        },
+        "revision": {
+          "default": 1,
+          "minimum": 1,
+          "title": "Revision",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "material_source"
+      ],
+      "title": "ConsentRecord",
+      "type": "object"
+    },
+    "DubbingSegment": {
+      "additionalProperties": false,
+      "description": "One editable, versioned line of dialogue on the project timeline.",
+      "properties": {
+        "accepted_candidate_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Accepted Candidate Id"
+        },
+        "adapter_id": {
+          "minLength": 1,
+          "title": "Adapter Id",
+          "type": "string"
+        },
+        "character_id": {
+          "title": "Character Id",
+          "type": "string"
+        },
+        "emotion": {
+          "$ref": "#/$defs/EmotionSpec"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "language": {
+          "maxLength": 35,
+          "minLength": 2,
+          "title": "Language",
+          "type": "string"
+        },
+        "range": {
+          "$ref": "#/$defs/TimeRange"
+        },
+        "revision": {
+          "default": 1,
+          "minimum": 1,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "status": {
+          "default": "unconfigured",
+          "enum": [
+            "unconfigured",
+            "ready",
+            "synthesizing",
+            "generated",
+            "accepted",
+            "failed",
+            "cancelled"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "text": {
+          "maxLength": 10000,
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        },
+        "voice_reference_id": {
+          "title": "Voice Reference Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "range",
+        "text",
+        "language",
+        "character_id",
+        "voice_reference_id",
+        "emotion",
+        "adapter_id"
+      ],
+      "title": "DubbingSegment",
+      "type": "object"
+    },
+    "EmotionSpec": {
+      "additionalProperties": false,
+      "description": "Declared emotional direction for a single spoken segment.",
+      "properties": {
+        "arousal": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Arousal"
+        },
+        "intensity": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Intensity",
+          "type": "number"
+        },
+        "label": {
+          "enum": [
+            "neutral",
+            "happy",
+            "sad",
+            "angry",
+            "fearful",
+            "surprised",
+            "custom"
+          ],
+          "title": "Label",
+          "type": "string"
+        },
+        "valence": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": -1.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Valence"
+        }
+      },
+      "required": [
+        "label",
+        "intensity"
+      ],
+      "title": "EmotionSpec",
+      "type": "object"
+    },
+    "MediaAsset": {
+      "additionalProperties": false,
+      "description": "Metadata for a content-addressed local asset, never a raw filesystem path.",
+      "properties": {
+        "display_name": {
+          "maxLength": 255,
+          "minLength": 1,
+          "title": "Display Name",
+          "type": "string"
+        },
+        "duration_us": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Duration Us"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "video",
+            "audio",
+            "image",
+            "subtitle",
+            "document"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "relative_path": {
+          "minLength": 1,
+          "title": "Relative Path",
+          "type": "string"
+        },
+        "revision": {
+          "default": 1,
+          "minimum": 1,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "size_bytes": {
+          "minimum": 0,
+          "title": "Size Bytes",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "kind",
+        "display_name",
+        "relative_path",
+        "sha256",
+        "size_bytes"
+      ],
+      "title": "MediaAsset",
+      "type": "object"
+    },
+    "TimeRange": {
+      "description": "A positive half-open microsecond range: ``[start_us, end_us)``.",
+      "properties": {
+        "end_us": {
+          "title": "End Us",
+          "type": "integer"
+        },
+        "start_us": {
+          "title": "Start Us",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "start_us",
+        "end_us"
+      ],
+      "title": "TimeRange",
+      "type": "object"
+    },
+    "VoiceReference": {
+      "additionalProperties": false,
+      "description": "An authorized audio source associated with one character voice.",
+      "properties": {
+        "asset_id": {
+          "title": "Asset Id",
+          "type": "string"
+        },
+        "consent_id": {
+          "title": "Consent Id",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "range": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TimeRange"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "revision": {
+          "default": 1,
+          "minimum": 1,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "speaker_label": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Speaker Label",
+          "type": "string"
+        }
+      },
+      "required": [
+        "asset_id",
+        "consent_id",
+        "speaker_label"
+      ],
+      "title": "VoiceReference",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "The file-backed source of truth for an OpenDub project.",
+  "properties": {
+    "assets": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/MediaAsset"
+      },
+      "title": "Assets",
+      "type": "array"
+    },
+    "candidates": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/Candidate"
+      },
+      "title": "Candidates",
+      "type": "array"
+    },
+    "consents": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/ConsentRecord"
+      },
+      "title": "Consents",
+      "type": "array"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "name": {
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Name",
+      "type": "string"
+    },
+    "revision": {
+      "default": 1,
+      "minimum": 1,
+      "title": "Revision",
+      "type": "integer"
+    },
+    "schema_version": {
+      "default": "opendub.project/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "segments": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/DubbingSegment"
+      },
+      "title": "Segments",
+      "type": "array"
+    },
+    "updated_at": {
+      "format": "date-time",
+      "title": "Updated At",
+      "type": "string"
+    },
+    "voice_references": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/VoiceReference"
+      },
+      "title": "Voice References",
+      "type": "array"
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "title": "Project",
+  "type": "object"
+}
