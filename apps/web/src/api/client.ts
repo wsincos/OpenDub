@@ -40,11 +40,35 @@ export type DubbingSegment = {
   revision: number;
 };
 
+export type DubbingCandidate = {
+  id: string;
+  segment_id: string;
+  segment_revision: number;
+  audio_asset_id: string;
+  adapter_id: string;
+  model_id: string;
+  seed: number;
+  revision: number;
+};
+
+export type CandidateEvaluation = {
+  candidate_id: string;
+  metrics: Array<{
+    metric_id: string;
+    version: string;
+    status: "ok" | "not_applicable" | "unavailable" | "failed";
+    value: number | null;
+    unit: string | null;
+  }>;
+  report_json_url: string;
+  report_markdown_url: string;
+};
+
 export type Project = ProjectSummary & {
   assets: MediaAsset[];
   voice_references: VoiceReference[];
   segments: DubbingSegment[];
-  candidates: unknown[];
+  candidates: DubbingCandidate[];
   consents: unknown[];
 };
 
@@ -215,6 +239,34 @@ export function deleteSegment(projectId: string, segmentId: string, expectedRevi
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ expected_revision: expectedRevision }),
   });
+}
+
+export function acceptCandidate(
+  projectId: string,
+  segmentId: string,
+  candidateId: string,
+  expectedRevision: number,
+): Promise<Project> {
+  return request<Project>(
+    `/api/v1/projects/${projectId}/segments/${segmentId}/candidates/${candidateId}/accept`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ expected_revision: expectedRevision }),
+    },
+  );
+}
+
+export async function evaluateCandidate(projectId: string, candidateId: string): Promise<CandidateEvaluation> {
+  const result = await request<CandidateEvaluation>(
+    `/api/v1/projects/${projectId}/candidates/${candidateId}/evaluate`,
+    { method: "POST" },
+  );
+  return {
+    ...result,
+    report_json_url: `${apiBase}${result.report_json_url}`,
+    report_markdown_url: `${apiBase}${result.report_markdown_url}`,
+  };
 }
 
 export async function renderAcceptedCandidates(projectId: string): Promise<RenderMutation> {

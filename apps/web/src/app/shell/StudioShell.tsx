@@ -19,11 +19,15 @@ import {
 
 import {
   assetUrl,
+  acceptCandidate,
   createSegment,
   createVoiceReference,
   deleteSegment,
+  CandidateEvaluation,
+  DubbingCandidate,
   DubbingSegment,
   EmotionLabel,
+  evaluateCandidate,
   importSubtitleSegments,
   Project,
   renderAcceptedCandidates,
@@ -40,6 +44,7 @@ export function StudioShell({ onBack, onRefresh, project }: StudioShellProps) {
   const [selectedSegmentId, setSelectedSegmentId] = useState<string | null>(project.segments[0]?.id ?? null);
   const [message, setMessage] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [evaluations, setEvaluations] = useState<Record<string, CandidateEvaluation>>({});
   const [playing, setPlaying] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const videoAsset = project.assets.find((asset) => asset.kind === "video");
@@ -47,6 +52,7 @@ export function StudioShell({ onBack, onRefresh, project }: StudioShellProps) {
   const subtitleAssets = project.assets.filter((asset) => asset.kind === "subtitle");
   const selectedSegment = project.segments.find((segment) => segment.id === selectedSegmentId) ?? null;
   const acceptedCandidateCount = project.segments.filter((segment) => segment.accepted_candidate_id).length;
+  const selectedCandidates = project.candidates.filter((candidate) => candidate.segment_id === selectedSegmentId);
 
   useEffect(() => {
     if (selectedSegmentId && project.segments.some((segment) => segment.id === selectedSegmentId)) return;
@@ -222,6 +228,25 @@ export function StudioShell({ onBack, onRefresh, project }: StudioShellProps) {
     }
   }
 
+  async function reviewCandidate(candidate: DubbingCandidate, action: "accept" | "evaluate") {
+    if (!selectedSegment) return;
+    setBusy(true);
+    setMessage(null);
+    try {
+      if (action === "accept") {
+        await acceptCandidate(project.id, selectedSegment.id, candidate.id, project.revision);
+        await refreshAfterMutation();
+      } else {
+        const evaluation = await evaluateCandidate(project.id, candidate.id);
+        setEvaluations((current) => ({ ...current, [candidate.id]: evaluation }));
+      }
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Could not review this candidate.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function exportAcceptedCandidates() {
     if (!acceptedCandidateCount) return;
     setBusy(true);
@@ -277,6 +302,7 @@ export function StudioShell({ onBack, onRefresh, project }: StudioShellProps) {
         {project.voice_references.length > 0 && subtitleAssets.length > 0 ? <SubtitleImportForm busy={busy} onSubmit={submitSubtitleImport} project={project} subtitleAssets={subtitleAssets} /> : null}
         {project.voice_references.length > 0 ? <SegmentForm busy={busy} onSubmit={submitSegment} project={project} /> : <div className="inspector-section capability-note"><span className="field-label">Generation gate</span><p>Import an audio reference and record an explicit authorization before configuring dialogue.</p></div>}
         {selectedSegment ? <SegmentEditor busy={busy} onDelete={() => void removeSelectedSegment()} onSubmit={submitSegmentUpdate} project={project} segment={selectedSegment} /> : null}
+        {selectedSegment ? <CandidateReview candidates={selectedCandidates} evaluations={evaluations} busy={busy} onReview={(candidate, action) => void reviewCandidate(candidate, action)} project={project} segment={selectedSegment} /> : null}
       </aside>
 
       <section className="job-drawer" aria-label="Local task queue"><div className="drawer-title"><span>Local queue</span><span className="queue-count">0 jobs</span></div><div className="queue-empty">No model is verified in this workspace. Project setup and media remain local.</div></section>
@@ -294,6 +320,11 @@ function SubtitleImportForm({ busy, onSubmit, project, subtitleAssets }: { busy:
 
 function SegmentEditor({ busy, onDelete, onSubmit, project, segment }: { busy: boolean; onDelete: () => void; onSubmit: (event: FormEvent<HTMLFormElement>) => Promise<void>; project: Project; segment: DubbingSegment }) {
   return <form className="setup-form inspector-section" key={segment.id} onSubmit={(event) => void onSubmit(event)}><div className="section-title"><span>Selected segment</span><span className="mono-value">r{segment.revision}</span></div><input name="segment_id" type="hidden" value={segment.id} /><textarea aria-label="Edit dialogue" defaultValue={segment.text} name="dialogue" required rows={3} /><div className="compact-grid"><label>Start (s)<input defaultValue={(segment.range.start_us / 1_000_000).toFixed(2)} min="0" name="start_seconds" required step="0.01" type="number" /></label><label>End (s)<input defaultValue={(segment.range.end_us / 1_000_000).toFixed(2)} min="0.01" name="end_seconds" required step="0.01" type="number" /></label></div><select aria-label="Edit language" defaultValue={segment.language} name="language"><option value="en">English</option><option value="zh">Chinese</option></select><select aria-label="Edit voice reference" defaultValue={segment.voice_reference_id} name="voice_reference">{project.voice_references.map((reference) => <option key={reference.id} value={reference.id}>{reference.speaker_label}</option>)}</select><select aria-label="Edit emotion" defaultValue={segment.emotion.label} name="emotion">{emotionLabels.map((emotion) => <option key={emotion} value={emotion}>{emotion}</option>)}</select><label className="range-heading">Intensity <output>{segment.emotion.intensity.toFixed(2)}</output><input aria-label="Edit emotion intensity" defaultValue={segment.emotion.intensity} max="1" min="0" name="intensity" step="0.05" type="range" /></label><div className="segment-actions"><button className="outline-button" disabled={busy} type="submit"><Save size={15} /> Save segment</button><button className="danger-button" disabled={busy} onClick={onDelete} type="button" title="Remove segment"><Trash2 size={15} /></button></div></form>;
+}
+
+function CandidateReview({ busy, candidates, evaluations, onReview, project, segment }: { busy: boolean; candidates: DubbingCandidate[]; evaluations: Record<string, CandidateEvaluation>; onReview: (candidate: DubbingCandidate, action: "accept" | "evaluate") => void; project: Project; segment: DubbingSegment }) {
+  const current = candidates.filter((candidate) => candidate.segment_revision === segment.revision);
+  return <section className="inspector-section candidate-review"><div className="section-title"><span>Candidate review</span><span className="mono-value">{current.length}/5 current</span></div>{current.length === 0 ? <p className="capability-note">No current candidate take is available. A verified adapter must generate one before review.</p> : current.slice(0, 5).map((candidate) => { const evaluation = evaluations[candidate.id]; const accepted = segment.accepted_candidate_id === candidate.id; return <article className="candidate-card" key={candidate.id}><div className="candidate-heading"><strong>{accepted ? "Accepted take" : "Candidate take"}</strong><span>r{candidate.revision}</span></div><span className="candidate-model">{candidate.model_id}</span><audio controls preload="metadata" src={assetUrl(project.id, candidate.audio_asset_id)} /><div className="candidate-actions"><button className="outline-button" disabled={busy} onClick={() => onReview(candidate, "evaluate")} type="button">Evaluate</button><button className="outline-button" disabled={busy || accepted} onClick={() => onReview(candidate, "accept")} type="button">{accepted ? "Accepted" : "Accept"}</button></div>{evaluation ? <div className="candidate-metrics">{evaluation.metrics.slice(0, 3).map((metric) => <span key={metric.metric_id}>{metric.metric_id.split(".").at(-1)}: {metric.status === "ok" ? metric.value?.toFixed(3) : metric.status}</span>)}<a href={evaluation.report_markdown_url} rel="noreferrer" target="_blank">Report</a></div> : null}</article>; })}</section>;
 }
 
 function IconButton({ children, label, onClick }: { children: ReactNode; label: string; onClick?: () => void }) {
