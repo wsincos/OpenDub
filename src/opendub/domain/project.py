@@ -83,3 +83,61 @@ class Project(BaseModel):
                 "updated_at": datetime.now(UTC),
             }
         )
+
+    def add_segment(self, segment: DubbingSegment, expected_revision: int) -> Project:
+        """Append a uniquely identified segment using optimistic concurrency control."""
+        if expected_revision != self.revision:
+            raise DomainError(
+                code="PROJECT_CONFLICT",
+                message="Project was changed by another operation.",
+                action="Reload the project and retry the change.",
+            )
+        if any(item.id == segment.id for item in self.segments):
+            raise DomainError(code="INPUT_INVALID", message="Segment identifier is already in use.")
+        return self.model_copy(
+            update={
+                "segments": (*self.segments, segment),
+                "revision": self.revision + 1,
+                "updated_at": datetime.now(UTC),
+            }
+        )
+
+    def record_generated_candidate(
+        self,
+        candidate: Candidate,
+        audio_asset: MediaAsset,
+        expected_revision: int,
+    ) -> Project:
+        """Attach a current generated candidate and advance its segment revision."""
+        if expected_revision != self.revision:
+            raise DomainError(
+                code="PROJECT_CONFLICT",
+                message="Project was changed by another operation.",
+                action="Reload the project and retry the change.",
+            )
+        segment = next((item for item in self.segments if item.id == candidate.segment_id), None)
+        if segment is None or candidate.audio_asset_id != audio_asset.id:
+            raise DomainError(
+                code="INPUT_INVALID",
+                message="Candidate references an invalid project resource.",
+            )
+        if candidate.segment_revision != segment.revision + 1:
+            raise DomainError(
+                code="PROJECT_CONFLICT",
+                message="Candidate does not target the next segment revision.",
+            )
+        generated_segment = segment.model_copy(
+            update={"status": "generated", "revision": candidate.segment_revision}
+        )
+        segments = tuple(
+            generated_segment if item.id == segment.id else item for item in self.segments
+        )
+        return self.model_copy(
+            update={
+                "assets": (*self.assets, audio_asset),
+                "segments": segments,
+                "candidates": (*self.candidates, candidate),
+                "revision": self.revision + 1,
+                "updated_at": datetime.now(UTC),
+            }
+        )
