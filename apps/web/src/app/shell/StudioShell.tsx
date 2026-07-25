@@ -26,6 +26,7 @@ import {
   EmotionLabel,
   importSubtitleSegments,
   Project,
+  renderAcceptedCandidates,
   updateSegment,
   uploadAsset,
 } from "../../api/client";
@@ -45,6 +46,7 @@ export function StudioShell({ onBack, onRefresh, project }: StudioShellProps) {
   const audioAssets = project.assets.filter((asset) => asset.kind === "audio");
   const subtitleAssets = project.assets.filter((asset) => asset.kind === "subtitle");
   const selectedSegment = project.segments.find((segment) => segment.id === selectedSegmentId) ?? null;
+  const acceptedCandidateCount = project.segments.filter((segment) => segment.accepted_candidate_id).length;
 
   useEffect(() => {
     if (selectedSegmentId && project.segments.some((segment) => segment.id === selectedSegmentId)) return;
@@ -220,12 +222,29 @@ export function StudioShell({ onBack, onRefresh, project }: StudioShellProps) {
     }
   }
 
+  async function exportAcceptedCandidates() {
+    if (!acceptedCandidateCount) return;
+    setBusy(true);
+    setMessage(null);
+    try {
+      const render = await renderAcceptedCandidates(project.id);
+      const download = document.createElement("a");
+      download.href = render.dubbed_video_url ?? render.dubbing_audio_url;
+      download.download = "";
+      download.click();
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Could not render accepted candidates.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   return (
     <main className="studio" aria-label="OpenDub Studio">
       <header className="topbar">
         <div className="brand" aria-label="OpenDub"><span className="brand-mark">OD</span><span>OpenDub</span><span className="brand-divider" /><span className="project-name">{project.name}</span><ChevronDown aria-hidden="true" size={15} /></div>
         <div className="save-state"><span className="state-dot" /> Revision {project.revision} saved locally</div>
-        <div className="topbar-actions"><IconButton label="Projects" onClick={onBack}><ArrowLeft size={17} /></IconButton><button className="export-button" disabled title="Accept a generated candidate before exporting"><Upload size={16} /> Export</button></div>
+        <div className="topbar-actions"><IconButton label="Projects" onClick={onBack}><ArrowLeft size={17} /></IconButton><button className="export-button" disabled={busy || !acceptedCandidateCount} onClick={() => void exportAcceptedCandidates()} title={acceptedCandidateCount ? "Render and download accepted candidates" : "Accept a generated candidate before exporting"}><Upload size={16} /> Export</button></div>
       </header>
 
       <aside className="left-panel">
@@ -245,7 +264,7 @@ export function StudioShell({ onBack, onRefresh, project }: StudioShellProps) {
           {videoAsset ? <video className="video-preview" controls muted onPause={() => setPlaying(false)} onPlay={() => setPlaying(true)} ref={videoRef} src={assetUrl(project.id, videoAsset.id)} /> : <div className="empty-monitor"><Film size={34} /><strong>No local video preview</strong><span>Import an authorized video in the inspector.</span></div>}
         </div>
         <div className="transport" aria-label="Playback controls"><button className="play-button" aria-label={playing ? "Pause" : "Play"} disabled={!videoAsset} onClick={() => void togglePlayback()} title={videoAsset ? (playing ? "Pause" : "Play") : "Import a local video to enable preview playback"}>{playing ? <Pause size={17} /> : <Play fill="currentColor" size={17} />}</button><span className="transport-time">{selectedSegment ? formatRange(selectedSegment) : "No selected segment"}</span><span className="transport-mode">Local workspace</span></div>
-        <Timeline maximumEndUs={maximumEndUs} onSelect={setSelectedSegmentId} project={project} selectedSegmentId={selectedSegmentId} />
+        <Timeline acceptedCandidateCount={acceptedCandidateCount} maximumEndUs={maximumEndUs} onSelect={setSelectedSegmentId} project={project} selectedSegmentId={selectedSegmentId} />
       </section>
 
       <aside className="inspector">
@@ -289,9 +308,9 @@ function Resource({ active = false, detail, icon, label }: { active?: boolean; d
   return <span className={`resource ${active ? "active" : ""}`}><span className="resource-icon">{icon}</span><span><strong>{label}</strong><small>{detail}</small></span></span>;
 }
 
-function Timeline({ maximumEndUs, onSelect, project, selectedSegmentId }: { maximumEndUs: number; onSelect: (id: string) => void; project: Project; selectedSegmentId: string | null }) {
+function Timeline({ acceptedCandidateCount, maximumEndUs, onSelect, project, selectedSegmentId }: { acceptedCandidateCount: number; maximumEndUs: number; onSelect: (id: string) => void; project: Project; selectedSegmentId: string | null }) {
   const marks = Array.from({ length: 6 }, (_, index) => formatSeconds((maximumEndUs * index) / 5));
-  return <section className="timeline" aria-label="Dubbing timeline"><div className="timeline-header"><span>Timeline</span><span className="mono-value">{project.segments.length} local cues</span></div><div className="ruler">{marks.map((mark) => <span key={mark}>{mark}</span>)}</div><div className="track original-track"><span className="track-label">Original</span><div className="waveform original-wave" /></div><div className="track dialogue-track"><span className="track-label">Dialogue</span><div className="segment-lane">{project.segments.map((segment) => <button className={`segment-block ${segment.id === selectedSegmentId ? "selected" : ""}`} key={segment.id} onClick={() => onSelect(segment.id)} style={{ left: `${(segment.range.start_us / maximumEndUs) * 100}%`, width: `${Math.max(8, ((segment.range.end_us - segment.range.start_us) / maximumEndUs) * 100)}%` }} title={segment.text}><span>{segment.text}</span><small>{formatRange(segment)}</small></button>)}</div></div><div className="track candidate-track"><span className="track-label">Candidate</span><div className="empty-track">A verified adapter is required before candidate generation.</div></div></section>;
+  return <section className="timeline" aria-label="Dubbing timeline"><div className="timeline-header"><span>Timeline</span><span className="mono-value">{project.segments.length} local cues</span></div><div className="ruler">{marks.map((mark) => <span key={mark}>{mark}</span>)}</div><div className="track original-track"><span className="track-label">Original</span><div className="waveform original-wave" /></div><div className="track dialogue-track"><span className="track-label">Dialogue</span><div className="segment-lane">{project.segments.map((segment) => <button className={`segment-block ${segment.id === selectedSegmentId ? "selected" : ""}`} key={segment.id} onClick={() => onSelect(segment.id)} style={{ left: `${(segment.range.start_us / maximumEndUs) * 100}%`, width: `${Math.max(8, ((segment.range.end_us - segment.range.start_us) / maximumEndUs) * 100)}%` }} title={segment.text}><span>{segment.text}</span><small>{formatRange(segment)}</small></button>)}</div></div><div className="track candidate-track"><span className="track-label">Candidate</span><div className="empty-track">{acceptedCandidateCount ? `${acceptedCandidateCount} accepted candidate take${acceptedCandidateCount === 1 ? "" : "s"} ready for local export.` : "A verified adapter is required before candidate generation."}</div></div></section>;
 }
 
 function formatSeconds(microseconds: number): string {

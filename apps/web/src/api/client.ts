@@ -36,6 +36,7 @@ export type DubbingSegment = {
   emotion: { label: EmotionLabel; intensity: number };
   adapter_id: string;
   status: string;
+  accepted_candidate_id: string | null;
   revision: number;
 };
 
@@ -50,6 +51,15 @@ export type Project = ProjectSummary & {
 type AssetMutation = MediaAsset & { project_revision: number };
 type VoiceReferenceMutation = VoiceReference & { project_revision: number };
 type SegmentMutation = DubbingSegment & { project_revision: number };
+type RenderMutation = {
+  project_id: string;
+  project_revision: number;
+  mix_mode: "preserve" | "duck" | "remove";
+  sample_rate: number;
+  dubbing_audio_url: string;
+  dubbed_video_url: string | null;
+  manifest_url: string;
+};
 
 const apiBase = import.meta.env.VITE_OPENDUB_API_BASE ?? "http://127.0.0.1:8000";
 
@@ -205,6 +215,20 @@ export function deleteSegment(projectId: string, segmentId: string, expectedRevi
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ expected_revision: expectedRevision }),
   });
+}
+
+export async function renderAcceptedCandidates(projectId: string): Promise<RenderMutation> {
+  const result = await request<RenderMutation>(`/api/v1/projects/${projectId}/renders`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ mix_mode: "remove" }),
+  });
+  return {
+    ...result,
+    dubbing_audio_url: `${apiBase}${result.dubbing_audio_url}`,
+    dubbed_video_url: result.dubbed_video_url ? `${apiBase}${result.dubbed_video_url}` : null,
+    manifest_url: `${apiBase}${result.manifest_url}`,
+  };
 }
 
 async function fileToBase64(file: File): Promise<string> {

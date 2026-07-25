@@ -16,7 +16,7 @@ and real inference evidence are all recorded.
 | Runtime contracts | Capability contract, verified-weight manager, JSON Lines isolated runtime, persistent local job primitives, run manifests |
 | Test-only generation | Deterministic sine-wave fixture validates candidate persistence and traceability; it is not a user model |
 | API and CLI | Local project management, asset serving, authorization, segment creation, registry listing, candidate acceptance, accepted-candidate render/download API, `init`, `create`, `list`, `doctor`, `render`, `serve` |
-| Web Studio | Real local project list, media import, authorization recording, segment setup, local video preview, data-driven timeline and visual QA |
+| Web Studio | Real local project list, media import, authorization recording, segment setup, local video preview, data-driven timeline, accepted-candidate export trigger, and visual QA |
 | Documentation and grant | Quick start, model-status guide, grant summary, evidence index, alpha demo script, validated separate DOCX draft |
 | Examples and delivery | Two FFmpeg-generated redistributable example projects, container definitions, Compose syntax check, GitHub Actions quality workflow |
 
