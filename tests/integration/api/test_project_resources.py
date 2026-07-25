@@ -71,3 +71,22 @@ def test_api_rejects_stale_asset_upload_before_writing_a_project_reference(tmp_p
     assert first.status_code == 201
     assert stale.status_code == 409
     assert len(client.get(f"/api/v1/projects/{project['id']}").json()["assets"]) == 1
+
+
+def test_api_serves_only_the_requested_local_project_asset(tmp_path: Path) -> None:
+    client = TestClient(create_app(workspace=tmp_path))
+    project = client.post("/api/v1/projects", json={"name": "Preview film"}).json()
+    uploaded = client.post(
+        f"/api/v1/projects/{project['id']}/assets",
+        json={
+            "kind": "video",
+            "filename": "local-preview.mp4",
+            "content_base64": base64.b64encode(b"local video fixture").decode("ascii"),
+            "expected_revision": project["revision"],
+        },
+    ).json()
+
+    response = client.get(f"/api/v1/projects/{project['id']}/assets/{uploaded['id']}")
+
+    assert response.status_code == 200
+    assert response.content == b"local video fixture"

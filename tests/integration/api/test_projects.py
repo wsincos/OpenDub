@@ -36,6 +36,24 @@ def test_api_allows_only_local_web_studio_origins(tmp_path: Path) -> None:
     assert response.status_code == 200
     assert response.headers["access-control-allow-origin"] == "http://127.0.0.1:5173"
 
+    alternate_port = client.options(
+        "/api/v1/projects",
+        headers={
+            "Origin": "http://127.0.0.1:5174",
+            "Access-Control-Request-Method": "POST",
+        },
+    )
+    remote = client.options(
+        "/api/v1/projects",
+        headers={
+            "Origin": "https://example.invalid",
+            "Access-Control-Request-Method": "POST",
+        },
+    )
+
+    assert alternate_port.headers["access-control-allow-origin"] == "http://127.0.0.1:5174"
+    assert "access-control-allow-origin" not in remote.headers
+
 
 def test_models_endpoint_returns_audited_registry_records(tmp_path: Path) -> None:
     response = TestClient(create_app(workspace=tmp_path)).get("/api/v1/models")

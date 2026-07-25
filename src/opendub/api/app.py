@@ -8,6 +8,7 @@ from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, ConfigDict, Field
 
 from opendub.domain.assets import (
@@ -78,7 +79,7 @@ class CreateSegmentRequest(BaseModel):
     end_us: int = Field(gt=0)
     text: str = Field(min_length=1, max_length=10_000)
     language: str = Field(min_length=2, max_length=35)
-    character_id: str
+    character_id: str | None = None
     voice_reference_id: str
     adapter_id: str = Field(min_length=1)
     emotion_label: EmotionLabel
@@ -104,7 +105,12 @@ def create_app(*, workspace: Path | None = None) -> FastAPI:
     app = FastAPI(title="OpenDub Local API", version="0.0.1a0", docs_url="/api/docs")
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["http://127.0.0.1:5173", "http://localhost:5173"],
+        allow_origins=[
+            "http://127.0.0.1:5173",
+            "http://localhost:5173",
+            "http://127.0.0.1:5174",
+            "http://localhost:5174",
+        ],
         allow_credentials=False,
         allow_methods=["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
         allow_headers=["Content-Type", "If-Match"],
@@ -128,6 +134,24 @@ def create_app(*, workspace: Path | None = None) -> FastAPI:
     @app.get("/api/v1/projects", response_model=tuple[Project, ...])
     def list_projects() -> tuple[Project, ...]:
         return store.iter_projects()
+
+    @app.get("/api/v1/projects/{project_id}/assets/{asset_id}")
+    def get_asset(project_id: str, asset_id: str) -> FileResponse:
+        """Serve one recorded project asset without exposing arbitrary local paths."""
+        try:
+            project = store.load(project_id)
+            asset = next((item for item in project.assets if item.id == asset_id), None)
+            if asset is None:
+                raise DomainError(code="ASSET_NOT_FOUND", message="Project asset was not found.")
+            project_assets = (store.project_dir(project.id) / "assets").resolve()
+            path = (store.project_dir(project.id) / asset.relative_path).resolve()
+            if not path.is_relative_to(project_assets) or not path.is_file():
+                raise DomainError(
+                    code="ASSET_NOT_FOUND", message="Project asset data was not found."
+                )
+        except DomainError as error:
+            raise _http_error(error) from error
+        return FileResponse(path, filename=asset.display_name)
 
     @app.post(
         "/api/v1/projects/{project_id}/assets",
@@ -210,7 +234,7 @@ def create_app(*, workspace: Path | None = None) -> FastAPI:
                 range=TimeRange(start_us=request.start_us, end_us=request.end_us),
                 text=request.text,
                 language=request.language,
-                character_id=request.character_id,
+                character_id=request.character_id or new_id(),
                 voice_reference_id=request.voice_reference_id,
                 emotion=EmotionSpec(
                     label=request.emotion_label,
