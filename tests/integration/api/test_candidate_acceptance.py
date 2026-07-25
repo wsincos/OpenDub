@@ -68,3 +68,16 @@ def test_api_accepts_current_candidate_with_optimistic_concurrency(tmp_path: Pat
     audio = TestClient(create_app(workspace=tmp_path)).get(rendered.json()["dubbing_audio_url"])
     assert audio.status_code == 200
     assert audio.content[:4] == b"RIFF"
+
+    evaluated = TestClient(create_app(workspace=tmp_path)).post(
+        f"/api/v1/projects/{project.id}/candidates/{candidate.id}/evaluate"
+    )
+
+    assert evaluated.status_code == 200
+    assert any(
+        metric["metric_id"] == "sync.duration_error_ms" and metric["status"] == "ok"
+        for metric in evaluated.json()["metrics"]
+    )
+    report = TestClient(create_app(workspace=tmp_path)).get(evaluated.json()["report_json_url"])
+    assert report.status_code == 200
+    assert report.json()["candidate_id"] == candidate.id

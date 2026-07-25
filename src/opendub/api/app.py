@@ -12,6 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, ConfigDict, Field
 
+from opendub.application.evaluation_service import EvaluationService
 from opendub.application.ingest_service import segments_from_subtitles
 from opendub.application.render_service import RenderService
 from opendub.domain.assets import (
@@ -23,6 +24,7 @@ from opendub.domain.assets import (
 )
 from opendub.domain.errors import DomainError
 from opendub.domain.ids import new_id
+from opendub.domain.metrics import MetricResult
 from opendub.domain.project import Project
 from opendub.domain.segments import DubbingSegment, EmotionLabel, EmotionSpec
 from opendub.domain.time import TimeRange
@@ -170,6 +172,15 @@ class RenderResponse(BaseModel):
     dubbing_audio_url: str
     dubbed_video_url: str | None
     manifest_url: str
+
+
+class EvaluationResponse(BaseModel):
+    """Locations and truthful metric records for one local candidate evaluation."""
+
+    candidate_id: str
+    metrics: tuple[MetricResult, ...]
+    report_json_url: str
+    report_markdown_url: str
 
 
 def create_app(*, workspace: Path | None = None) -> FastAPI:
@@ -493,6 +504,54 @@ def create_app(*, workspace: Path | None = None) -> FastAPI:
             path = (export_root / export_directory / artifact).resolve()
             if not path.is_relative_to(export_root) or not path.is_file():
                 raise DomainError(code="ASSET_NOT_FOUND", message="Render artifact was not found.")
+        except DomainError as error:
+            raise _http_error(error) from error
+        return FileResponse(path, filename=artifact)
+
+    @app.post(
+        "/api/v1/projects/{project_id}/candidates/{candidate_id}/evaluate",
+        response_model=EvaluationResponse,
+    )
+    def evaluate_candidate(project_id: str, candidate_id: str) -> EvaluationResponse:
+        """Calculate deterministic audio metrics and record unavailable neural metrics honestly."""
+        try:
+            report = EvaluationService(store).evaluate_candidate(project_id, candidate_id)
+            project = store.load(project_id)
+            candidate = next(item for item in project.candidates if item.id == candidate_id)
+        except DomainError as error:
+            raise _http_error(error) from error
+        report_root = f"/api/v1/projects/{project.id}/reports/{candidate.id}/r{candidate.revision}"
+        return EvaluationResponse(
+            candidate_id=candidate.id,
+            metrics=report.metrics,
+            report_json_url=f"{report_root}/evaluation.json",
+            report_markdown_url=f"{report_root}/evaluation.md",
+        )
+
+    @app.get("/api/v1/projects/{project_id}/reports/{candidate_id}/{report_revision}/{artifact}")
+    def get_report(
+        project_id: str, candidate_id: str, report_revision: str, artifact: str
+    ) -> FileResponse:
+        """Serve only fixed evaluation artifacts for a declared candidate revision."""
+        if (
+            not report_revision.startswith("r")
+            or not report_revision.removeprefix("r").isdigit()
+            or artifact not in {"evaluation.json", "evaluation.md"}
+        ):
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+        try:
+            project = store.load(project_id)
+            candidate = next((item for item in project.candidates if item.id == candidate_id), None)
+            if candidate is None or report_revision != f"r{candidate.revision}":
+                raise DomainError(
+                    code="ASSET_NOT_FOUND", message="Evaluation report was not found."
+                )
+            reports_root = (store.project_dir(project.id) / "reports").resolve()
+            path = (reports_root / candidate.id / report_revision / artifact).resolve()
+            if not path.is_relative_to(reports_root) or not path.is_file():
+                raise DomainError(
+                    code="ASSET_NOT_FOUND", message="Evaluation report was not found."
+                )
         except DomainError as error:
             raise _http_error(error) from error
         return FileResponse(path, filename=artifact)
