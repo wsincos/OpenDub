@@ -29,7 +29,11 @@ Only process video, scripts, and voice references that you own or are authorized
 
 ## Documentation
 
-The current engineering, product, release, grant, and demo-film plans live in [TODO/README.md](TODO/README.md). As implementation lands, user-facing documentation will be published under `docs/`.
+- [Local Alpha Quick Start](docs/getting-started/local-alpha.md)
+- [Model Admission Status](docs/adapters/model-status.md)
+- [Grant project summary](docs/grant/project-summary.md) and [evidence index](docs/grant/evidence-index.md)
+- [Alpha demo recording script](docs/grant/demo-script.md)
+- The detailed engineering, product, release, grant, and formal-film plans remain in [TODO/README.md](TODO/README.md).
 
 ## Contributing
 

@@ -1,0 +1,72 @@
+{
+  "format": 1,
+  "restore": {
+    "/data1/jinyu_wang/projects/opendub/tools/grant-docx/GrantDocx.csproj": {}
+  },
+  "projects": {
+    "/data1/jinyu_wang/projects/opendub/tools/grant-docx/GrantDocx.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/data1/jinyu_wang/projects/opendub/tools/grant-docx/GrantDocx.csproj",
+        "projectName": "GrantDocx",
+        "projectPath": "/data1/jinyu_wang/projects/opendub/tools/grant-docx/GrantDocx.csproj",
+        "packagesPath": "/data1/jinyu_wang/.nuget/packages/",
+        "outputPath": "/data1/jinyu_wang/projects/opendub/tools/grant-docx/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/data1/jinyu_wang/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "DocumentFormat.OpenXml": {
+              "target": "Package",
+              "version": "[3.2.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/data1/jinyu_wang/miniconda3/envs/office_envs/lib/dotnet/sdk/8.0.408/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
