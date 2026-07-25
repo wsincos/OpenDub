@@ -19,7 +19,7 @@ and real inference evidence are all recorded.
 | Test-only generation | Deterministic sine-wave fixture validates candidate persistence and traceability; it is not a user model |
 | API and CLI | Local project management, asset serving, authorization, segment creation, registry listing, candidate acceptance, accepted-candidate render/download API, candidate evaluation/report API, durable job list and SSE event replay, `init`, `create`, `list`, `doctor`, `evaluate`, `render`, `serve` |
 | Web Studio | Real local project list, media import, authorization recording, segment setup, local video preview, data-driven timeline, candidate audio review/evaluation/accept controls, explicit original-audio export policy, render evidence links, and visual QA |
-| Documentation and grant | Quick start, model-status guide, grant summary, evidence index, alpha demo script, validated separate DOCX draft |
+| Documentation and grant | Quick start, model-status guide, real-backend owner handoff, grant summary, evidence index, alpha demo script, validated separate DOCX draft |
 | Examples and delivery | Two FFmpeg-generated redistributable example projects, container definitions, Compose syntax check, documentation-link validation, and a GitHub Actions quality workflow |
 
 ## Deliberately Not Claimed As Complete

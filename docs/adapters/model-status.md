@@ -20,4 +20,5 @@ documented limits, and release-quality reproducibility evidence.
 
 The enforceable evidence packet and planned-backend index are in
 [Research Backend Promotion Gate](research-backend-gate.md) and
-[`model-registry/planned/`](../../model-registry/planned/).
+[`model-registry/planned/`](../../model-registry/planned/). Project owners can use the
+[real backend admission handoff](owner-handoff.md) to submit one reproducible backend at a time.
