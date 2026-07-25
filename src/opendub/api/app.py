@@ -10,6 +10,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from opendub.domain.errors import DomainError
 from opendub.domain.project import Project
+from opendub.models.registry import ModelRegistry, UpstreamModel
 from opendub.storage.project_store import ProjectStore
 
 
@@ -25,6 +26,8 @@ def create_app(*, workspace: Path | None = None) -> FastAPI:
     """Create an API application that defaults to a private local workspace."""
     root = (workspace or Path.cwd() / ".opendub").resolve()
     store = ProjectStore(root)
+    repository_root = Path(__file__).resolve().parents[3]
+    model_registry = ModelRegistry(repository_root / "model-registry" / "upstreams.yaml")
     app = FastAPI(title="OpenDub Local API", version="0.0.1a0", docs_url="/api/docs")
     app.add_middleware(
         CORSMiddleware,
@@ -52,6 +55,10 @@ def create_app(*, workspace: Path | None = None) -> FastAPI:
     @app.get("/api/v1/projects", response_model=tuple[Project, ...])
     def list_projects() -> tuple[Project, ...]:
         return store.iter_projects()
+
+    @app.get("/api/v1/models", response_model=tuple[UpstreamModel, ...])
+    def list_models() -> tuple[UpstreamModel, ...]:
+        return model_registry.discover()
 
     return app
 

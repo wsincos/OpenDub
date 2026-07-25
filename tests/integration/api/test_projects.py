@@ -35,3 +35,12 @@ def test_api_allows_only_local_web_studio_origins(tmp_path: Path) -> None:
 
     assert response.status_code == 200
     assert response.headers["access-control-allow-origin"] == "http://127.0.0.1:5173"
+
+
+def test_models_endpoint_returns_audited_registry_records(tmp_path: Path) -> None:
+    response = TestClient(create_app(workspace=tmp_path)).get("/api/v1/models")
+
+    assert response.status_code == 200
+    records = response.json()
+    assert any(record["id"] == "galaxycong/emodubber" for record in records)
+    assert all(record["maturity"] == "planned" for record in records)
