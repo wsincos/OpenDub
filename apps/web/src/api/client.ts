@@ -75,7 +75,7 @@ export type Project = ProjectSummary & {
 type AssetMutation = MediaAsset & { project_revision: number };
 type VoiceReferenceMutation = VoiceReference & { project_revision: number };
 type SegmentMutation = DubbingSegment & { project_revision: number };
-type RenderMutation = {
+export type RenderMutation = {
   project_id: string;
   project_revision: number;
   mix_mode: "preserve" | "duck" | "remove";
@@ -271,11 +271,14 @@ export async function evaluateCandidate(projectId: string, candidateId: string):
   };
 }
 
-export async function renderAcceptedCandidates(projectId: string): Promise<RenderMutation> {
+export async function renderAcceptedCandidates(
+  projectId: string,
+  mixMode: RenderMutation["mix_mode"],
+): Promise<RenderMutation> {
   const result = await request<RenderMutation>(`/api/v1/projects/${projectId}/renders`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ mix_mode: "remove" }),
+    body: JSON.stringify({ mix_mode: mixMode }),
   });
   return {
     ...result,

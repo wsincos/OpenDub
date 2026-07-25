@@ -30,6 +30,7 @@ import {
   evaluateCandidate,
   importSubtitleSegments,
   Project,
+  RenderMutation,
   renderAcceptedCandidates,
   updateSegment,
   uploadAsset,
@@ -46,6 +47,8 @@ export function StudioShell({ onBack, onRefresh, project }: StudioShellProps) {
   const [busy, setBusy] = useState(false);
   const [evaluations, setEvaluations] = useState<Record<string, CandidateEvaluation>>({});
   const [playing, setPlaying] = useState(false);
+  const [mixMode, setMixMode] = useState<RenderMutation["mix_mode"]>("remove");
+  const [lastRender, setLastRender] = useState<RenderMutation | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const videoAsset = project.assets.find((asset) => asset.kind === "video");
   const audioAssets = project.assets.filter((asset) => asset.kind === "audio");
@@ -254,7 +257,8 @@ export function StudioShell({ onBack, onRefresh, project }: StudioShellProps) {
     setBusy(true);
     setMessage(null);
     try {
-      const render = await renderAcceptedCandidates(project.id);
+      const render = await renderAcceptedCandidates(project.id, mixMode);
+      setLastRender(render);
       const download = document.createElement("a");
       download.href = render.dubbed_video_url ?? render.dubbing_audio_url;
       download.download = "";
@@ -271,7 +275,7 @@ export function StudioShell({ onBack, onRefresh, project }: StudioShellProps) {
       <header className="topbar">
         <div className="brand" aria-label="OpenDub"><span className="brand-mark">OD</span><span>OpenDub</span><span className="brand-divider" /><span className="project-name">{project.name}</span><ChevronDown aria-hidden="true" size={15} /></div>
         <div className="save-state"><span className="state-dot" /> Revision {project.revision} saved locally</div>
-        <div className="topbar-actions"><IconButton label="Projects" onClick={onBack}><ArrowLeft size={17} /></IconButton><button className="export-button" disabled={busy || !acceptedCandidateCount} onClick={() => void exportAcceptedCandidates()} title={acceptedCandidateCount ? "Render and download accepted candidates" : "Accept a generated candidate before exporting"}><Upload size={16} /> Export</button></div>
+        <div className="topbar-actions"><IconButton label="Projects" onClick={onBack}><ArrowLeft size={17} /></IconButton><select aria-label="Original audio mix" className="mix-mode" disabled={busy || !acceptedCandidateCount} onChange={(event) => setMixMode(event.target.value as RenderMutation["mix_mode"])} value={mixMode}><option value="remove">Replace original audio</option><option value="duck">Duck original audio</option><option value="preserve">Preserve original audio</option></select><button className="export-button" disabled={busy || !acceptedCandidateCount} onClick={() => void exportAcceptedCandidates()} title={acceptedCandidateCount ? "Render and download accepted candidates" : "Accept a generated candidate before exporting"}><Upload size={16} /> Export</button></div>
       </header>
 
       <aside className="left-panel">
@@ -307,7 +311,7 @@ export function StudioShell({ onBack, onRefresh, project }: StudioShellProps) {
         {selectedSegment ? <CandidateReview candidates={selectedCandidates} evaluations={evaluations} busy={busy} onReview={(candidate, action) => void reviewCandidate(candidate, action)} project={project} segment={selectedSegment} /> : null}
       </aside>
 
-      <section className="job-drawer" aria-label="Local task queue"><div className="drawer-title"><span>Local queue</span><span className="queue-count">0 jobs</span></div><div className="queue-empty">No model is verified in this workspace. Project setup and media remain local.</div></section>
+      <section className="job-drawer" aria-label="Local task queue"><div className="drawer-title"><span>{lastRender ? "Export" : "Local queue"}</span><span className="queue-count">{lastRender ? `r${lastRender.project_revision}` : "0 jobs"}</span></div>{lastRender ? <div className="export-result" role="status"><div><strong>Render ready</strong><span>{lastRender.distribution_authorized ? "Output sharing authorized" : "Local review only"}</span></div><nav aria-label="Rendered export files"><a href={lastRender.dubbing_audio_url}>WAV</a>{lastRender.dubbed_video_url ? <a href={lastRender.dubbed_video_url}>MP4</a> : null}<a href={lastRender.manifest_url}>Manifest</a></nav></div> : <div className="queue-empty">No model is verified in this workspace. Project setup and media remain local.</div>}</section>
     </main>
   );
 }
