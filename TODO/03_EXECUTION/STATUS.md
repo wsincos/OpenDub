@@ -15,7 +15,7 @@ and real inference evidence are all recorded.
 | Authorization | A voice reference requires an in-project audio asset and a material-source declaration before a segment can bind to it |
 | Runtime contracts | Capability contract, verified-weight manager, JSON Lines isolated runtime, persistent local job primitives, run manifests |
 | Test-only generation | Deterministic sine-wave fixture validates candidate persistence and traceability; it is not a user model |
-| API and CLI | Local project management, asset serving, authorization, segment creation, registry listing, candidate acceptance, `init`, `create`, `list`, `doctor`, `serve` |
+| API and CLI | Local project management, asset serving, authorization, segment creation, registry listing, candidate acceptance, accepted-candidate render/download API, `init`, `create`, `list`, `doctor`, `render`, `serve` |
 | Web Studio | Real local project list, media import, authorization recording, segment setup, local video preview, data-driven timeline and visual QA |
 | Documentation and grant | Quick start, model-status guide, grant summary, evidence index, alpha demo script, validated separate DOCX draft |
 | Examples and delivery | Two FFmpeg-generated redistributable example projects, container definitions, Compose syntax check, GitHub Actions quality workflow |
@@ -30,7 +30,7 @@ and real inference evidence are all recorded.
 | Stable vocoder | Weight terms and compatibility smoke are absent | Hashed weights, mel contract, output validation |
 | Candidate A/B product review | Requires a verified user-facing backend | Real candidates, metrics, acceptance/revision UI QA |
 | Full content/speaker/emotion evaluation | Metric models and reference fixtures are not yet pinned | Versioned model weights, language limits, direction tests |
-| Final WAV/MP4 export and formal film | Must use genuine accepted candidates and authorized media | M2 adapter/metrics/export evidence and film QA |
+| Formal demonstration WAV/MP4 and film | The export service exists, but the public film must use genuine accepted candidates and authorized media | M2 adapter/metrics/export evidence and film QA |
 | `v0.1.0` release | Real model gate and release validation are incomplete | All M2/M3 requirements in `DEFINITION_OF_DONE.md` |
 
 ## Current Verification

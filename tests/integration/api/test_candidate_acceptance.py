@@ -58,3 +58,13 @@ def test_api_accepts_current_candidate_with_optimistic_concurrency(tmp_path: Pat
     assert response.status_code == 200
     assert response.json()["segments"][0]["accepted_candidate_id"] == candidate.id
     assert response.json()["segments"][0]["status"] == "accepted"
+
+    rendered = TestClient(create_app(workspace=tmp_path)).post(
+        f"/api/v1/projects/{project.id}/renders", json={"mix_mode": "remove"}
+    )
+
+    assert rendered.status_code == 201
+    assert rendered.json()["dubbed_video_url"] is None
+    audio = TestClient(create_app(workspace=tmp_path)).get(rendered.json()["dubbing_audio_url"])
+    assert audio.status_code == 200
+    assert audio.content[:4] == b"RIFF"

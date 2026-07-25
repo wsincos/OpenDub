@@ -66,9 +66,19 @@ uv run opendub list --workspace ~/.local/share/opendub
 uv run opendub doctor --workspace ~/.local/share/opendub --json
 ```
 
+Once a verified adapter has produced candidate takes and a reviewer has explicitly accepted at
+least one current take, render a local dubbing WAV and, when a source video exists, an MP4:
+
+```bash
+uv run opendub render PROJECT_ID --workspace ~/.local/share/opendub --mix-mode remove
+```
+
+`remove` replaces the original video audio; `duck` mixes it at a reduced level; `preserve` mixes
+it at full level. The API exposes the same operation at `POST /api/v1/projects/{project_id}/renders`
+and serves only the resulting fixed-name artifacts from the corresponding export revision.
+
 ## Troubleshooting
 
 `opendub doctor` reports missing FFmpeg, an unwritable workspace, or registry issues without
 reading user media into telemetry. If the browser cannot connect, confirm that the Studio's
 `VITE_OPENDUB_API_BASE` points to the same local API port and that the API process is running.
-

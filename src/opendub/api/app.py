@@ -5,6 +5,7 @@ from __future__ import annotations
 import base64
 import binascii
 from pathlib import Path
+from typing import Literal
 
 from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
@@ -12,6 +13,7 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel, ConfigDict, Field
 
 from opendub.application.ingest_service import segments_from_subtitles
+from opendub.application.render_service import RenderService
 from opendub.domain.assets import (
     AssetKind,
     ConsentRecord,
@@ -145,6 +147,29 @@ class DeleteSegmentRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     expected_revision: int = Field(ge=1)
+
+
+RenderMixMode = Literal["preserve", "duck", "remove"]
+
+
+class RenderRequest(BaseModel):
+    """Render the current accepted local candidates with an explicit audio policy."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    mix_mode: RenderMixMode = "remove"
+
+
+class RenderResponse(BaseModel):
+    """Local-only export locations for a deterministic project revision render."""
+
+    project_id: str
+    project_revision: int = Field(ge=1)
+    mix_mode: RenderMixMode
+    sample_rate: int = Field(gt=0)
+    dubbing_audio_url: str
+    dubbed_video_url: str | None
+    manifest_url: str
 
 
 def create_app(*, workspace: Path | None = None) -> FastAPI:
@@ -427,6 +452,50 @@ def create_app(*, workspace: Path | None = None) -> FastAPI:
         except DomainError as error:
             raise _http_error(error) from error
         return updated
+
+    @app.post(
+        "/api/v1/projects/{project_id}/renders",
+        response_model=RenderResponse,
+        status_code=status.HTTP_201_CREATED,
+    )
+    def render_project(project_id: str, request: RenderRequest) -> RenderResponse:
+        """Render only candidates explicitly accepted at the current project revision."""
+        try:
+            result = RenderService(store).render(project_id, mode=request.mix_mode)
+            project = store.load(project_id)
+        except DomainError as error:
+            raise _http_error(error) from error
+
+        export_root = f"/api/v1/projects/{project.id}/exports/revision-{project.revision}"
+        return RenderResponse(
+            project_id=project.id,
+            project_revision=project.revision,
+            mix_mode=request.mix_mode,
+            sample_rate=result.sample_rate,
+            dubbing_audio_url=f"{export_root}/dubbing.wav",
+            dubbed_video_url=(f"{export_root}/dubbed.mp4" if result.video is not None else None),
+            manifest_url=f"{export_root}/render.json",
+        )
+
+    @app.get("/api/v1/projects/{project_id}/exports/{export_directory}/{artifact}")
+    def get_export(project_id: str, export_directory: str, artifact: str) -> FileResponse:
+        """Serve only a named local render artifact from a declared revision directory."""
+        allowed_artifacts = {"dubbing.wav", "dubbed.mp4", "render.json"}
+        if (
+            not export_directory.startswith("revision-")
+            or not export_directory.removeprefix("revision-").isdigit()
+            or artifact not in allowed_artifacts
+        ):
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+        try:
+            project = store.load(project_id)
+            export_root = (store.project_dir(project.id) / "exports").resolve()
+            path = (export_root / export_directory / artifact).resolve()
+            if not path.is_relative_to(export_root) or not path.is_file():
+                raise DomainError(code="ASSET_NOT_FOUND", message="Render artifact was not found.")
+        except DomainError as error:
+            raise _http_error(error) from error
+        return FileResponse(path, filename=artifact)
 
     @app.get("/api/v1/models", response_model=tuple[UpstreamModel, ...])
     def list_models() -> tuple[UpstreamModel, ...]:
