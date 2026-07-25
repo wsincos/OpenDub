@@ -92,6 +92,16 @@ def test_api_serves_only_the_requested_local_project_asset(tmp_path: Path) -> No
     assert response.content == b"local video fixture"
 
 
+def test_api_reports_missing_accepted_candidate_as_a_validation_error(tmp_path: Path) -> None:
+    client = TestClient(create_app(workspace=tmp_path))
+    project = client.post("/api/v1/projects", json={"name": "No accepted candidate"}).json()
+
+    response = client.post(f"/api/v1/projects/{project['id']}/renders", json={})
+
+    assert response.status_code == 422
+    assert response.json()["detail"]["code"] == "INPUT_INVALID"
+
+
 def test_api_imports_updates_and_removes_authorized_subtitle_segments(tmp_path: Path) -> None:
     client = TestClient(create_app(workspace=tmp_path))
     project = client.post("/api/v1/projects", json={"name": "Subtitle workflow"}).json()

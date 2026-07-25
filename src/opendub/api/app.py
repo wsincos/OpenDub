@@ -505,9 +505,14 @@ def create_app(*, workspace: Path | None = None) -> FastAPI:
 
 
 def _http_error(error: DomainError) -> HTTPException:
-    status_code = (
-        status.HTTP_409_CONFLICT if error.code == "PROJECT_CONFLICT" else status.HTTP_404_NOT_FOUND
-    )
+    status_code_by_error = {
+        "ASSET_NOT_FOUND": status.HTTP_404_NOT_FOUND,
+        "PROJECT_CONFLICT": status.HTTP_409_CONFLICT,
+        "INPUT_INVALID": status.HTTP_422_UNPROCESSABLE_CONTENT,
+        "RIGHTS_DECLARATION_REQUIRED": status.HTTP_422_UNPROCESSABLE_CONTENT,
+        "RENDER_FAILED": status.HTTP_422_UNPROCESSABLE_CONTENT,
+    }
+    status_code = status_code_by_error.get(error.code, status.HTTP_500_INTERNAL_SERVER_ERROR)
     return HTTPException(
         status_code=status_code,
         detail={"code": error.code, "message": error.message, "action": error.action},
