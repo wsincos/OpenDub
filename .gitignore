@@ -1,0 +1,53 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Node
+node_modules/
+dist/
+playwright-report/
+test-results/
+
+# OpenDub local state
+.opendub/
+projects/
+models/
+artifacts/
+logs/
+*.partial
+*.sqlite
+*.sqlite3
+original/
+
+# Large media and model artifacts
+*.ckpt
+*.pth
+*.pt
+*.safetensors
+*.onnx
+*.wav
+*.flac
+*.mp3
+*.mp4
+*.mov
+*.webm
+
+# System and editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Worktree isolation
+.worktrees/
+worktrees/

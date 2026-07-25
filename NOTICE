@@ -1,0 +1,15 @@
+OpenDub
+Copyright 2026 OpenDub Contributors
+
+OpenDub platform code is licensed under the Apache License, Version 2.0.
+
+The project is designed to interoperate with upstream research projects. Their source code, model weights, datasets, documentation, and media remain governed by their own licenses and terms. No upstream project is redistributed by this notice alone.
+
+Planned research foundations:
+
+- HPMDubbing — https://github.com/GalaxyCong/HPMDubbing
+- StyleDubber — https://github.com/GalaxyCong/StyleDubber
+- EmoDubber — https://github.com/GalaxyCong/EmoDubber
+- HPMDubbing_Vocoder — https://github.com/GalaxyCong/HPMDubbing_Vocoder
+
+Each adapter added to OpenDub must include a source commit, license record, model-card entry, and weight provenance record before it can be marked stable.
