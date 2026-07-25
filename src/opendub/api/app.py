@@ -95,6 +95,14 @@ class SegmentMutationResult(DubbingSegment):
     project_revision: int = Field(ge=1)
 
 
+class AcceptCandidateRequest(BaseModel):
+    """Accept a current candidate with the revision that was reviewed."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    expected_revision: int = Field(ge=1)
+
+
 def create_app(*, workspace: Path | None = None) -> FastAPI:
     """Create an API application that defaults to a private local workspace."""
     root = (workspace or Path.cwd() / ".opendub").resolve()
@@ -250,6 +258,27 @@ def create_app(*, workspace: Path | None = None) -> FastAPI:
         except DomainError as error:
             raise _http_error(error) from error
         return SegmentMutationResult(**segment.model_dump(), project_revision=updated.revision)
+
+    @app.post(
+        "/api/v1/projects/{project_id}/segments/{segment_id}/candidates/{candidate_id}/accept",
+        response_model=Project,
+    )
+    def accept_candidate(
+        project_id: str,
+        segment_id: str,
+        candidate_id: str,
+        request: AcceptCandidateRequest,
+    ) -> Project:
+        """Commit a reviewed current candidate without accepting stale output."""
+        try:
+            project = store.load(project_id)
+            updated = project.accept_candidate(
+                segment_id, candidate_id, expected_revision=request.expected_revision
+            )
+            store.save(updated, expected_revision=request.expected_revision)
+        except DomainError as error:
+            raise _http_error(error) from error
+        return updated
 
     @app.get("/api/v1/models", response_model=tuple[UpstreamModel, ...])
     def list_models() -> tuple[UpstreamModel, ...]:
