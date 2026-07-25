@@ -5,6 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, status
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, ConfigDict, Field
 
 from opendub.domain.errors import DomainError
@@ -25,6 +26,13 @@ def create_app(*, workspace: Path | None = None) -> FastAPI:
     root = (workspace or Path.cwd() / ".opendub").resolve()
     store = ProjectStore(root)
     app = FastAPI(title="OpenDub Local API", version="0.0.1a0", docs_url="/api/docs")
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["http://127.0.0.1:5173", "http://localhost:5173"],
+        allow_credentials=False,
+        allow_methods=["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+        allow_headers=["Content-Type", "If-Match"],
+    )
 
     @app.get("/api/v1/health")
     def health() -> dict[str, str]:

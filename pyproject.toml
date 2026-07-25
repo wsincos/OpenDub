@@ -29,6 +29,7 @@ dependencies = [
   "soundfile>=0.13,<1",
   "sqlalchemy>=2.0.36,<3",
   "typer>=0.15,<1",
+  "uvicorn>=0.34,<1",
   "uuid6>=2024.7.10",
 ]
 

@@ -1,4 +1,6 @@
+import type { ReactNode } from "react";
 import {
+  ArrowLeft,
   ChevronDown,
   Download,
   FileAudio,
@@ -18,7 +20,9 @@ import "./studio-shell.css";
 
 const timelineMarks = ["00:00", "00:02", "00:04", "00:06", "00:08", "00:10"];
 
-export function StudioShell() {
+type StudioShellProps = { projectName: string; onBack: () => void };
+
+export function StudioShell({ onBack, projectName }: StudioShellProps) {
   return (
     <main className="studio" aria-label="OpenDub Studio">
       <header className="topbar">
@@ -26,11 +30,12 @@ export function StudioShell() {
           <span className="brand-mark">OD</span>
           <span>OpenDub</span>
           <span className="brand-divider" />
-          <span className="project-name">Authorized Demo</span>
+          <span className="project-name">{projectName}</span>
           <ChevronDown aria-hidden="true" size={15} />
         </div>
         <div className="save-state"><span className="state-dot" /> Saved locally</div>
         <div className="topbar-actions">
+          <IconButton label="Projects" onClick={onBack}><ArrowLeft size={17} /></IconButton>
           <IconButton label="Undo"><Undo2 size={17} /></IconButton>
           <IconButton label="Redo"><Redo2 size={17} /></IconButton>
           <button className="check-button"><ShieldCheck size={16} /> Run checks</button>
@@ -103,15 +108,15 @@ export function StudioShell() {
   );
 }
 
-function IconButton({ children, label }: { children: React.ReactNode; label: string }) {
-  return <button className="icon-button" aria-label={label} title={label}>{children}</button>;
+function IconButton({ children, label, onClick }: { children: ReactNode; label: string; onClick?: () => void }) {
+  return <button className="icon-button" aria-label={label} onClick={onClick} title={label}>{children}</button>;
 }
 
-function PanelHeading({ icon, title }: { icon: React.ReactNode; title: string }) {
+function PanelHeading({ icon, title }: { icon: ReactNode; title: string }) {
   return <h2 className="panel-heading">{icon}<span>{title}</span></h2>;
 }
 
-function Resource({ active = false, detail, icon, label }: { active?: boolean; detail: string; icon: React.ReactNode; label: string }) {
+function Resource({ active = false, detail, icon, label }: { active?: boolean; detail: string; icon: ReactNode; label: string }) {
   return <button className={`resource ${active ? "active" : ""}`}><span className="resource-icon">{icon}</span><span><strong>{label}</strong><small>{detail}</small></span></button>;
 }
 
