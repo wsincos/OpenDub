@@ -135,7 +135,7 @@ export async function uploadAsset(
 
 export function createVoiceReference(
   projectId: string,
-  input: { assetId: string; speakerLabel: string; materialSource: MaterialSource; expectedRevision: number },
+  input: { assetId: string; speakerLabel: string; materialSource: MaterialSource; allowGeneratedOutputDistribution: boolean; expectedRevision: number },
 ): Promise<VoiceReferenceMutation> {
   return request<VoiceReferenceMutation>(`/api/v1/projects/${projectId}/voice-references`, {
     method: "POST",
@@ -144,6 +144,7 @@ export function createVoiceReference(
       asset_id: input.assetId,
       speaker_label: input.speakerLabel,
       material_source: input.materialSource,
+      allow_generated_output_distribution: input.allowGeneratedOutputDistribution,
       expected_revision: input.expectedRevision,
     }),
   });

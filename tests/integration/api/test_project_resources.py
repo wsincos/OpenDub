@@ -28,6 +28,7 @@ def test_api_creates_authorized_reference_then_dubbing_segment(tmp_path: Path) -
             "asset_id": asset.json()["id"],
             "speaker_label": "Narrator",
             "material_source": "self_recorded",
+            "allow_generated_output_distribution": True,
             "expected_revision": asset.json()["project_revision"],
         },
     )
@@ -53,6 +54,7 @@ def test_api_creates_authorized_reference_then_dubbing_segment(tmp_path: Path) -
     loaded = client.get(f"/api/v1/projects/{project['id']}").json()
     assert loaded["segments"][0]["text"] == "A verified local dubbing workflow."
     assert loaded["voice_references"][0]["speaker_label"] == "Narrator"
+    assert loaded["consents"][0]["allow_generated_output_distribution"] is True
 
 
 def test_api_rejects_stale_asset_upload_before_writing_a_project_reference(tmp_path: Path) -> None:

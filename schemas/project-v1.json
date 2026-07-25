@@ -67,6 +67,18 @@
           "title": "Accepted At",
           "type": "string"
         },
+        "allow_generated_output_distribution": {
+          "default": false,
+          "title": "Allow Generated Output Distribution",
+          "type": "boolean"
+        },
+        "authorization_purpose": {
+          "default": "video_dubbing_generation",
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Authorization Purpose",
+          "type": "string"
+        },
         "declaration_version": {
           "default": "v1",
           "title": "Declaration Version",

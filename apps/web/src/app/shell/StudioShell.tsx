@@ -102,6 +102,7 @@ export function StudioShell({ onBack, onRefresh, project }: StudioShellProps) {
     const assetId = String(data.get("audio_asset") ?? "");
     const speakerLabel = String(data.get("speaker_label") ?? "").trim();
     const materialSource = String(data.get("material_source") ?? "");
+    const allowGeneratedOutputDistribution = data.get("allow_generated_output_distribution") === "on";
     if (!assetId || !speakerLabel) return;
     setBusy(true);
     setMessage(null);
@@ -110,6 +111,7 @@ export function StudioShell({ onBack, onRefresh, project }: StudioShellProps) {
         assetId,
         speakerLabel,
         materialSource: materialSource as "self_recorded" | "licensed" | "public_domain" | "authorized_other",
+        allowGeneratedOutputDistribution,
         expectedRevision: project.revision,
       });
       form.reset();
@@ -298,7 +300,7 @@ export function StudioShell({ onBack, onRefresh, project }: StudioShellProps) {
         <form className="setup-form" onSubmit={(event) => void submitMedia(event)}>
           <span className="field-label">Source media</span><input aria-label="Local source media" name="media" required type="file" accept="video/*,audio/*,.srt,.vtt" /><select aria-label="Media kind" defaultValue="video" name="kind"><option value="video">Video</option><option value="audio">Voice audio</option><option value="subtitle">Subtitle file</option></select><button className="outline-button" disabled={busy} type="submit"><Upload size={15} /> Import locally</button>
         </form>
-        {audioAssets.length > 0 && project.voice_references.length === 0 ? <form className="setup-form inspector-section" onSubmit={(event) => void submitVoiceReference(event)}><div className="section-title"><span>Voice authorization</span><ShieldCheck size={15} /></div><select aria-label="Authorized audio asset" name="audio_asset" required>{audioAssets.map((asset) => <option key={asset.id} value={asset.id}>{asset.display_name}</option>)}</select><input aria-label="Speaker label" maxLength={200} name="speaker_label" placeholder="Speaker label" required /><select aria-label="Rights source" defaultValue="self_recorded" name="material_source"><option value="self_recorded">Self recorded</option><option value="licensed">Licensed</option><option value="public_domain">Public domain</option><option value="authorized_other">Authorized other</option></select><button className="outline-button" disabled={busy} type="submit"><ShieldCheck size={15} /> Record authorization</button></form> : null}
+        {audioAssets.length > 0 && project.voice_references.length === 0 ? <form className="setup-form inspector-section" onSubmit={(event) => void submitVoiceReference(event)}><div className="section-title"><span>Voice authorization</span><ShieldCheck size={15} /></div><select aria-label="Authorized audio asset" name="audio_asset" required>{audioAssets.map((asset) => <option key={asset.id} value={asset.id}>{asset.display_name}</option>)}</select><input aria-label="Speaker label" maxLength={200} name="speaker_label" placeholder="Speaker label" required /><select aria-label="Rights source" defaultValue="self_recorded" name="material_source"><option value="self_recorded">Self recorded</option><option value="licensed">Licensed</option><option value="public_domain">Public domain</option><option value="authorized_other">Authorized other</option></select><label className="consent-check"><input aria-label="Permit output distribution" name="allow_generated_output_distribution" type="checkbox" /><span>Permit sharing generated output</span></label><button className="outline-button" disabled={busy} type="submit"><ShieldCheck size={15} /> Record authorization</button></form> : null}
         {project.voice_references.length > 0 && subtitleAssets.length > 0 ? <SubtitleImportForm busy={busy} onSubmit={submitSubtitleImport} project={project} subtitleAssets={subtitleAssets} /> : null}
         {project.voice_references.length > 0 ? <SegmentForm busy={busy} onSubmit={submitSegment} project={project} /> : <div className="inspector-section capability-note"><span className="field-label">Generation gate</span><p>Import an audio reference and record an explicit authorization before configuring dialogue.</p></div>}
         {selectedSegment ? <SegmentEditor busy={busy} onDelete={() => void removeSelectedSegment()} onSubmit={submitSegmentUpdate} project={project} segment={selectedSegment} /> : null}

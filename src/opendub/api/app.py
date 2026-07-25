@@ -71,6 +71,10 @@ class CreateVoiceReferenceRequest(BaseModel):
     asset_id: str
     speaker_label: str = Field(min_length=1, max_length=200)
     material_source: MaterialSource
+    authorization_purpose: str = Field(
+        default="video_dubbing_generation", min_length=1, max_length=200
+    )
+    allow_generated_output_distribution: bool = False
     expected_revision: int = Field(ge=1)
 
 
@@ -330,7 +334,11 @@ def create_app(*, workspace: Path | None = None) -> FastAPI:
         """Bind an audio asset to one speaker only after recording an authorization declaration."""
         try:
             project = store.load(project_id)
-            consent = ConsentRecord(material_source=request.material_source)
+            consent = ConsentRecord(
+                material_source=request.material_source,
+                authorization_purpose=request.authorization_purpose,
+                allow_generated_output_distribution=request.allow_generated_output_distribution,
+            )
             reference = VoiceReference(
                 asset_id=request.asset_id,
                 consent_id=consent.id,

@@ -23,6 +23,10 @@ class ConsentRecord(BaseModel):
     declaration_version: str = "v1"
     accepted_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
     material_source: MaterialSource
+    authorization_purpose: str = Field(
+        default="video_dubbing_generation", min_length=1, max_length=200
+    )
+    allow_generated_output_distribution: bool = False
     revision: int = Field(default=1, ge=1)
 
     @field_validator("id")
