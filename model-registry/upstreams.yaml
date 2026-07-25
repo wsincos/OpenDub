@@ -19,7 +19,7 @@ models:
       license: MIT
     artifacts: []
     paper: "Learning to Dub Movies via Hierarchical Prosody Models"
-    review: "Video preprocessing and restricted data requirements require adapter audit."
+    review: "Audit 2026-07-25: feature-file workflow and V2C copyright restrictions require an authorized preprocessing fixture; checkpoint terms and SHA-256 are unpublished."
   - id: galaxycong/styledubber
     display_name: StyleDubber
     maturity: planned
@@ -39,7 +39,7 @@ models:
       license: MIT
     artifacts: []
     paper: "HiFi-GAN based waveform rendering for HPMDubbing"
-    review: "Mel parameter and weight checksum audit required."
+    review: "Audit 2026-07-25: README declares 16k/160-hop and 22.05k/220-hop contracts; checkpoint terms and SHA-256 are unpublished."
   - id: hddub/hdcode
     display_name: HD-Dub
     maturity: planned

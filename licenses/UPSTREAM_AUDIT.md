@@ -23,3 +23,14 @@ No source in this table is copied into OpenDub by this audit. Each future adapte
   linked weights have no recorded terms, byte size, or SHA-256.
 - OpenDub disposition: `planned`; detailed evidence and release gate are in
   [`docs/audits/emodubber-553fa054.md`](../docs/audits/emodubber-553fa054.md).
+
+## HPMDubbing And HPMDubbing_Vocoder
+
+- Pinned source commits: `f50dfa7df649208c674f151e52ad0a38d0b0bd43` and
+  `872251c6700f0e11de2e29741b2a29ca752b682d`.
+- Source licenses: MIT, confirmed from both root `LICENSE` files.
+- Blocking gaps: the published model and vocoder checkpoint links lack recorded
+  terms and SHA-256; HPMDubbing's published workflow depends on feature data and
+  includes V2C material subject to copyright restrictions.
+- OpenDub disposition: both remain `planned`; detailed contracts and release
+  gates are in [`docs/audits/hpmdubbing-f50dfa7.md`](../docs/audits/hpmdubbing-f50dfa7.md).
