@@ -1,0 +1,72 @@
+schema_version: opendub.upstream-registry/v1
+models:
+  - id: galaxycong/emodubber
+    display_name: EmoDubber
+    maturity: planned
+    source:
+      repository: https://github.com/GalaxyCong/EmoDubber
+      commit: 553fa054160fed17e757125d185e5a61ef6ed437
+      license: MIT
+    artifacts: []
+    paper: "EmoDubber: Towards High Quality and Emotion Controllable Movie Dubbing"
+    review: "Emotion-control implementation and weight terms require release audit."
+  - id: galaxycong/hpmdubbing
+    display_name: HPMDubbing
+    maturity: planned
+    source:
+      repository: https://github.com/GalaxyCong/HPMDubbing
+      commit: f50dfa7df649208c674f151e52ad0a38d0b0bd43
+      license: MIT
+    artifacts: []
+    paper: "Learning to Dub Movies via Hierarchical Prosody Models"
+    review: "Video preprocessing and restricted data requirements require adapter audit."
+  - id: galaxycong/styledubber
+    display_name: StyleDubber
+    maturity: planned
+    source:
+      repository: https://github.com/GalaxyCong/StyleDubber
+      commit: bc431c8f67e885433c5c23163a8eaccb0dd41175
+      license: MIT
+    artifacts: []
+    paper: "StyleDubber: Towards Multi-Scale Style Learning for Movie Dubbing"
+    review: "Inference inputs, weights, and runtime isolation require adapter audit."
+  - id: galaxycong/hpmdubbing-vocoder
+    display_name: HPMDubbing Vocoder
+    maturity: planned
+    source:
+      repository: https://github.com/GalaxyCong/HPMDubbing_Vocoder
+      commit: 872251c6700f0e11de2e29741b2a29ca752b682d
+      license: MIT
+    artifacts: []
+    paper: "HiFi-GAN based waveform rendering for HPMDubbing"
+    review: "Mel parameter and weight checksum audit required."
+  - id: hddub/hdcode
+    display_name: HD-Dub
+    maturity: planned
+    source:
+      repository: https://github.com/HD-Dub/HDCode
+      commit: d08839848cf17805bb598abf468968f8fc7a28f7
+      license: unknown
+    artifacts: []
+    paper: "Dubbing Movies via Hierarchical Phoneme Modeling and Acoustic Diffusion Denoising"
+    review: "Source ownership, license, weights, and runtime require audit."
+  - id: galaxycong/cosyncdit
+    display_name: CoSyncDiT
+    maturity: planned
+    source:
+      repository: https://github.com/GalaxyCong/CoSyncDiT
+      commit: adfc14b85590dccc52f3fa87432ea8e50ab36289
+      license: unknown
+    artifacts: []
+    paper: "CoSyncDiT: Cognitive Synchronous Diffusion Transformer for Movie Dubbing"
+    review: "Public repository currently exposes project description only."
+  - id: galaxycong/llm-flow-dubber
+    display_name: LLM-Flow-Dubber
+    maturity: planned
+    source:
+      repository: https://github.com/GalaxyCong/LLM-Flow-Dubber
+      commit: 7075d8c170ea10786fea306c7c311c3bdb74f04f
+      license: unknown
+    artifacts: []
+    paper: "No released paper or model artifact recorded in this registry."
+    review: "Public repository is a static demonstration site, not an adapter source."

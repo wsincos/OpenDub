@@ -1,0 +1,71 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "opendub"
+version = "0.0.1a0"
+description = "Video-aware, emotion-directed dubbing"
+readme = "README.md"
+requires-python = ">=3.11,<3.14"
+license = { text = "Apache-2.0" }
+authors = [
+  { name = "OpenDub Contributors" },
+]
+keywords = ["aigc", "dubbing", "speech", "video", "voice"]
+classifiers = [
+  "Development Status :: 2 - Pre-Alpha",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+]
+dependencies = [
+  "fastapi>=0.115,<1",
+  "httpx>=0.28,<1",
+  "numpy>=2.2,<3",
+  "pydantic>=2.10,<3",
+  "pyyaml>=6.0.2,<7",
+  "rich>=13.9,<14",
+  "soundfile>=0.13,<1",
+  "sqlalchemy>=2.0.36,<3",
+  "typer>=0.15,<1",
+  "uuid6>=2024.7.10",
+]
+
+[dependency-groups]
+dev = [
+  "coverage>=7.6,<8",
+  "mypy>=1.14,<2",
+  "pytest>=8.3,<9",
+  "pytest-cov>=6.0,<7",
+  "ruff>=0.8,<1",
+  "types-pyyaml>=6.0.12.20241230",
+]
+
+[project.scripts]
+opendub = "opendub.cli.app:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/opendub"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = ["-ra", "--strict-config", "--strict-markers"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+files = ["src/opendub"]
+warn_unused_configs = true
+
+[tool.coverage.run]
+branch = true
+source = ["opendub"]

@@ -19,7 +19,7 @@ test-results/
 # OpenDub local state
 .opendub/
 projects/
-models/
+/models/
 artifacts/
 logs/
 *.partial
