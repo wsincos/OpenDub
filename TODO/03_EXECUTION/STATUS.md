@@ -17,7 +17,7 @@ and real inference evidence are all recorded.
 | Recoverable pipeline | Four explicit prepare/generate/postprocess/evaluate stages, chained provenance cache keys, retry-safe atomic cache results, and cooperative cancellation |
 | Candidate quality reports | Deterministic duration, silence, and clipping checks plus local JSON/Markdown reports; unavailable neural metrics remain explicitly unavailable |
 | Test-only generation | Deterministic sine-wave fixture validates candidate persistence and traceability; it is not a user model |
-| API and CLI | Local project management, asset serving, authorization, segment creation, registry listing, candidate acceptance, accepted-candidate render/download API, candidate evaluation/report API, durable job list and SSE event replay, `init`, `create`, `list`, `doctor`, `render`, `serve` |
+| API and CLI | Local project management, asset serving, authorization, segment creation, registry listing, candidate acceptance, accepted-candidate render/download API, candidate evaluation/report API, durable job list and SSE event replay, `init`, `create`, `list`, `doctor`, `evaluate`, `render`, `serve` |
 | Web Studio | Real local project list, media import, authorization recording, segment setup, local video preview, data-driven timeline, candidate audio review/evaluation/accept controls, accepted-candidate export trigger, and visual QA |
 | Documentation and grant | Quick start, model-status guide, grant summary, evidence index, alpha demo script, validated separate DOCX draft |
 | Examples and delivery | Two FFmpeg-generated redistributable example projects, container definitions, Compose syntax check, GitHub Actions quality workflow |
@@ -37,7 +37,7 @@ and real inference evidence are all recorded.
 
 ## Current Verification
 
-- `make check`: 80 tests pass, Ruff and mypy pass.
+- `make check`: 81 tests pass, Ruff and mypy pass.
 - `make web-check`: TypeScript passes.
 - Browser QA: empty and configured project states were captured at 1440×900; the configured flow imported local synthetic audio, recorded authorization, imported/editable subtitle cues, retained a compact cue timeline at 375×812, and kept Export gated without accepted candidates. An isolated `opendub.test` QA fixture also verified candidate evaluation, acceptance persistence, and WAV download; it is not a product model or demo asset.
 - DOCX: `original/output/种子计划_OpenDub_申报表_草案.docx` is generated from the original template by `tools/grant-docx/`, OpenXML-validated, and visually checked as a two-page A4 PDF.

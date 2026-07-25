@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from typing import Annotated
 
@@ -9,6 +10,7 @@ import typer
 import uvicorn
 
 from opendub.application.doctor_service import run_doctor
+from opendub.application.evaluation_service import EvaluationService
 from opendub.application.render_service import RenderService
 from opendub.domain.errors import DomainError
 from opendub.media.render import MixMode
@@ -105,6 +107,47 @@ def render(
     if result.video is not None:
         typer.echo(f"Dubbed video\t{result.video}")
     typer.echo(f"Render manifest\t{result.manifest}")
+
+
+@app.command()
+def evaluate(
+    project_id: Annotated[str, typer.Argument(help="Project UUIDv7 identifier.")],
+    candidate_id: Annotated[str, typer.Argument(help="Generated candidate UUIDv7 identifier.")],
+    workspace: Annotated[
+        Path,
+        typer.Option(help="Local OpenDub workspace directory."),
+    ] = Path(".opendub"),
+    json_output: Annotated[
+        bool,
+        typer.Option("--json", help="Emit report locations and metric records as JSON."),
+    ] = False,
+) -> None:
+    """Evaluate a stored candidate and write its local JSON and Markdown reports."""
+    try:
+        report = EvaluationService(ProjectStore(workspace)).evaluate_candidate(
+            project_id, candidate_id
+        )
+    except DomainError as error:
+        typer.echo(f"{error.code}\t{error.message}", err=True)
+        raise typer.Exit(code=1) from error
+    if json_output:
+        typer.echo(
+            json.dumps(
+                {
+                    "candidate_id": report.candidate_id,
+                    "json_path": str(report.json_path),
+                    "markdown_path": str(report.markdown_path),
+                    "metrics": [metric.model_dump(mode="json") for metric in report.metrics],
+                },
+                ensure_ascii=False,
+            )
+        )
+        return
+    typer.echo(f"Evaluation JSON\t{report.json_path}")
+    typer.echo(f"Evaluation Markdown\t{report.markdown_path}")
+    for metric in report.metrics:
+        value = "-" if metric.value is None else str(metric.value)
+        typer.echo(f"{metric.metric_id}\t{metric.status}\t{value}\t{metric.unit or '-'}")
 
 
 @app.command()

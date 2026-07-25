@@ -66,6 +66,13 @@ uv run opendub list --workspace ~/.local/share/opendub
 uv run opendub doctor --workspace ~/.local/share/opendub --json
 ```
 
+Evaluate any stored candidate with deterministic timing and waveform checks. The emitted report
+also records unavailable neural metrics rather than fabricating scores:
+
+```bash
+uv run opendub evaluate PROJECT_ID CANDIDATE_ID --workspace ~/.local/share/opendub --json
+```
+
 Once a verified adapter has produced candidate takes and a reviewer has explicitly accepted at
 least one current take, render a local dubbing WAV and, when a source video exists, an MP4:
 

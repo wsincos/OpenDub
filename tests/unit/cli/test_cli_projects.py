@@ -3,6 +3,7 @@ from pathlib import Path
 from typer.testing import CliRunner
 
 from opendub.cli.app import app
+from opendub.storage.project_store import ProjectStore
 
 
 def test_cli_creates_a_project_in_explicit_workspace(tmp_path: Path) -> None:
@@ -33,3 +34,14 @@ def test_cli_render_describes_the_accepted_candidate_export_command() -> None:
 
     assert result.exit_code == 0
     assert "accepted candidate" in result.stdout.lower()
+
+
+def test_cli_evaluate_reports_a_missing_candidate_with_a_stable_error(tmp_path: Path) -> None:
+    project = ProjectStore(tmp_path).create("Evaluation command")
+
+    result = CliRunner().invoke(
+        app, ["evaluate", project.id, "missing", "--workspace", str(tmp_path)]
+    )
+
+    assert result.exit_code == 1
+    assert "ASSET_NOT_FOUND" in result.output
