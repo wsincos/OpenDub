@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900" role="img" aria-labelledby="title desc">
+  <title id="title">OpenDub platform architecture</title>
+  <desc id="desc">An editable platform-level workflow showing authorized task inputs, the interactive Method Atlas, local project preparation in Studio, and the evidence-gated path to Concept, Replay, comparison, and Live execution.</desc>
+  <defs>
+    <marker id="arrow-teal" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#378a79"/></marker>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#6689b9"/></marker>
+    <marker id="arrow-ochre" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#b68b59"/></marker>
+    <style>
+      .title { font: 700 28px Arial, sans-serif; fill: #13211f; }
+      .sub { font: 14px Arial, sans-serif; fill: #52615f; }
+      .zone { font: 700 13px Arial, sans-serif; fill: #52615f; letter-spacing: .4px; }
+      .head { font: 700 15px Arial, sans-serif; }
+      .body { font: 12px Arial, sans-serif; }
+      .edge { font: 12px Arial, sans-serif; fill: #52615f; }
+    </style>
+  </defs>
+  <rect width="1440" height="900" fill="#fff"/>
+  <text class="title" x="70" y="60">OpenDub Platform: Understand, Select, Prepare, Verify</text>
+  <text class="sub" x="70" y="88">A platform workflow, not a fused neural model. All listed methods remain complete and independently evidenced.</text>
+
+  <rect x="70" y="130" width="280" height="390" rx="8" fill="#f5f8f7" stroke="#cbd7d4"/>
+  <text class="zone" x="88" y="157">1. AUTHORIZED TASK INPUTS</text>
+  <g><rect x="95" y="185" width="230" height="68" rx="6" fill="#e3f1ee" stroke="#5c9b91" stroke-width="1.5"/><text class="head" x="113" y="215" fill="#173d37">Video</text><text class="body" x="113" y="235" fill="#173d37">scene, face, lip, timing</text></g>
+  <g><rect x="95" y="282" width="230" height="68" rx="6" fill="#e9f0fa" stroke="#6689b9" stroke-width="1.5"/><text class="head" x="113" y="312" fill="#203957">Target Text</text><text class="body" x="113" y="332" fill="#203957">script and target timing</text></g>
+  <g><rect x="95" y="379" width="230" height="82" rx="6" fill="#f7f0e7" stroke="#b68b59" stroke-width="1.5"/><text class="head" x="113" y="410" fill="#543a20">Authorized Reference Speech</text><text class="body" x="113" y="431" fill="#543a20">identity or voice style</text></g>
+
+  <rect x="415" y="130" width="450" height="390" rx="8" fill="#f4f7fb" stroke="#c7d1df"/>
+  <text class="zone" x="433" y="157">2. INTERACTIVE METHOD ATLAS</text>
+  <g><rect x="445" y="180" width="390" height="60" rx="6" fill="#fff" stroke="#7a97b8" stroke-width="1.5"/><text class="head" x="463" y="207" fill="#243d5b">Task Explorer</text><text class="body" x="463" y="226" fill="#243d5b">Explain the multimodal task</text></g>
+  <g><rect x="445" y="270" width="390" height="70" rx="6" fill="#fff" stroke="#7a97b8" stroke-width="1.5"/><text class="head" x="463" y="298" fill="#243d5b">Complete Method Canvases</text><text class="body" x="463" y="318" fill="#243d5b">HPMDubbing · StyleDubber · EmoDubber</text></g>
+  <g><rect x="445" y="370" width="390" height="70" rx="6" fill="#fff" stroke="#7a97b8" stroke-width="1.5"/><text class="head" x="463" y="398" fill="#243d5b">Evidence Room</text><text class="body" x="463" y="418" fill="#243d5b">source · license · weight terms · runtime status</text></g>
+  <g><rect x="445" y="470" width="390" height="70" rx="6" fill="#ddf1ec" stroke="#378a79" stroke-width="2"/><text class="head" x="463" y="498" fill="#173d37">Validated Method Selection</text><text class="body" x="463" y="518" fill="#173d37">method, evidence revision, inputs, controls, status</text></g>
+
+  <rect x="930" y="130" width="410" height="390" rx="8" fill="#f8f7f3" stroke="#d9d0c2"/>
+  <text class="zone" x="948" y="157">3. LOCAL PROJECT PREPARATION</text>
+  <g><rect x="960" y="185" width="350" height="60" rx="6" fill="#fff" stroke="#b29a7b" stroke-width="1.5"/><text class="head" x="978" y="212" fill="#4b3823">OpenDub Studio</text><text class="body" x="978" y="231" fill="#4b3823">local project, timeline, revision control</text></g>
+  <g><rect x="960" y="275" width="350" height="70" rx="6" fill="#fff" stroke="#b29a7b" stroke-width="1.5"/><text class="head" x="978" y="303" fill="#4b3823">Input and Rights Records</text><text class="body" x="978" y="323" fill="#4b3823">video hash · text fingerprint · reference-speech consent</text></g>
+  <g><rect x="960" y="375" width="350" height="70" rx="6" fill="#f9efd7" stroke="#b68b59" stroke-width="2"/><text class="head" x="978" y="403" fill="#543a20">Preparation Manifest</text><text class="body" x="978" y="423" fill="#543a20">versioned export for one selected complete method</text></g>
+
+  <rect x="70" y="610" width="1270" height="145" rx="8" fill="#f7f7f7" stroke="#d1d1d1"/>
+  <text class="zone" x="88" y="637">4. EVIDENCE-GATED USE</text>
+  <g><rect x="105" y="665" width="210" height="62" rx="6" fill="#edf3f8" stroke="#829dba"/><text class="head" x="183" y="693" fill="#2a4058">Concept</text><text class="body" x="149" y="712" fill="#2a4058">interactive explanation</text></g>
+  <g><rect x="395" y="665" width="210" height="62" rx="6" fill="#f6f1e8" stroke="#b39a76"/><text class="head" x="467" y="693" fill="#4b3823">Replay</text><text class="body" x="427" y="712" fill="#4b3823">authorized result bundle</text></g>
+  <g><rect x="685" y="665" width="210" height="62" rx="6" fill="#f6f1e8" stroke="#b39a76"/><text class="head" x="728" y="693" fill="#4b3823">Fair Comparison</text><text class="body" x="712" y="712" fill="#4b3823">same input contract only</text></g>
+  <g><rect x="975" y="665" width="300" height="62" rx="6" fill="#e5f2ed" stroke="#4e9987"/><text class="head" x="1035" y="693" fill="#173d37">Verified Local Live Run</text><text class="body" x="1045" y="712" fill="#173d37">admitted adapter + smoke test</text></g>
+
+  <path d="M350 300 H445" fill="none" stroke="#5c9b91" stroke-width="2" marker-end="url(#arrow-teal)"/>
+  <path d="M640 240 V270" fill="none" stroke="#6689b9" stroke-width="2" marker-end="url(#arrow-blue)"/>
+  <path d="M640 340 V370" fill="none" stroke="#6689b9" stroke-width="2" marker-end="url(#arrow-blue)"/>
+  <path d="M640 440 V470" fill="none" stroke="#378a79" stroke-width="2" marker-end="url(#arrow-teal)"/>
+  <path d="M835 505 H960" fill="none" stroke="#378a79" stroke-width="2" marker-end="url(#arrow-teal)"/>
+  <path d="M1135 245 V275" fill="none" stroke="#b68b59" stroke-width="2" marker-end="url(#arrow-ochre)"/>
+  <path d="M1135 345 V375" fill="none" stroke="#b68b59" stroke-width="2" marker-end="url(#arrow-ochre)"/>
+  <path d="M640 540 V600 H210 V665" fill="none" stroke="#829dba" stroke-width="2" marker-end="url(#arrow-blue)"/><text class="edge" x="447" y="589">Concept is available now</text>
+  <path d="M1135 445 V575 H500 V665" fill="none" stroke="#b68b59" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#arrow-ochre)"/><text class="edge" x="782" y="565">only after evidence admission</text>
+  <path d="M605 696 H685" fill="none" stroke="#b68b59" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#arrow-ochre)"/><text class="edge" x="612" y="654">same-input gate</text>
+  <path d="M1135 445 V575 H1125 V665" fill="none" stroke="#4e9987" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#arrow-teal)"/><text class="edge" x="1144" y="565">complete-method admission</text>
+</svg>

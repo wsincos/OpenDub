@@ -6,15 +6,15 @@ README 首屏应在一个桌面视口内完成：
 
 1. OpenDub 名称和一句话定位；
 2. 一张真实 Studio 截图或授权演示短 GIF；
-3. Stable/Experimental 模型状态；
-4. “运行示例”和“阅读文档”两个入口；
+3. 三套完整方法的 `Concept` / `Replay` / `Live` 内容与运行状态；
+4. “探索方法”和“创建本地项目”两个入口；
 5. Apache-2.0、Python、CI 状态。
 
 后续顺序：
 
 - Why OpenDub；
-- 真实功能列表；
-- 五阶段工作流；
+- Atlas、方法选择与本地项目准备的真实功能列表；
+- `理解 -> 选择 -> 准备 -> 条件运行` 工作流；
 - 快速开始；
 - 模型能力表；
 - 示例；
@@ -32,11 +32,10 @@ README 不能把 Planned 模型列为已支持。
 ### Getting Started
 
 - 系统要求；
-- Docker GPU 快速开始；
+- 无 GPU 的 Atlas 与本地项目快速开始；
 - 原生 uv 安装；
-- 下载与接受模型权重条款；
-- 运行授权示例；
-- 创建第一个项目；
+- 创建第一个授权项目并选择完整方法；
+- 条件运行：下载并接受已验证模型权重条款；
 - 常见故障。
 
 ### Concepts
@@ -113,14 +112,14 @@ README 不能把 Planned 模型列为已支持。
 
 初始公开 Issue 至少包括：
 
-1. EmoDubber 真实环境复现记录；
-2. 情感控制能力验证；
-3. HPM 声码器 mel 契约；
-4. 授权示例素材；
-5. 项目 Schema；
-6. FFmpeg 媒体管线；
-7. Web Studio 时间线；
-8. 统一指标；
+1. 三方法 Atlas 语义复核；
+2. Atlas 到 Studio 的方法选择记录；
+3. 授权示例素材；
+4. 项目 Schema；
+5. FFmpeg 媒体管线；
+6. Web Studio 已选方法与输入契约；
+7. 合格 Replay Bundle；
+8. 第一套方法的 Live 准入审计；
 9. Docker GPU；
 10. 中英文快速开始。
 

@@ -10,7 +10,7 @@ OpenDub 使用一个连续但可深链接的交互体验：
 | `/methods` | Method Atlas | 浏览三套完整方法及其差异 |
 | `/methods/:methodId` | Method Canvas | 逐组件理解一套方法 |
 | `/compare/:caseId` | Comparison Lab | 同一输入下比较多个结果 |
-| `/studio` | OpenDub Studio | 管理素材、运行 Live 方法并导出 |
+| `/studio` | OpenDub Studio | 管理授权项目、保留已选完整方法，并在验证通过后运行 Live 方法或导出 |
 | `/evidence` | Evidence Room | 查看论文、代码、权重、许可与运行证据 |
 
 默认入口是 `/explore`。项目列表和时间线工作台不再是第一次访问时的首屏。
@@ -151,10 +151,10 @@ Comparison Lab 不输出“绝对最好模型”，而是帮助用户根据需�
 
 ## Studio 与公开 Atlas 的关系
 
-Atlas 是公开、无需 GPU 的主要体验。Studio 是本地创作和 Live 运行空间：
+Atlas 是平台公开、无需 GPU 的主要体验和方法选择入口。Studio 是本地项目准备与条件运行空间：
 
 - Atlas 可独立使用 Concept 和 Replay 内容。
-- Studio 负责导入素材、授权、生成、评测和导出。
+- Studio 负责导入素材、登记授权、保留已选完整方法、准备运行条件、生成、评测和导出。
 - Live 结果生成后可以被打包成私有或可分发 Replay Bundle。
 - 一个 Live 运行失败不能破坏 Atlas 的教学和申报演示。
 
@@ -183,5 +183,5 @@ Atlas 是公开、无需 GPU 的主要体验。Studio 是本地创作和 Live �
 2. 说出视频配音区别于普通 TTS 的至少三个约束。
 3. 打开任意一套方法并点击至少两个组件。
 4. 区分 Concept、Replay 和 Live。
-5. 用同一案例比较至少两个方法结果。
+5. 理解同输入比较只有在至少两个合格结果存在时才会解锁。
 6. 找到论文、代码和许可证据。

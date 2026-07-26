@@ -2,6 +2,8 @@ import emoManifest from "../../../../content/methods/emodubber/method.json";
 import hpmManifest from "../../../../content/methods/hpmdubbing/method.json";
 import styleManifest from "../../../../content/methods/styledubber/method.json";
 
+import type { MethodSelectionDraft } from "../api/client";
+
 export type MethodNode = {
   id: string;
   label: string;
@@ -108,6 +110,43 @@ export const methods = manifests.map(toMethod);
 
 export function getMethod(slug: string | undefined): MethodDefinition | undefined {
   return methods.find((method) => method.slug === slug);
+}
+
+export function getMethodById(id: MethodDefinition["id"] | undefined): MethodDefinition | undefined {
+  return methods.find((method) => method.id === id);
+}
+
+export function englishIndefiniteArticle(label: string): "a" | "an" {
+  return /^(?:[aeiou]|hpm)/i.test(label) ? "an" : "a";
+}
+
+const methodSelectionMetadata: Record<MethodDefinition["id"], Pick<MethodSelectionDraft, "declaredNeed" | "optionalControls">> = {
+  "galaxycong/hpmdubbing": {
+    declaredNeed: "Understand how hierarchical Lip, Face, and Scene cues shape dubbing prosody.",
+    optionalControls: [],
+  },
+  "galaxycong/styledubber": {
+    declaredNeed: "Inspect phoneme- and utterance-level speaking style at multiple temporal scales.",
+    optionalControls: [],
+  },
+  "galaxycong/emodubber": {
+    declaredNeed: "Use explicit emotion category and intensity as part of the complete dubbing method.",
+    optionalControls: ["Emotion category", "Emotion intensity"],
+  },
+};
+
+export function createMethodSelectionDraft(method: MethodDefinition): MethodSelectionDraft {
+  const metadata = methodSelectionMetadata[method.id];
+  return {
+    methodId: method.id,
+    methodManifestVersion: `method-manifest@${method.sourceCommit}`,
+    declaredNeed: metadata.declaredNeed,
+    requiredInputs: ["Video", "Target text", "Authorized reference speech"],
+    optionalControls: metadata.optionalControls,
+    runtimeStatus: method.runtimeStatus,
+    contentModes: [method.status.toLowerCase() as MethodSelectionDraft["contentModes"][number]],
+    evidenceRevision: method.sourceCommit,
+  };
 }
 
 function toMethod(manifest: MethodManifestFile): MethodDefinition {

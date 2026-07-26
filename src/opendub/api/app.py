@@ -17,10 +17,14 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from opendub.application.evaluation_service import EvaluationService
 from opendub.application.ingest_service import segments_from_subtitles
+from opendub.application.preparation_service import PreparationService, target_text_fingerprint
 from opendub.application.render_service import RenderService
+from opendub.atlas.models import AtlasValidationError, MethodManifest
 from opendub.domain.assets import (
     AssetKind,
     ConsentRecord,
+    InputAuthorization,
+    InputKind,
     MaterialSource,
     MediaAsset,
     VoiceReference,
@@ -28,7 +32,7 @@ from opendub.domain.assets import (
 from opendub.domain.errors import DomainError
 from opendub.domain.ids import new_id
 from opendub.domain.metrics import MetricResult
-from opendub.domain.project import Project
+from opendub.domain.project import MethodSelection, Project
 from opendub.domain.segments import DubbingSegment, EmotionLabel, EmotionSpec
 from opendub.domain.time import TimeRange
 from opendub.jobs.models import JobEvent, JobRecord
@@ -46,6 +50,34 @@ class CreateProjectRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     name: str = Field(min_length=1, max_length=200)
+
+
+class SelectMethodRequest(MethodSelection):
+    """Persist an evidence-bound complete-method choice for one local project."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    expected_revision: int = Field(ge=1)
+
+
+class InputAuthorizationRequest(BaseModel):
+    """Record local use authorization for the project video or current target text."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    input_kind: InputKind
+    asset_id: str | None = None
+    material_source: MaterialSource
+    authorization_purpose: str = Field(
+        default="video_dubbing_project_preparation", min_length=1, max_length=200
+    )
+    expected_revision: int = Field(ge=1)
+
+
+class InputAuthorizationMutationResult(InputAuthorization):
+    """An input authorization together with the revision it created."""
+
+    project_revision: int = Field(ge=1)
 
 
 class UploadAssetRequest(BaseModel):
@@ -185,6 +217,14 @@ class RenderResponse(BaseModel):
     manifest_url: str
 
 
+class PreparationExportResponse(BaseModel):
+    """A safe local URL for one validated project-preparation record."""
+
+    project_id: str
+    project_revision: int = Field(ge=1)
+    manifest_url: str
+
+
 class EvaluationResponse(BaseModel):
     """Locations and truthful metric records for one local candidate evaluation."""
 
@@ -211,8 +251,9 @@ def create_app(*, workspace: Path | None = None) -> FastAPI:
             "http://127.0.0.1:5174",
             "http://localhost:5174",
         ],
+        allow_origin_regex=r"^http://(?:127\.0\.0\.1|localhost):[0-9]+$",
         allow_credentials=False,
-        allow_methods=["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+        allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
         allow_headers=["Content-Type", "If-Match"],
     )
 
@@ -234,6 +275,80 @@ def create_app(*, workspace: Path | None = None) -> FastAPI:
     @app.get("/api/v1/projects", response_model=tuple[Project, ...])
     def list_projects() -> tuple[Project, ...]:
         return store.iter_projects()
+
+    @app.put("/api/v1/projects/{project_id}/method-selection", response_model=Project)
+    def select_method(project_id: str, request: SelectMethodRequest) -> Project:
+        """Save one complete-method choice without claiming a Live model run."""
+        try:
+            project = store.load(project_id)
+            selection = MethodSelection(**request.model_dump(exclude={"expected_revision"}))
+            _validate_method_selection_evidence(selection, content_root=repository_root / "content")
+            updated = project.select_method(selection, expected_revision=request.expected_revision)
+            return store.save(updated, expected_revision=request.expected_revision)
+        except DomainError as error:
+            raise _http_error(error) from error
+
+    @app.post(
+        "/api/v1/projects/{project_id}/input-authorizations",
+        response_model=InputAuthorizationMutationResult,
+        status_code=status.HTTP_201_CREATED,
+    )
+    def authorize_project_input(
+        project_id: str, request: InputAuthorizationRequest
+    ) -> InputAuthorizationMutationResult:
+        """Bind a video asset or exact target text state to an explicit local declaration."""
+        try:
+            project = store.load(project_id)
+            if request.input_kind == "video":
+                asset = next((item for item in project.assets if item.id == request.asset_id), None)
+                if asset is None or asset.kind != "video":
+                    raise DomainError(
+                        code="ASSET_NOT_FOUND",
+                        message="Choose a project video before recording its authorization.",
+                    )
+                content_sha256 = asset.sha256
+            else:
+                if request.asset_id is not None:
+                    raise DomainError(
+                        code="INPUT_INVALID",
+                        message="Target text authorization cannot reference a media asset.",
+                    )
+                content_sha256 = target_text_fingerprint(project.segments)
+            authorization = InputAuthorization(
+                input_kind=request.input_kind,
+                asset_id=request.asset_id,
+                content_sha256=content_sha256,
+                material_source=request.material_source,
+                authorization_purpose=request.authorization_purpose,
+            )
+            updated = project.authorize_input(
+                authorization, expected_revision=request.expected_revision
+            )
+            store.save(updated, expected_revision=request.expected_revision)
+        except DomainError as error:
+            raise _http_error(error) from error
+        return InputAuthorizationMutationResult(
+            **authorization.model_dump(), project_revision=updated.revision
+        )
+
+    @app.post(
+        "/api/v1/projects/{project_id}/preparation-export",
+        response_model=PreparationExportResponse,
+    )
+    def export_project_preparation(project_id: str) -> PreparationExportResponse:
+        """Export the current selected-method preparation record without running a model."""
+        try:
+            result = PreparationService(store).export(project_id)
+        except DomainError as error:
+            raise _http_error(error) from error
+        export_root = (
+            f"/api/v1/projects/{project_id}/preparation-exports/revision-{result.project_revision}"
+        )
+        return PreparationExportResponse(
+            project_id=project_id,
+            project_revision=result.project_revision,
+            manifest_url=f"{export_root}/preparation.json",
+        )
 
     @app.get("/api/v1/projects/{project_id}/jobs", response_model=tuple[JobRecord, ...])
     def list_project_jobs(project_id: str) -> tuple[JobRecord, ...]:
@@ -566,6 +681,29 @@ def create_app(*, workspace: Path | None = None) -> FastAPI:
             raise _http_error(error) from error
         return FileResponse(path, filename=artifact)
 
+    @app.get("/api/v1/projects/{project_id}/preparation-exports/{export_directory}/{artifact}")
+    def get_preparation_export(
+        project_id: str, export_directory: str, artifact: str
+    ) -> FileResponse:
+        """Serve a fixed local preparation record without exposing arbitrary project files."""
+        if (
+            not export_directory.startswith("revision-")
+            or not export_directory.removeprefix("revision-").isdigit()
+            or artifact != "preparation.json"
+        ):
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+        try:
+            project = store.load(project_id)
+            preparation_root = (store.project_dir(project.id) / "preparation").resolve()
+            path = (preparation_root / export_directory / artifact).resolve()
+            if not path.is_relative_to(preparation_root) or not path.is_file():
+                raise DomainError(
+                    code="ASSET_NOT_FOUND", message="Preparation record was not found."
+                )
+        except DomainError as error:
+            raise _http_error(error) from error
+        return FileResponse(path, filename=artifact)
+
     @app.post(
         "/api/v1/projects/{project_id}/candidates/{candidate_id}/evaluate",
         response_model=EvaluationResponse,
@@ -687,6 +825,35 @@ def _project_asset_path(store: ProjectStore, project: Project, asset: MediaAsset
     if not path.is_relative_to(project_assets) or not path.is_file():
         raise DomainError(code="ASSET_NOT_FOUND", message="Project asset data was not found.")
     return path
+
+
+def _validate_method_selection_evidence(selection: MethodSelection, *, content_root: Path) -> None:
+    """Bind persisted selection status and commit to the local validated Method Manifest."""
+    slug = selection.method_id.rsplit("/", maxsplit=1)[-1]
+    manifest_path = content_root / "methods" / slug / "method.json"
+    try:
+        manifest = MethodManifest.model_validate(
+            json.loads(manifest_path.read_text(encoding="utf-8"))
+        )
+    except (OSError, json.JSONDecodeError, AtlasValidationError) as error:
+        raise DomainError(
+            code="INPUT_INVALID",
+            message="Selected method evidence is not available from the local Method Manifest.",
+        ) from error
+
+    expected_manifest_version = f"method-manifest@{manifest.source.commit}"
+    if (
+        manifest.id != selection.method_id
+        or selection.method_manifest_version != expected_manifest_version
+        or selection.evidence_revision != manifest.source.commit
+        or selection.runtime_status != manifest.runtime_status
+        or not set(selection.content_modes).issubset(set(manifest.content_modes))
+    ):
+        raise DomainError(
+            code="INPUT_INVALID",
+            message="Selected method evidence does not match the local Method Manifest.",
+            action="Return to the Method Atlas and select the current manifest-backed method.",
+        )
 
 
 def _sse_events(events: tuple[JobEvent, ...]) -> Iterator[str]:

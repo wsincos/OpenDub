@@ -1,8 +1,8 @@
 # Local Alpha Quick Start
 
-This guide runs the currently implemented, local-only OpenDub alpha. It creates a project,
-imports local media, records a voice-rights declaration, and adds a timeline segment. It does
-not install or claim a real dubbing model.
+This guide runs the currently implemented, local-only OpenDub alpha. It lets you inspect a
+complete method, carry that choice into a project, import authorized local inputs, and export a
+versioned preparation record. It does not install or claim a real dubbing model.
 
 ## Prerequisites
 
@@ -14,7 +14,7 @@ not install or claim a real dubbing model.
 ## Install and verify
 
 ```bash
-git clone https://github.com/GalaxyCong/OpenDub.git
+git clone https://github.com/wsincos/OpenDub.git
 cd OpenDub
 uv sync --all-groups
 make check
@@ -47,16 +47,20 @@ VITE_OPENDUB_API_BASE=http://127.0.0.1:8000 \
 
 Open `http://127.0.0.1:5173` in a modern browser.
 
+If port `5173` is already occupied, start Vite with another loopback port such as `5180` and open that address instead. The local API accepts Studio requests from `localhost` and `127.0.0.1` development ports only; it does not open the workspace to remote web origins.
+
 ## Alpha workflow
 
-1. Create a local project in the Studio.
-2. Import a video, a subtitle file, or an audio file that you own or are authorized to use.
-3. For an audio file used as a voice reference, record the material source and a speaker label.
+1. Open `http://127.0.0.1:5173/methods`, inspect a complete method, and choose **Prepare project**.
+2. Create a local project; Studio stores the selected method, its fixed evidence revision, and its declared input contract.
+3. Import a video and audio that you own or are authorized to use. For an audio voice reference, record the material source and speaker label.
 4. Add dialogue with a target start/end time, language, voice reference, emotion direction, and intensity.
-5. Review the stored project revision and the resulting timeline segment.
+5. Record the current video and target-text authorization declarations, then export `opendub-preparation.json` from the selected-method panel.
 
-The Studio will state that no model is verified until an adapter has passed the model admission
-gate. Do not interpret the `planned` status in the model registry as an available generation backend.
+The Studio will state that no listed research model is verified for a Live run until an adapter
+has passed the model admission gate. Do not interpret a `Concept` or `planned` status as an
+available generation backend. The preparation export is a reproducible handoff record, not an
+audio-generation request.
 
 ## Command line basics
 

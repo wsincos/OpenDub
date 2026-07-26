@@ -3,6 +3,7 @@ import {
   ArrowLeft,
   ChevronDown,
   FileAudio,
+  FileDown,
   FileText,
   Film,
   Layers3,
@@ -16,6 +17,7 @@ import {
   Upload,
   Waves,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 import {
   assetUrl,
@@ -28,13 +30,17 @@ import {
   DubbingSegment,
   EmotionLabel,
   evaluateCandidate,
+  exportProjectPreparation,
   importSubtitleSegments,
   Project,
+  PreparationExport,
+  recordInputAuthorization,
   RenderMutation,
   renderAcceptedCandidates,
   updateSegment,
   uploadAsset,
 } from "../../api/client";
+import { getMethodById } from "../../content/methods";
 import "./studio-shell.css";
 
 type StudioShellProps = { project: Project; onBack: () => void; onRefresh: () => Promise<void> };
@@ -49,13 +55,35 @@ export function StudioShell({ onBack, onRefresh, project }: StudioShellProps) {
   const [playing, setPlaying] = useState(false);
   const [mixMode, setMixMode] = useState<RenderMutation["mix_mode"]>("remove");
   const [lastRender, setLastRender] = useState<RenderMutation | null>(null);
+  const [preparationExport, setPreparationExport] = useState<PreparationExport | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const videoAsset = project.assets.find((asset) => asset.kind === "video");
+  const videoAssets = project.assets.filter((asset) => asset.kind === "video");
+  const videoAsset = videoAssets[0];
   const audioAssets = project.assets.filter((asset) => asset.kind === "audio");
   const subtitleAssets = project.assets.filter((asset) => asset.kind === "subtitle");
   const selectedSegment = project.segments.find((segment) => segment.id === selectedSegmentId) ?? null;
   const acceptedCandidateCount = project.segments.filter((segment) => segment.accepted_candidate_id).length;
   const selectedCandidates = project.candidates.filter((candidate) => candidate.segment_id === selectedSegmentId);
+  const selectedMethod = getMethodById(project.method_selection?.method_id);
+  const selectedAdapterId = project.method_selection?.method_id;
+  const supportsEmotionControls = project.method_selection?.optional_controls.includes("Emotion category") ?? false;
+  const selectedContentMode = project.method_selection?.content_modes[0]?.toUpperCase() ?? "UNSELECTED";
+  const hasCurrentVideoAuthorization = Boolean(
+    videoAsset && project.input_authorizations.some(
+      (authorization) => authorization.input_kind === "video" && authorization.asset_id === videoAsset.id,
+    ),
+  );
+  const hasTargetTextAuthorization = project.input_authorizations.some(
+    (authorization) => authorization.input_kind === "target_text",
+  );
+  const canExportPreparation = Boolean(
+    selectedAdapterId
+      && videoAsset
+      && project.segments.length
+      && project.voice_references.length
+      && hasCurrentVideoAuthorization
+      && hasTargetTextAuthorization,
+  );
 
   useEffect(() => {
     if (selectedSegmentId && project.segments.some((segment) => segment.id === selectedSegmentId)) return;
@@ -126,6 +154,50 @@ export function StudioShell({ onBack, onRefresh, project }: StudioShellProps) {
     }
   }
 
+  async function submitInputAuthorization(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const inputKind = String(data.get("input_kind")) as "video" | "target_text";
+    setBusy(true);
+    setMessage(null);
+    try {
+      await recordInputAuthorization(project.id, {
+        inputKind,
+        assetId: inputKind === "video" ? String(data.get("asset_id") ?? "") : undefined,
+        materialSource: String(data.get("material_source")) as "self_recorded" | "licensed" | "public_domain" | "authorized_other",
+        expectedRevision: project.revision,
+      });
+      await onRefresh();
+      setMessage(inputKind === "video" ? "Video authorization recorded locally." : "Current target text authorization recorded locally.");
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Could not record the input authorization.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function exportPreparation() {
+    if (!canExportPreparation) {
+      setMessage("Select a method and record the required video, target text, and voice authorizations before exporting.");
+      return;
+    }
+    setBusy(true);
+    setMessage(null);
+    try {
+      const exported = await exportProjectPreparation(project.id);
+      setPreparationExport(exported);
+      const download = document.createElement("a");
+      download.href = exported.manifest_url;
+      download.download = "opendub-preparation.json";
+      download.click();
+      setMessage("Selected-method preparation record exported locally.");
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Could not export the preparation record.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function submitSegment(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
@@ -133,6 +205,10 @@ export function StudioShell({ onBack, onRefresh, project }: StudioShellProps) {
     const startUs = Math.round(Number(data.get("start_seconds")) * 1_000_000);
     const endUs = Math.round(Number(data.get("end_seconds")) * 1_000_000);
     const text = String(data.get("dialogue") ?? "").trim();
+    if (!selectedAdapterId) {
+      setMessage("Choose a complete method in the Method Atlas before configuring dialogue.");
+      return;
+    }
     if (!text || !Number.isFinite(startUs) || !Number.isFinite(endUs) || endUs <= startUs) {
       setMessage("Set a positive start and end time before adding dialogue.");
       return;
@@ -146,7 +222,7 @@ export function StudioShell({ onBack, onRefresh, project }: StudioShellProps) {
         text,
         language: String(data.get("language") ?? "en"),
         voiceReferenceId: String(data.get("voice_reference") ?? ""),
-        adapterId: "galaxycong/emodubber",
+        adapterId: selectedAdapterId,
         emotionLabel: String(data.get("emotion")) as EmotionLabel,
         emotionIntensity: Number(data.get("intensity")),
         expectedRevision: project.revision,
@@ -166,6 +242,10 @@ export function StudioShell({ onBack, onRefresh, project }: StudioShellProps) {
     const data = new FormData(event.currentTarget);
     const assetId = String(data.get("subtitle_asset") ?? "");
     const voiceReferenceId = String(data.get("subtitle_voice_reference") ?? "");
+    if (!selectedAdapterId) {
+      setMessage("Choose a complete method in the Method Atlas before importing dialogue cues.");
+      return;
+    }
     if (!assetId || !voiceReferenceId) return;
     setBusy(true);
     setMessage(null);
@@ -174,7 +254,7 @@ export function StudioShell({ onBack, onRefresh, project }: StudioShellProps) {
         assetId,
         language: String(data.get("subtitle_language") ?? "en"),
         voiceReferenceId,
-        adapterId: "galaxycong/emodubber",
+        adapterId: selectedAdapterId,
         expectedRevision: project.revision,
       });
       setSelectedSegmentId(updated.segments[0]?.id ?? null);
@@ -284,7 +364,7 @@ export function StudioShell({ onBack, onRefresh, project }: StudioShellProps) {
           <Resource label="Video" detail={videoAsset?.display_name ?? "Not imported"} icon={<Film size={16} />} active />
           <Resource label="Dialogue" detail={`${project.segments.length} segments`} icon={<Waves size={16} />} />
           <Resource label="Voice" detail={`${project.voice_references.length} authorized`} icon={<FileAudio size={16} />} />
-          <Resource label="Models" detail="0 verified" icon={<SlidersHorizontal size={16} />} />
+          <Resource label="Method" detail={selectedMethod ? `${selectedMethod.title} · ${selectedContentMode}` : "Selection required"} icon={<SlidersHorizontal size={16} />} />
         </nav>
         <div className={`asset-note ${project.voice_references.length ? "" : "is-empty"}`}><ShieldCheck size={15} /><span>{project.voice_references.length ? "Voice consent recorded" : "Authorization required before generation"}</span></div>
       </aside>
@@ -301,31 +381,50 @@ export function StudioShell({ onBack, onRefresh, project }: StudioShellProps) {
       <aside className="inspector">
         <PanelHeading icon={<SlidersHorizontal size={16} />} title="Local setup" />
         {message ? <div className="studio-message" role="alert">{message}</div> : null}
+        <MethodPreparation busy={busy} canExport={canExportPreparation} exported={preparationExport} method={selectedMethod} onExport={() => void exportPreparation()} selection={project.method_selection} />
         <form className="setup-form" onSubmit={(event) => void submitMedia(event)}>
           <span className="field-label">Source media</span><input aria-label="Local source media" name="media" required type="file" accept="video/*,audio/*,.srt,.vtt" /><select aria-label="Media kind" defaultValue="video" name="kind"><option value="video">Video</option><option value="audio">Voice audio</option><option value="subtitle">Subtitle file</option></select><button className="outline-button" disabled={busy} type="submit"><Upload size={15} /> Import locally</button>
         </form>
         {audioAssets.length > 0 && project.voice_references.length === 0 ? <form className="setup-form inspector-section" onSubmit={(event) => void submitVoiceReference(event)}><div className="section-title"><span>Voice authorization</span><ShieldCheck size={15} /></div><select aria-label="Authorized audio asset" name="audio_asset" required>{audioAssets.map((asset) => <option key={asset.id} value={asset.id}>{asset.display_name}</option>)}</select><input aria-label="Speaker label" maxLength={200} name="speaker_label" placeholder="Speaker label" required /><select aria-label="Rights source" defaultValue="self_recorded" name="material_source"><option value="self_recorded">Self recorded</option><option value="licensed">Licensed</option><option value="public_domain">Public domain</option><option value="authorized_other">Authorized other</option></select><label className="consent-check"><input aria-label="Permit output distribution" name="allow_generated_output_distribution" type="checkbox" /><span>Permit sharing generated output</span></label><button className="outline-button" disabled={busy} type="submit"><ShieldCheck size={15} /> Record authorization</button></form> : null}
+        {project.method_selection && videoAssets.length > 0 ? <InputAuthorizationForm busy={busy} onSubmit={submitInputAuthorization} videoAssets={videoAssets} /> : null}
         {project.voice_references.length > 0 && subtitleAssets.length > 0 ? <SubtitleImportForm busy={busy} onSubmit={submitSubtitleImport} project={project} subtitleAssets={subtitleAssets} /> : null}
-        {project.voice_references.length > 0 ? <SegmentForm busy={busy} onSubmit={submitSegment} project={project} /> : <div className="inspector-section capability-note"><span className="field-label">Generation gate</span><p>Import an audio reference and record an explicit authorization before configuring dialogue.</p></div>}
-        {selectedSegment ? <SegmentEditor busy={busy} onDelete={() => void removeSelectedSegment()} onSubmit={submitSegmentUpdate} project={project} segment={selectedSegment} /> : null}
+        {!project.method_selection ? <div className="inspector-section capability-note"><span className="field-label">Method selection required</span><p>Choose one complete method before configuring dialogue for this local project.</p></div> : project.voice_references.length > 0 ? <SegmentForm busy={busy} onSubmit={submitSegment} project={project} supportsEmotionControls={supportsEmotionControls} /> : <div className="inspector-section capability-note"><span className="field-label">Preparation gate</span><p>Import an audio reference and record an explicit authorization before configuring dialogue.</p></div>}
+        {selectedSegment ? <SegmentEditor busy={busy} onDelete={() => void removeSelectedSegment()} onSubmit={submitSegmentUpdate} project={project} segment={selectedSegment} supportsEmotionControls={supportsEmotionControls} /> : null}
+        {project.method_selection && project.segments.length > 0 ? <InputAuthorizationForm busy={busy} onSubmit={submitInputAuthorization} /> : null}
         {selectedSegment ? <CandidateReview candidates={selectedCandidates} evaluations={evaluations} busy={busy} onReview={(candidate, action) => void reviewCandidate(candidate, action)} project={project} segment={selectedSegment} /> : null}
       </aside>
 
-      <section className="job-drawer" aria-label="Local task queue"><div className="drawer-title"><span>{lastRender ? "Export" : "Local queue"}</span><span className="queue-count">{lastRender ? `r${lastRender.project_revision}` : "0 jobs"}</span></div>{lastRender ? <div className="export-result" role="status"><div><strong>Render ready</strong><span>{lastRender.distribution_authorized ? "Output sharing authorized" : "Local review only"}</span></div><nav aria-label="Rendered export files"><a href={lastRender.dubbing_audio_url}>WAV</a>{lastRender.dubbed_video_url ? <a href={lastRender.dubbed_video_url}>MP4</a> : null}<a href={lastRender.manifest_url}>Manifest</a></nav></div> : <div className="queue-empty">No model is verified in this workspace. Project setup and media remain local.</div>}</section>
+      <section className="job-drawer" aria-label="Local task queue"><div className="drawer-title"><span>{lastRender ? "Export" : "Local queue"}</span><span className="queue-count">{lastRender ? `r${lastRender.project_revision}` : "0 jobs"}</span></div>{lastRender ? <div className="export-result" role="status"><div><strong>Render ready</strong><span>{lastRender.distribution_authorized ? "Output sharing authorized" : "Local review only"}</span></div><nav aria-label="Rendered export files"><a href={lastRender.dubbing_audio_url}>WAV</a>{lastRender.dubbed_video_url ? <a href={lastRender.dubbed_video_url}>MP4</a> : null}<a href={lastRender.manifest_url}>Manifest</a></nav></div> : <div className="queue-empty">{selectedMethod ? `${selectedMethod.title} is recorded as ${selectedContentMode}. A verified adapter is required before Live generation.` : "Select one complete method in the Atlas before preparing a run."}</div>}</section>
     </main>
   );
 }
 
-function SegmentForm({ busy, onSubmit, project }: { busy: boolean; onSubmit: (event: FormEvent<HTMLFormElement>) => Promise<void>; project: Project }) {
-  return <form className="setup-form inspector-section" onSubmit={(event) => void onSubmit(event)}><div className="section-title"><span>New dialogue</span><span className="planned-badge">Planned adapter</span></div><textarea aria-label="Dialogue" name="dialogue" placeholder="Dialogue to dub" required rows={3} /><div className="compact-grid"><label>Start (s)<input defaultValue="0" min="0" name="start_seconds" required step="0.01" type="number" /></label><label>End (s)<input defaultValue="1.5" min="0.01" name="end_seconds" required step="0.01" type="number" /></label></div><select aria-label="Dialogue language" defaultValue="en" name="language"><option value="en">English</option><option value="zh">Chinese</option></select><select aria-label="Voice reference" name="voice_reference">{project.voice_references.map((reference) => <option key={reference.id} value={reference.id}>{reference.speaker_label}</option>)}</select><select aria-label="Emotion" defaultValue="neutral" name="emotion">{emotionLabels.map((emotion) => <option key={emotion} value={emotion}>{emotion}</option>)}</select><label className="range-heading">Intensity <output>0.50</output><input aria-label="Emotion intensity" defaultValue="0.5" max="1" min="0" name="intensity" step="0.05" type="range" /></label><button className="generate-button enabled" disabled={busy} type="submit"><Waves size={17} /> Add to timeline</button></form>;
+function SegmentForm({ busy, onSubmit, project, supportsEmotionControls }: { busy: boolean; onSubmit: (event: FormEvent<HTMLFormElement>) => Promise<void>; project: Project; supportsEmotionControls: boolean }) {
+  return <form className="setup-form inspector-section" onSubmit={(event) => void onSubmit(event)}><div className="section-title"><span>New dialogue</span><span className="planned-badge">Local preparation</span></div><textarea aria-label="Dialogue" name="dialogue" placeholder="Dialogue to dub" required rows={3} /><div className="compact-grid"><label>Start (s)<input defaultValue="0" min="0" name="start_seconds" required step="0.01" type="number" /></label><label>End (s)<input defaultValue="1.5" min="0.01" name="end_seconds" required step="0.01" type="number" /></label></div><select aria-label="Dialogue language" defaultValue="en" name="language"><option value="en">English</option><option value="zh">Chinese</option></select><select aria-label="Voice reference" name="voice_reference">{project.voice_references.map((reference) => <option key={reference.id} value={reference.id}>{reference.speaker_label}</option>)}</select>{supportsEmotionControls ? <><select aria-label="Emotion" defaultValue="neutral" name="emotion">{emotionLabels.map((emotion) => <option key={emotion} value={emotion}>{emotion}</option>)}</select><label className="range-heading">Intensity <output>0.50</output><input aria-label="Emotion intensity" defaultValue="0.5" max="1" min="0" name="intensity" step="0.05" type="range" /></label></> : <><input name="emotion" type="hidden" value="neutral" /><input name="intensity" type="hidden" value="0.5" /></>}<button className="generate-button enabled" disabled={busy} type="submit"><Waves size={17} /> Add to timeline</button></form>;
 }
 
 function SubtitleImportForm({ busy, onSubmit, project, subtitleAssets }: { busy: boolean; onSubmit: (event: FormEvent<HTMLFormElement>) => Promise<void>; project: Project; subtitleAssets: Project["assets"] }) {
   return <form className="setup-form inspector-section" onSubmit={(event) => void onSubmit(event)}><div className="section-title"><span>Subtitle cues</span><FileText size={15} /></div><select aria-label="Subtitle asset" name="subtitle_asset">{subtitleAssets.map((asset) => <option key={asset.id} value={asset.id}>{asset.display_name}</option>)}</select><select aria-label="Subtitle language" defaultValue="en" name="subtitle_language"><option value="en">English</option><option value="zh">Chinese</option></select><select aria-label="Subtitle voice reference" name="subtitle_voice_reference">{project.voice_references.map((reference) => <option key={reference.id} value={reference.id}>{reference.speaker_label}</option>)}</select><button className="outline-button" disabled={busy} type="submit"><FileText size={15} /> Import cues</button></form>;
 }
 
-function SegmentEditor({ busy, onDelete, onSubmit, project, segment }: { busy: boolean; onDelete: () => void; onSubmit: (event: FormEvent<HTMLFormElement>) => Promise<void>; project: Project; segment: DubbingSegment }) {
-  return <form className="setup-form inspector-section" key={segment.id} onSubmit={(event) => void onSubmit(event)}><div className="section-title"><span>Selected segment</span><span className="mono-value">r{segment.revision}</span></div><input name="segment_id" type="hidden" value={segment.id} /><textarea aria-label="Edit dialogue" defaultValue={segment.text} name="dialogue" required rows={3} /><div className="compact-grid"><label>Start (s)<input defaultValue={(segment.range.start_us / 1_000_000).toFixed(2)} min="0" name="start_seconds" required step="0.01" type="number" /></label><label>End (s)<input defaultValue={(segment.range.end_us / 1_000_000).toFixed(2)} min="0.01" name="end_seconds" required step="0.01" type="number" /></label></div><select aria-label="Edit language" defaultValue={segment.language} name="language"><option value="en">English</option><option value="zh">Chinese</option></select><select aria-label="Edit voice reference" defaultValue={segment.voice_reference_id} name="voice_reference">{project.voice_references.map((reference) => <option key={reference.id} value={reference.id}>{reference.speaker_label}</option>)}</select><select aria-label="Edit emotion" defaultValue={segment.emotion.label} name="emotion">{emotionLabels.map((emotion) => <option key={emotion} value={emotion}>{emotion}</option>)}</select><label className="range-heading">Intensity <output>{segment.emotion.intensity.toFixed(2)}</output><input aria-label="Edit emotion intensity" defaultValue={segment.emotion.intensity} max="1" min="0" name="intensity" step="0.05" type="range" /></label><div className="segment-actions"><button className="outline-button" disabled={busy} type="submit"><Save size={15} /> Save segment</button><button className="danger-button" disabled={busy} onClick={onDelete} type="button" title="Remove segment"><Trash2 size={15} /></button></div></form>;
+function InputAuthorizationForm({ busy, onSubmit, videoAssets }: { busy: boolean; onSubmit: (event: FormEvent<HTMLFormElement>) => Promise<void>; videoAssets?: Project["assets"] }) {
+  const inputKind = videoAssets ? "video" : "target_text";
+  const label = inputKind === "video" ? "Video authorization" : "Target text authorization";
+  const action = inputKind === "video" ? "Record video authorization" : "Confirm current target text";
+  return <form className="setup-form inspector-section input-authorization-form" onSubmit={(event) => void onSubmit(event)}><div className="section-title"><span>{label}</span><ShieldCheck size={15} /></div><input name="input_kind" type="hidden" value={inputKind} />{videoAssets ? <select aria-label="Authorized project video" name="asset_id">{videoAssets.map((asset) => <option key={asset.id} value={asset.id}>{asset.display_name}</option>)}</select> : <p>The declaration covers the current editable dialogue text and must be renewed after text changes.</p>}<select aria-label={`${label} source`} defaultValue="self_recorded" name="material_source"><option value="self_recorded">Self recorded</option><option value="licensed">Licensed</option><option value="public_domain">Public domain</option><option value="authorized_other">Authorized other</option></select><button className="outline-button" disabled={busy} type="submit"><ShieldCheck size={15} /> {action}</button></form>;
+}
+
+function SegmentEditor({ busy, onDelete, onSubmit, project, segment, supportsEmotionControls }: { busy: boolean; onDelete: () => void; onSubmit: (event: FormEvent<HTMLFormElement>) => Promise<void>; project: Project; segment: DubbingSegment; supportsEmotionControls: boolean }) {
+  return <form className="setup-form inspector-section" key={segment.id} onSubmit={(event) => void onSubmit(event)}><div className="section-title"><span>Selected segment</span><span className="mono-value">r{segment.revision}</span></div><input name="segment_id" type="hidden" value={segment.id} /><textarea aria-label="Edit dialogue" defaultValue={segment.text} name="dialogue" required rows={3} /><div className="compact-grid"><label>Start (s)<input defaultValue={(segment.range.start_us / 1_000_000).toFixed(2)} min="0" name="start_seconds" required step="0.01" type="number" /></label><label>End (s)<input defaultValue={(segment.range.end_us / 1_000_000).toFixed(2)} min="0.01" name="end_seconds" required step="0.01" type="number" /></label></div><select aria-label="Edit language" defaultValue={segment.language} name="language"><option value="en">English</option><option value="zh">Chinese</option></select><select aria-label="Edit voice reference" defaultValue={segment.voice_reference_id} name="voice_reference">{project.voice_references.map((reference) => <option key={reference.id} value={reference.id}>{reference.speaker_label}</option>)}</select>{supportsEmotionControls ? <><select aria-label="Edit emotion" defaultValue={segment.emotion.label} name="emotion">{emotionLabels.map((emotion) => <option key={emotion} value={emotion}>{emotion}</option>)}</select><label className="range-heading">Intensity <output>{segment.emotion.intensity.toFixed(2)}</output><input aria-label="Edit emotion intensity" defaultValue={segment.emotion.intensity} max="1" min="0" name="intensity" step="0.05" type="range" /></label></> : <><input name="emotion" type="hidden" value={segment.emotion.label} /><input name="intensity" type="hidden" value={segment.emotion.intensity} /></>}<div className="segment-actions"><button className="outline-button" disabled={busy} type="submit"><Save size={15} /> Save segment</button><button className="danger-button" disabled={busy} onClick={onDelete} type="button" title="Remove segment"><Trash2 size={15} /></button></div></form>;
+}
+
+function MethodPreparation({ busy, canExport, exported, method, onExport, selection }: { busy: boolean; canExport: boolean; exported: PreparationExport | null; method: ReturnType<typeof getMethodById>; onExport: () => void; selection: Project["method_selection"] }) {
+  if (!selection) {
+    return <section className="method-preparation inspector-section"><div className="section-title"><span>Method selection required</span><span className="planned-badge">Atlas first</span></div><p>Choose a complete video-dubbing method before preparing dialogue. This project will not silently default to a model.</p><Link className="method-atlas-link" to="/methods">Open Method Atlas</Link></section>;
+  }
+  const contentMode = selection.content_modes[0]?.toUpperCase() ?? "PLANNED";
+  const localLiveAvailable = selection.runtime_status !== "unavailable" && selection.content_modes.includes("live");
+  return <section aria-label="Selected method configuration" className="method-preparation inspector-section"><div className="section-title"><span>Selected method</span><span className="method-status-badge">{contentMode}</span></div><strong className="selected-method-name">{method?.title ?? selection.method_id}</strong><p>{selection.declared_need}</p><span className="field-label">Required inputs</span><div className="method-chip-list">{selection.required_inputs.map((input) => <span key={input}>{input}</span>)}</div>{selection.optional_controls.length > 0 ? <><span className="field-label">Method controls</span><div className="method-chip-list">{selection.optional_controls.map((control) => <span key={control}>{control}</span>)}</div></> : null}<div className={`method-runtime ${localLiveAvailable ? "is-ready" : ""}`}>{localLiveAvailable ? "This selected method has an admitted local Live runtime." : "Live generation is unavailable for this selected method. A verified adapter is required before it can run."}</div><button aria-label="Export preparation record" className="preparation-export-button" disabled={busy || !canExport} onClick={onExport} title={canExport ? "Export the selected-method preparation record" : "Record required input authorizations before exporting"} type="button"><FileDown size={15} /> Export preparation record</button>{exported ? <a className="preparation-export-link" href={exported.manifest_url}>Preparation record r{exported.project_revision}</a> : null}</section>;
 }
 
 function CandidateReview({ busy, candidates, evaluations, onReview, project, segment }: { busy: boolean; candidates: DubbingCandidate[]; evaluations: Record<string, CandidateEvaluation>; onReview: (candidate: DubbingCandidate, action: "accept" | "evaluate") => void; project: Project; segment: DubbingSegment }) {

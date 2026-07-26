@@ -26,6 +26,17 @@ export type VoiceReference = {
   speaker_label: string;
 };
 
+export type InputAuthorization = {
+  id: string;
+  input_kind: "video" | "target_text";
+  asset_id: string | null;
+  content_sha256: string;
+  material_source: MaterialSource;
+  authorization_purpose: string;
+  accepted_at: string;
+  revision: number;
+};
+
 export type DubbingSegment = {
   id: string;
   range: { start_us: number; end_us: number };
@@ -51,6 +62,29 @@ export type DubbingCandidate = {
   revision: number;
 };
 
+export type MethodSelection = {
+  method_id: "galaxycong/hpmdubbing" | "galaxycong/styledubber" | "galaxycong/emodubber";
+  method_manifest_version: string;
+  declared_need: string;
+  required_inputs: string[];
+  optional_controls: string[];
+  runtime_status: "unavailable" | "experimental" | "stable";
+  content_modes: Array<"concept" | "replay" | "live" | "planned">;
+  evidence_revision: string;
+  selected_at: string;
+};
+
+export type MethodSelectionDraft = {
+  methodId: MethodSelection["method_id"];
+  methodManifestVersion: string;
+  declaredNeed: string;
+  requiredInputs: string[];
+  optionalControls: string[];
+  runtimeStatus: MethodSelection["runtime_status"];
+  contentModes: MethodSelection["content_modes"];
+  evidenceRevision: string;
+};
+
 export type CandidateEvaluation = {
   candidate_id: string;
   metrics: Array<{
@@ -67,6 +101,8 @@ export type CandidateEvaluation = {
 export type Project = ProjectSummary & {
   assets: MediaAsset[];
   voice_references: VoiceReference[];
+  input_authorizations: InputAuthorization[];
+  method_selection: MethodSelection | null;
   segments: DubbingSegment[];
   candidates: DubbingCandidate[];
   consents: unknown[];
@@ -74,6 +110,7 @@ export type Project = ProjectSummary & {
 
 type AssetMutation = MediaAsset & { project_revision: number };
 type VoiceReferenceMutation = VoiceReference & { project_revision: number };
+type InputAuthorizationMutation = InputAuthorization & { project_revision: number };
 type SegmentMutation = DubbingSegment & { project_revision: number };
 export type RenderMutation = {
   project_id: string;
@@ -83,6 +120,12 @@ export type RenderMutation = {
   distribution_authorized: boolean;
   dubbing_audio_url: string;
   dubbed_video_url: string | null;
+  manifest_url: string;
+};
+
+export type PreparationExport = {
+  project_id: string;
+  project_revision: number;
   manifest_url: string;
 };
 
@@ -108,6 +151,28 @@ export function createProject(name: string): Promise<Project> {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ name }),
+  });
+}
+
+export function selectProjectMethod(
+  projectId: string,
+  selection: MethodSelectionDraft,
+  expectedRevision: number,
+): Promise<Project> {
+  return request<Project>(`/api/v1/projects/${projectId}/method-selection`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      method_id: selection.methodId,
+      method_manifest_version: selection.methodManifestVersion,
+      declared_need: selection.declaredNeed,
+      required_inputs: selection.requiredInputs,
+      optional_controls: selection.optionalControls,
+      runtime_status: selection.runtimeStatus,
+      content_modes: selection.contentModes,
+      evidence_revision: selection.evidenceRevision,
+      expected_revision: expectedRevision,
+    }),
   });
 }
 
@@ -149,6 +214,35 @@ export function createVoiceReference(
       expected_revision: input.expectedRevision,
     }),
   });
+}
+
+export function recordInputAuthorization(
+  projectId: string,
+  input: {
+    inputKind: InputAuthorization["input_kind"];
+    assetId?: string;
+    materialSource: MaterialSource;
+    expectedRevision: number;
+  },
+): Promise<InputAuthorizationMutation> {
+  return request<InputAuthorizationMutation>(`/api/v1/projects/${projectId}/input-authorizations`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      input_kind: input.inputKind,
+      asset_id: input.assetId ?? null,
+      material_source: input.materialSource,
+      expected_revision: input.expectedRevision,
+    }),
+  });
+}
+
+export async function exportProjectPreparation(projectId: string): Promise<PreparationExport> {
+  const exported = await request<PreparationExport>(
+    `/api/v1/projects/${projectId}/preparation-export`,
+    { method: "POST" },
+  );
+  return { ...exported, manifest_url: `${apiBase}${exported.manifest_url}` };
 }
 
 export function createSegment(

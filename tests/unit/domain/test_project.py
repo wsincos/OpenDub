@@ -4,7 +4,7 @@ from opendub.domain.assets import ConsentRecord, MediaAsset, VoiceReference
 from opendub.domain.candidates import Candidate
 from opendub.domain.errors import DomainError
 from opendub.domain.ids import new_id
-from opendub.domain.project import Project
+from opendub.domain.project import MethodSelection, Project
 from opendub.domain.segments import DubbingSegment, EmotionSpec
 from opendub.domain.time import TimeRange
 
@@ -54,6 +54,26 @@ def test_project_rejects_stale_revision() -> None:
 
     with pytest.raises(DomainError, match="PROJECT_CONFLICT"):
         project.accept_candidate(segment.id, candidate.id, expected_revision=project.revision - 1)
+
+
+def test_project_persists_complete_method_selection_with_a_revision() -> None:
+    project, _, _ = make_project()
+    selection = MethodSelection(
+        method_id="galaxycong/emodubber",
+        method_manifest_version="atlas-2026-07-26",
+        declared_need="Explicit emotion category and intensity control.",
+        required_inputs=("Video", "Target text", "Authorized reference speech"),
+        optional_controls=("Emotion category", "Emotion intensity"),
+        runtime_status="unavailable",
+        content_modes=("concept",),
+        evidence_revision="553fa054",
+    )
+
+    updated = project.select_method(selection, expected_revision=project.revision)
+
+    assert updated.revision == project.revision + 1
+    assert updated.method_selection == selection
+    assert updated.updated_at >= project.updated_at
 
 
 def test_project_requires_authorized_audio_reference_for_new_segment() -> None:

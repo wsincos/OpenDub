@@ -396,7 +396,7 @@ Verify graph canvas has non-background pixels, nodes are inside bounds, labels d
 
 Run: `pnpm --filter @opendub/web exec playwright test e2e/method-atlas.spec.ts e2e/method-canvas.spec.ts`
 
-- [ ] **Step 4: Run full M2 verification**
+- [ ] **Step 4: Run full P1 verification**
 
 ```bash
 uv run opendub atlas validate content

@@ -1,285 +1,131 @@
 # OpenDub 项目当前状态说明
 
-**更新时间：** 2026-07-26
-**功能实现提交：** `b490056`（本说明随后以 `8b77b94` 补充）
-**主仓库：** <https://github.com/wsincos/OpenDub>
+**更新时间：** 2026-07-26<br>
+**主仓库：** <https://github.com/wsincos/OpenDub><br>
+**当前开发版本：** `v0.0.1-alpha.0`
 
-## 1. 先说结论
+## 1. 一句话结论
 
-OpenDub 当前已经完成了一个可以用于申报展示和录制视频的 **Concept Atlas（交互式方法图谱）版本**。
+OpenDub 当前已完成申报版的 **P0-P3 交付闭环**：它可以清楚解释视频配音生成任务、交互式展示并选择三套完整研究方法、将选择和授权输入保存为本地项目，并导出可复现的准备记录。申报演示视频、双语字幕、校验和和交付清单已随仓库提供。
 
-这个版本已经能够清楚地说明视频配音生成是什么、三个团队已有方法分别解决什么问题、它们的完整流程是什么，以及目前哪些能力已经有证据、哪些能力还不能声称已经运行。
+当前版本没有把任何未通过证据门槛的模型伪装成可用的 Live 推理能力，也没有伪造多方法音频比较结果。
 
-但是，以下两件事**还没有完成，也没有被伪装成已完成**：
+对外统一名称为：
 
-1. 同一输入下的真实多方法音频对比（Replay Comparison）。
-2. 用户上传新视频后现场运行模型生成语音（Live Generation）。
+> **OpenDub：面向 AIGC 内容生产的多模态智能视频配音开源平台**<br>
+> **OpenDub: An Open-Source Platform for Multimodal Intelligent Video Dubbing**
 
-原因不是界面没有做好，而是目前公开 checkpoint 还没有同时满足权重使用条款、SHA-256 校验、可复现运行环境、授权素材和真实 smoke test 等条件。OpenDub 的页面会明确显示这一事实。
+产品特征描述为：**Interactive Method Atlas, Visual Comparison, and Complete-Method Workbench**。
 
-因此，更准确的表述是：
+## 2. OpenDub 解决什么问题
 
-> **OpenDub 已完成可录制、可交互、可追溯的三方法视频配音生成 Concept Atlas；真实 Replay 和 Live 生成保留为证据通过后的升级能力。**
-
-## 2. OpenDub 是什么项目
-
-建议对外项目名称：
-
-> **OpenDub：面向视频配音生成的交互式方法图谱、可视化比较与开源复现平台**
-
-OpenDub 不是把多个论文仓库简单放在一个网页上，也不是把不同论文的网络模块拆开后重新拼成一个未经验证的新模型。
-
-它做的是：
-
-1. 用直观方式解释视频配音生成任务；
-2. 将已有的完整方法做成可点击、可观察、可比较的交互图谱；
-3. 为未来真实运行、结果回放和公平比较建立统一的证据与数据规范。
-
-### 视频配音生成任务
+视频配音不是单纯的文本转语音。目标视频提供口型、表情、场景和时间节奏；目标文本给出要说的内容；经授权的参考语音给出可使用的声音身份或风格。OpenDub 将任务表达为：
 
 ```text
-Video + Text + Reference Voice -> Dubbing Method -> Target Speech
-                                                  -> Dubbed Video
+Video + Target Text + Authorized Reference Speech
+                    -> one complete dubbing method
+                    -> Target Speech -> Dubbed Video
 ```
 
-其中：
+平台不从不同论文中抽取网络模块再拼成一个“新模型”。它保留每项工作作为独立、完整的方法，并提供统一的解释、选择、准备、证据和后续准入路径。
 
-- `Video`：静音目标视频，提供口型、面部表情、场景等视觉条件；
-- `Text`：要说出的台词；
-- `Reference Voice`：经授权的参考语音，提供角色身份或声音风格；
-- `Target Speech`：研究模型生成的目标配音语音；
-- `Dubbed Video`：OpenDub 将目标语音与视频混流后的产品输出。
+## 3. 当前的核心体验
 
-这与普通文本转语音不同。普通 TTS 主要解决“这段文字怎么念”；视频配音生成还需要回答“角色在这个画面、这个时刻、这个情绪下，应当以怎样的节奏和声音说出这句台词”。
-
-## 3. 当前只使用的三个完整方法
-
-首版公开 Method Atlas 只包含以下三套完整的视频配音生成方法：
-
-| 方法 | 论文 | 核心问题 | 在 OpenDub 中的专属交互 |
-|---|---|---|---|
-| HPMDubbing | CVPR 2023 | 如何让 Lip、Face、Scene 三个视觉层级共同约束配音韵律 | 分层韵律视图：切换 Lip、Face、Scene，理解它们分别影响时长、音高/能量和全局情感 |
-| StyleDubber | Findings of ACL 2024 | 如何从视频帧级理解提升到音素级和话语级风格学习 | 多尺度视图：切换 Frame scale 与 Phoneme scale，观察局部发音和全句风格的关系 |
-| EmoDubber | CVPR 2025 | 如何同时考虑同步、清晰度、身份和可控情感 | 情感引导视图：选择情感方向和强度，理解正负引导机制，但不会假装生成了新音频 |
-
-`HPMDubbing_Vocoder`、预处理工具和媒体工具属于支持性基础设施，不被误写成第四个独立视频配音方法。
-
-## 4. 已经完成的网页内容
-
-### 4.1 Task Explorer：解释任务本身
+### 3.1 Task Explorer：先讲清楚任务
 
 入口：`/explore`
 
-这是录制视频的最佳起点。页面用输入、完整方法和输出三列结构说明：
+- 交互解释 Video、Target Text、Authorized Reference Speech 的不同作用；
+- 明确区分研究输出 `Target Speech` 与产品输出 `Dubbed Video`；
+- 用同步时间线说明视觉、文本、韵律和输出的关系；
+- 所有示意波形、频谱和画面均标记为 `Concept`，不会被表述为新生成音频。
 
-- Video、Target Text、Reference Speech 三项输入分别提供什么信息；
-- 为什么视频配音不是“只输入文字”的 TTS；
-- `Generated Speech` 与 `Dubbed Video` 为什么是两个不同概念；
-- Scene、Face、Lip 等视觉线索为什么重要；
-- 用户随后可以进入三种完整方法的图谱。
-
-页面中的波形和频谱使用 `Concept` 状态标记，不声称它们是当前模型实时生成的结果。
-
-### 4.2 Method Atlas：展示三项研究工作的连续性
+### 3.2 Method Atlas：展示团队已有的三套完整方法
 
 入口：`/methods`
 
-这个页面将 HPMDubbing、StyleDubber、EmoDubber 组织成一条研究演进线，而不是三个没有关联的仓库卡片。每个方法都显示：
+| 方法 | 平台中说明的研究重点 | 当前公开状态 |
+| --- | --- | --- |
+| HPMDubbing | Lip、Face、Scene 分层视觉线索如何影响时长、音高、能量和整体情感 | `Concept` |
+| StyleDubber | Frame、Phoneme、Utterance 多尺度表示如何共同学习说话风格 | `Concept` |
+| EmoDubber | 同步、清晰度、身份与情感引导如何共同约束视频配音 | `Concept` |
 
-- 会议与年份；
-- 研究问题；
-- 方法贡献；
-- 当前内容状态；
-- 可点击进入的方法页、论文和源码入口。
+每个方法页都可点击查看真实论文信息流中的组件、边、信号、论文、源码和证据。三个页面还各有一个专属的机制互动视图：分层韵律、多尺度对齐或情感引导。
 
-### 4.3 Method Canvas：完整方法的可点击图谱
+Atlas 首屏另提供按首要需求的可解释导览：视觉韵律与场景节奏对应 HPMDubbing，发音清晰度与角色风格对应 StyleDubber，显式情感方向对应 EmoDubber。它只建议“优先理解 / 准备”的完整方法，不宣称全局最优或实时生成。
 
-入口：
+### 3.3 从方法选择到本地项目准备
 
-- `/methods/hpmdubbing`
-- `/methods/styledubber`
-- `/methods/emodubber`
+用户可从 Atlas 或任何 Method Canvas 点击 **Prepare project**。平台会将下列记录写入项目：
 
-每个方法页都已经具备：
+- 方法 ID、声明用途、输入要求和可选控制项；
+- 固定的 Method Manifest / evidence revision；
+- 方法的内容状态和运行状态。
 
-- 从 manifest 读取的全部节点，而不是只画一条装饰性流水线；
-- 论文中定义的真实信息边和分支汇合关系；
-- 可点击组件，例如 Reference Speech、Lip Motion、MPA、PLA、LPA、PE、FUEC、PNGM；
-- 组件检查器：说明该模块解决什么问题、可以观察哪些信号、页面当前属于什么内容状态；
-- Signal Dock：用户可固定组件声明的可观察信号；
-- Paper、Source 和 Evidence 入口；
-- 适合移动端的水平图谱浏览和适合桌面录屏的完整画布。
+服务端读取对应 manifest 后校验记录，因此客户端不能把旧版本证据或错误方法伪装成一次有效选择。
 
-### 4.4 三种专属 Concept Lab
+Studio 进一步支持：
 
-三个方法页下方都有与论文主题对应的交互内容：
+1. 创建本地项目、导入本地素材和维护整数微秒时间线；
+2. 对参考语音登记素材来源和使用同意；
+3. 对当前视频记录授权声明，对当前目标文本记录指纹确认；
+4. 要求每个片段引用同一所选完整方法及已同意的参考语音；
+5. 导出 `opendub.project-preparation/v1` 准备清单。
 
-#### HPMDubbing：Hierarchical Prosody Lens
+准备导出会重新校验视频 SHA-256、文本指纹、参考语音同意记录、时间线和方法一致性。该清单是后续方法作者或合格 Adapter 的可复现输入交接，不是一次生成请求。
 
-```text
-Lip motion   -> duration / local timing
-Face affect  -> pitch + energy / local expression
-Scene affect -> global emotion / utterance context
-```
+### 3.4 Evidence Room 与比较边界
 
-用户点击不同视觉层级时，解释、关系高亮和示意信号会变化。示意信号明确标记为 `ILLUSTRATIVE SIGNAL`。
+入口：`/evidence` 和 `/compare`
 
-#### StyleDubber：Multi-scale Alignment Lens
+Evidence Room 为每项方法显示论文、固定源码提交、代码许可、权重状态和运行状态。当前三个方法均处于可交互的 `Concept`，尚未作为 OpenDub 的 Live 后端发布。
 
-用户可以在 `Frame scale` 与 `Phoneme scale` 之间切换，理解为什么多个视频帧需要对应稳定的音素区间，以及为什么 USL 代表全句级风格，而不是普通的局部特征。
+Comparison Lab 已定义“相同视频、文本、参考语音、时间策略和权利记录”的公平比较规则，但没有合格的同输入 Replay Bundle 时不会显示假音频、假指标或全局排名。
 
-#### EmoDubber：Emotion Guidance Lens
+## 4. 申请版系统架构
 
-用户可选择 `Warm`、`Tense`、`Melancholic` 等概念情感方向，也可以调整概念强度。页面始终显示：
+![OpenDub 平台架构](architecture/opendub-platform-architecture.svg)
 
-> `No new audio generated in Concept mode.`
+架构源文件为 [可编辑 draw.io 文件](architecture/opendub-platform-architecture.drawio)。图中描述的是平台的数据、选择和证据流，刻意不画成一个把三篇论文混合起来的神经网络。
 
-因此这个交互解释了情感控制机制，但不会把滑杆变化伪装成模型刚刚生成的新声音。
+## 5. 已完成与未宣称的边界
 
-### 4.5 Evidence Room：所有公开主张都能追溯
+| 能力 | 当前状态 | 可如实表述 |
+| --- | --- | --- |
+| 任务解释、方法 Canvas、组件交互 | 已完成 / `Concept` | 可以交互理解并检查三个完整方法 |
+| 选择记录、授权项目与准备导出 | 已完成 | 可以选择一个方法，保存授权输入并导出准备清单 |
+| 同输入公开结果回放与比较 | 条件升级 | 已定义规则；需合格 Replay Bundle 后开放 |
+| 真实模型推理与新音频生成 | 不可用 | 需一个完整方法通过代码、权重、许可、哈希、隔离环境和真实 smoke test 准入 |
+| 情感控制的真实输出效果 | 不可用 | 目前只展示机制和准备字段，不展示新的控制效果音频 |
 
-入口：`/evidence`
+## 6. 申报与录制材料在哪里
 
-Evidence Room 是本项目可信度的重要部分。它为每个核心方法显示：
+- [申报摘要](grant/project-summary.md)：可直接用于填写申报表的事实底稿；
+- [证据索引](grant/evidence-index.md)：每项功能声明对应的代码、测试和视频画面；
+- [演示视频交付](grant/video/README.md)：110 秒 MP4、中英字幕、校验和、来源和事实边界；
+- [演示脚本](grant/demo-script.md)：录制路径、旁白和事实边界；
+- [平台架构图](architecture/README.md)：可编辑 draw.io 源与 SVG；
+- [完整规划](../TODO/README.md)：后续开发、质量、发行、视频和条件升级计划。
 
-```text
-Paper -> Source revision -> Code license -> Weight terms
-      -> Runtime status -> Public content status
-```
+## 7. 当前验证记录
 
-当前三种方法的共同事实是：
-
-- 论文和固定源码 commit 已记录；
-- 源码许可证为 MIT，已在上游审计中记录；
-- 权重条款未核验；
-- 运行时状态是 `unavailable`；
-- 当前公开内容是 `Concept only`。
-
-页面还展示了进入 Live 的完整门槛：固定源码、许可证、权重条款、SHA-256、隔离环境 smoke test 和可公开 Replay，缺少任何一项都不能把模型标记为 Live。
-
-### 4.6 Comparison Lab：不伪造比较结果
-
-入口：`/compare`
-
-Comparison Lab 的界面已完成，但当前处于 `EVIDENCE-GATED` 状态。它展示：
-
-- 公平比较必须使用同一个视频、同一台词、同一参考语音、同一时间范围；
-- 需要素材权利、统一时间基准和音量策略；
-- 三个方法都还没有可公开的同输入 Replay Bundle；
-- 因此不会显示假 A/B 音频、假指标或“哪个方法最好”的结论。
-
-这比在申报视频中播放来源不明的 Demo 更可信，也更符合开源项目的长期要求。
-
-## 5. 为项目准备的文档和规划
-
-`TODO/` 是后续继续开发、补充真实模型和制作申报材料的规划中心。
-
-最重要的三个入口是：
-
-1. [范围锁定与产品决策](../TODO/00_PRODUCT/SCOPE_LOCK_AND_PRODUCT_DECISION.md)：为什么采用“三个完整方法 + 可视化与比较层”的方式。
-2. [三方法交互体验规格](../TODO/01_CAPABILITIES/METHOD_EXPERIENCE_SPEC.md)：每个方法应该怎样展示、哪些互动允许、哪些不允许。
-3. [从零启动执行手册](../TODO/03_EXECUTION/START_HERE.md)：后续重新启动开发时应按什么顺序执行、每一步如何验收。
-
-另外已经准备好：
-
-- 任务定义、产品视觉规范、系统架构和数据契约；
-- 模型能力与信号可视化规范；
-- 内容状态规则：`Concept`、`Replay`、`Live`、`Planned`；
-- 申报叙事、影片脚本、镜头清单、录制流程和事实核验规则；
-- 许可、素材、checkpoint、风险和团队协作规范。
-
-## 6. checkpoint 与真实模型的当前情况
-
-已经对 HPMDubbing、StyleDubber、EmoDubber 的官方公开 checkpoint 候选进行了审计，详细记录在：
-
-[checkpoint-audit-2026-07-26.md](atlas/checkpoint-audit-2026-07-26.md)
-
-审计发现：部分 Google Drive 文件可以被发现或读取到文件名、大小，但没有同时具备以下必要条件：
-
-1. 明确的权重使用和展示条款；
-2. 发布方给出的 SHA-256；
-3. 与源码提交匹配的可复现环境；
-4. 已授权的视频、文本和参考语音测试样例；
-5. 隔离环境中的真实推理 smoke test。
-
-因此当前决定是：
-
-- 不下载或镜像这些权重到公开仓库；
-- 不把它们接入网页中的 Live 按钮；
-- 不用来源不明或受版权限制的影视素材制作公开 Replay；
-- 等满足全部条件后，再从一个完整方法开始升级为 Live。
-
-这不是功能缺失，而是项目主动保留的真实性和合规边界。
-
-## 7. 如何演示和录制视频
-
-本地开发服务当前可从下面地址打开：
-
-<http://127.0.0.1:5173/explore>
-
-推荐录制顺序：
-
-1. 打开 `/explore`，先解释 Video + Text + Reference Voice 如何共同决定目标语音。
-2. 进入 `/methods`，说明团队不是只有一篇工作，而是三套完整、连续演进的方法。
-3. 进入 HPMDubbing，点击 Lip、Face、Scene，展示分层视觉韵律的特点。
-4. 进入 StyleDubber，切换 Frame scale 和 Phoneme scale，展示多尺度风格学习。
-5. 进入 EmoDubber，调整情感方向和强度，强调这是机制解释而不是伪造的实时音频。
-6. 打开 `/evidence`，证明源码、许可证、权重和运行状态都有清晰边界。
-7. 最后打开 `/compare`，说明公平比较在缺少同输入真实结果时不会强行排名。
-
-完整的镜头、旁白和后期要求位于：
-
-[TODO/04_OPEN_SOURCE/DEMO_FILM](../TODO/04_OPEN_SOURCE/DEMO_FILM/README.md)
-
-## 8. 当前代码结构
-
-```text
-apps/web/
-  src/features/explore/      Task Explorer
-  src/features/methods/      Method Atlas、完整图谱、Concept Labs
-  src/features/compare/      Evidence-gated Comparison Lab
-  src/features/evidence/     Evidence Room
-  src/content/methods.ts     前端方法 manifest 读取和图谱布局
-
-content/methods/
-  hpmdubbing/method.json
-  styledubber/method.json
-  emodubber/method.json      三个方法的结构化内容来源
-
-src/opendub/atlas/
-  models.py                  方法、信号、Replay 等数据校验模型
-  validation.py              manifest 校验逻辑
-
-TODO/
-  产品、交互、架构、质量、申报与影片规划
-
-docs/audits/
-  上游源码、许可证、运行条件和风险审计
-```
-
-## 9. 已完成的验证
-
-最近一次验证结果：
+本次申报材料冻结前已完成以下检查：
 
 | 检查项 | 结果 |
-|---|---|
-| Python 测试 | `98 passed`，仅保留一个上游依赖弃用警告 |
-| 前端组件测试 | `13 passed` |
-| 三份方法 manifest | `3 method manifests validated` |
-| 前端生产构建 | 成功 |
-| 视觉检查 | 已检查 `/explore`、`/methods`、三张方法页、`/compare`、`/evidence` 的 `1440x900` 与 `390x844` 布局 |
-| GitHub 推送 | 已推送至 `main`，commit 为 `b490056` |
+| --- | --- |
+| Python 格式、静态检查、类型检查与测试 | `108 passed`；仅保留一个上游 `Starlette TestClient` 弃用警告 |
+| Web 类型检查、组件测试与生产构建 | 已纳入 `make check` / CI 强制门禁；TypeScript 通过，`11` 个文件、`22` 项组件测试通过，Vite 生产构建通过 |
+| 内容与模型注册表 | `3 method manifests validated`；Registry 校验通过 |
+| 文档与差异检查 | 本地 Markdown 链接与 `git diff --check` 通过 |
+| 浏览器 QA | 在 `1440x900` 检查 Task Explorer、Method Atlas、Studio 已选方法界面；在 `390x844` 检查 Task Explorer 与 Method Atlas；无重叠或截断 |
+| 本地端口回归 | Studio 已在替代 Vite 端口 `5180` 对本地 API 完成 CORS 访问验证 |
+| 申报视频交付 | `110.043` 秒、`1920x1080`、30 FPS；MP4 内嵌中英字幕轨，独立 SRT 与 SHA-256 见视频交付目录 |
+| 申报 Word 表 | OpenXML 校验通过；LibreOffice 渲染为两页 A4 并完成视觉检查 |
 
-## 10. 后续真正需要做什么
+## 8. 录制时最重要的三句话
 
-录制申报视频前，当前版本已经可以使用。若后续继续开发，建议顺序如下：
+1. “OpenDub 让视频配音方法变得可理解、可选择、可准备、可核查。”
+2. “HPMDubbing、StyleDubber 和 EmoDubber 是三套完整方法，不是被拼接成的新模型。”
+3. “Concept 解释机制；Replay 与 Live 只有在证据通过后才开放。”
 
-1. 请方法作者或负责人复核三个方法图谱的节点、边和文字表述。
-2. 固定一个发布 commit，按影片制作包完成录屏、旁白、字幕和事实核验。
-3. 寻找并审核可以公开使用的同输入 Replay 结果；只有这样才能开放真实 A/B/C 对比。
-4. 等权重、哈希、授权样例和隔离环境齐备后，选择一套完整方法接入 Live。
-5. Live 成功后再将真实中间信号导入图谱和 Signal Dock，不能用 Concept 信号代替。
-
-## 11. 一句话总结
-
-> OpenDub 当前已经是一套可以清楚展示“什么是视频配音生成、团队已有三套完整方法各自有什么特点、当前证据到了什么程度”的专业交互式开源项目；它已经适合录制申报视频，但不会虚构真实模型运行、音频对比或 checkpoint 可用性。
+这些边界不是功能缺陷，而是开源平台对可复现性、素材权利和用户信任的基本承诺。

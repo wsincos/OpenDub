@@ -1,131 +1,90 @@
-# OpenDub Method Atlas Implementation Master Plan
+# OpenDub Application-First Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use `superpowers:subagent-driven-development` or `superpowers:executing-plans` to implement the linked plans task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> This master plan is intentionally small. It is the implementation order for the seed-grant platform, not a promise to build every future AIGC workflow at once.
 
-**Goal:** 在现有 OpenDub `v0.0.1-alpha.0` 基础上完成任务优先、三种完整方法可视化、同输入比较和可选 Live 运行的申报版本。
+**Goal:** deliver a truthful, usable open-source platform in which the interactive Atlas is the method-selection front door and Studio is the local project-preparation workbench.
 
-**Architecture:** React 静态 Atlas 负责无需 GPU 的 Concept 和 Replay 体验；现有 FastAPI、媒体管线和隔离 Adapter Runtime 负责可选 Live。内容由 Method、Case、Replay 和 Signal 四类版本化 manifest 驱动，三种方法只共享外围协议。
+## Operating Rules
 
-**Tech Stack:** Python 3.11+、Pydantic v2、FastAPI、Typer、React 19、TypeScript、Vite、React Router、Zustand、React Flow、ELK、uPlot、Canvas/Web Audio、Vitest、Testing Library、Playwright、pytest、FFmpeg。
+- Preserve HPMDubbing, StyleDubber, and EmoDubber as separate complete methods.
+- Build the user path before optional model integrations: understand -> select -> prepare -> inspect -> run only when admitted.
+- Treat all Concept media as explanation, not output.
+- Keep Replay and Live behind their evidence gates.
+- Make one focused vertical slice at a time, with tests, visual review, documentation update, and an intentional commit.
 
-## Global Constraints
+## P0: Baseline Already Implemented
 
-- 三套方法为 HPMDubbing、StyleDubber、EmoDubber，不跨方法拼接内部模块。
-- Concept/Replay 必须在没有 API、GPU 和 checkpoint 时可使用。
-- 内容状态使用 `concept`、`replay`、`live`、`planned`；运行状态另行记录。
-- 时间统一使用整数微秒；音频精确位置使用整数 sample。
-- 示意数值必须 `illustrative=true`，不得进入指标或方法比较。
-- Replay 和 Live 资产必须有 SHA-256、来源和权利记录。
-- 公开内容只使用自制、公共领域或有明确展示和分发许可的素材。
-- 方法事实来自原论文和固定源码提交，不从二手博客复制。
-- 前端不硬编码方法图、案例结果和状态。
-- 每项任务遵循失败测试、最小实现、通过测试、文档检查、独立提交。
+**Status:** verified foundation exists; do not rebuild it.
 
----
+- local project/media/authorization and timeline primitives;
+- API, CLI, Studio, model registry, adapter contract, rendering/run records;
+- Task Explorer, three Method Canvases, Evidence Room, and evidence-gated Compare route;
+- manifests, tests, CI, and a current checkpoint audit.
 
-## 当前基础
+Before any new work, run the project checks and read [STATUS.md](STATUS.md). Fix an existing regression before starting a new phase.
 
-已经完成且不重复实现：
+## P1: Make Atlas the Method-Selection Front Door
 
-- Python 领域模型、项目存储、媒体探测和 FFmpeg 渲染。
-- Model Registry、权重校验、隔离运行时和可恢复任务管线。
-- FastAPI、CLI、本地 Web Studio。
-- 授权记录、候选结果、基础评测和导出 manifest。
-- 89 项自动化测试通过的 alpha 基线。
+**Status:** completed in the application-release working tree on 2026-07-26.
 
-现有 Studio 先迁移到 `/studio`，其业务行为保持不变。Atlas 完成后再对 Studio 进行视觉整合。
+**Outcome:** an AIGC creator or reviewer can go from a declared goal to one informed complete-method selection.
 
-## 子项目和顺序
+1. Freeze the application name, one-sentence statement, input/output terminology, and status vocabulary across README, Atlas, docs, and grant copy.
+2. Add or verify a catalog view that expresses each method's focus, declared user control, current content/runtime state, source, and limitations.
+3. Add a `Prepare project` handoff from each method card and method page.
+4. Persist a validated `MethodSelectionRecord` containing method ID, manifest revision, declared need, required inputs, optional controls, and evidence revision.
+5. Ensure every selection recommendation says “inspect/select first” rather than “best” or “generates now.”
 
-### M1：Task Explorer
+**Delivered:** every core Atlas card and Canvas has a `Prepare project` route. The local project stores a validated selection with method ID, fixed manifest/evidence revision, declared need, required inputs, optional controls, runtime status, and content mode. The API refuses stale or mismatched manifest evidence.
 
-执行 [01_TASK_EXPLORER_PLAN.md](01_TASK_EXPLORER_PLAN.md)。
+**Acceptance:** a route-level test confirms that choosing each of the three methods creates the correct selection record, and desktop/mobile visual review shows the handoff without hiding the content-status label.
 
-交付：
+## P2: Connect Selection to a Useful Local Project
 
-- Atlas Schema 和内容 SDK。
-- 应用路由与新 Shell。
-- 全局时间控制器。
-- 视频、文本、参考语音和输出的交互式任务解释。
-- 响应式和无障碍首屏。
+**Status:** completed in the application-release working tree on 2026-07-26.
 
-入口门槛：当前 alpha `make check` 通过。
-出口门槛：无 API 模式下 `/explore` 完整可用。
+**Outcome:** the platform becomes usable before a checkpoint is admitted.
 
-### M2：Three Complete Method Canvases
+1. Extend the Studio project flow to accept a MethodSelectionRecord.
+2. Display the selected method, required inputs, optional controls, and runtime/evidence status on the project screen.
+3. Validate that the project has video, target text, authorized reference speech, time window, rights record, and selected method before it is considered prepared.
+4. Export a project-preparation manifest that can be sent to a method owner or later passed to an admitted Adapter.
+5. Make unavailable runtime a clear, non-destructive state: the project remains editable and exportable, but Run is disabled with the evidence reason.
 
-执行 [02_METHOD_ATLAS_PLAN.md](02_METHOD_ATLAS_PLAN.md)。
+**Delivered:** Studio displays the selected method, its declared requirements, and `Concept` status; it records a video authorization and target-text fingerprint, requires a consented reference speech for each segment, and exports an atomic `opendub.project-preparation/v1` manifest. The server recomputes hashes and rejects stale authorizations, missing consent, method mismatch, or ambiguous video input.
 
-交付：
+**Acceptance:** a user can choose each core method, create a local project with authorized inputs, save/reopen it, and export the selected-method preparation record without any model weight.
 
-- 三套经过校验的 Method Manifest。
-- 方法演进 Atlas。
-- React Flow Method Canvas。
-- 可点击组件检查器和信号台。
-- HPM、Style、Emo 三种方法专属 Concept 交互。
-- Evidence Room。
+## P3: Freeze the Application Release
 
-入口门槛：M1 内容 SDK、路由和时间控制器稳定。
-出口门槛：三个方法页均能从论文问题进入组件、信号和证据。
+**Outcome:** the repository is immediately understandable and recordable as an AIGC platform.
 
-### M3：Comparison Lab
+1. Publish a project-level architecture diagram showing the Atlas/Studio/evidence relationship, not a fictional unified neural network.
+2. Align README, quick start, model status, grant summary, application form, and evidence index with the application name and P0-P3 scope.
+3. Record the required walkthrough: task -> method selection -> one Method Canvas interaction -> Evidence Room -> project preparation handoff.
+4. Run automated checks, content validation, route crawl, desktop/mobile screenshot review, link check, and claim-to-evidence review.
+5. Create a release candidate that names the commit, known limits, and verified state.
 
-执行 [03_COMPARISON_LAB_PLAN.md](03_COMPARISON_LAB_PLAN.md)。
+**Acceptance:** every screen and narration line in the application film maps to a source, test, or evidence record. No viewer can reasonably mistake Concept for a fresh generated result.
 
-交付：
+## P4: Replay and Fair Comparison (Conditional)
 
-- Case 和 Replay Bundle 工具链。
-- 授权共同案例。
-- 同步 A/B/C 播放和盲听。
-- 共同指标与不适用状态。
-- 可导出的比较报告。
+Start only after two authorized outputs satisfy the same-input gate: matching video hash and time range, normalized text hash, reference-speech hash/range, preprocessing version, rights record, source revision, and output hash.
 
-入口门槛：至少两个方法有合法 Replay 结果；如果只有一个结果，先完成工具链和单结果 UI，不发布伪比较。
-出口门槛：同输入比较可追溯、可复现、不会发生叠音。
+**Outcome:** a user can inspect or blind-listen to qualified result bundles without an invalid global ranking.
 
-### M4：Content, Live and Grant Delivery
+## P5: First Verified Live Method (Conditional)
 
-执行 [04_LIVE_AND_CONTENT_PLAN.md](04_LIVE_AND_CONTENT_PLAN.md)。
+Start only after one complete method has a source revision, code license, usable weight terms, expected hash, authorized smoke input, isolated environment, successful real run, and run manifest.
 
-交付：
+**Outcome:** a user can initiate one new local run and inspect genuine registered artifacts. The other two methods keep their own existing status.
 
-- 三方法内容作者核验。
-- 完整授权 Replay 内容包。
-- 条件允许时至少一个 Live Adapter 与 VisualizationProvider。
-- Evidence Room 最终状态。
-- 申报影片和发布证据包。
+## Appendix Plans
 
-入口门槛：M1 至 M3 的静态产品通过 QA。
-出口门槛：申报片中每个画面与发布版本一致，所有状态真实。
+The following detailed plans remain implementation references, but they must follow the P0-P5 sequence above:
 
-## 发布序列
-
-| Tag | 内容 | 是否依赖 checkpoint |
-|---|---|---:|
-| `v0.1.0-atlas-rc1` | Task Explorer + 三套 Concept Canvas | 否 |
-| `v0.1.0-atlas-rc2` | 授权 Replay + Comparison Lab | 否，但依赖合法结果视频 |
-| `v0.1.0-atlas` | 申报内容、Evidence、正式影片 | 否 |
-| `v0.2.0-live` | 至少一套真实模型现场生成 | 是 |
-
-如果 checkpoint 在申报截止前无法满足许可和复现门槛，发布 `v0.1.0-atlas`，影片明确使用 Replay。不得为追求 Live 标签降低真实性要求。
-
-## 全量验收命令
-
-```bash
-uv sync --all-groups
-pnpm install --frozen-lockfile
-uv run opendub atlas validate content
-uv run pytest -q
-pnpm --filter @opendub/web test -- --run
-pnpm --filter @opendub/web build
-pnpm --filter @opendub/web exec playwright test
-uv run python scripts/check_docs_links.py
-git diff --check
-```
-
-预期：
-
-- Python 和 Web 测试全部通过。
-- 三套方法 manifest、案例和 Replay 无 Schema、hash 或 rights 错误。
-- 五个目标视口没有文字遮挡、空白图谱或时间轴错位。
-- 未就绪的 Live 功能保持禁用并说明原因。
+- [Task Explorer plan](01_TASK_EXPLORER_PLAN.md): P1 interaction work.
+- [Method Atlas plan](02_METHOD_ATLAS_PLAN.md): P1 catalog and Canvas work.
+- [Comparison Lab plan](03_COMPARISON_LAB_PLAN.md): P4 only.
+- [Live and content plan](04_LIVE_AND_CONTENT_PLAN.md): P5 only.
+- [Quality plan](QUALITY_PLAN.md): applies to all phases.

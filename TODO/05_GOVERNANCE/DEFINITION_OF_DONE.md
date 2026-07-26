@@ -1,71 +1,35 @@
 # Definition of Done
 
-## Content Unit
+## P0-P3 Grant Release
 
-A Method Manifest, Case or Replay Bundle is complete only when:
+The application release is complete only when all of the following are true:
 
-- it passes the v1 schema and semantic validator;
-- all assets have relative paths, exact SHA-256 and media metadata;
-- all claims have primary paper/source references;
-- status follows evidence rules;
-- public assets have rights evidence and reviewer;
-- core method nodes have author/researcher approval;
-- UI rendering and deep links are covered by tests.
+- the official platform name, repository, version, license, and scope agree across application form, README, Atlas, technical docs, and film;
+- Task Explorer accurately distinguishes target speech from the muxed dubbed video;
+- the Atlas presents exactly the three approved complete methods and no hybrid model claim;
+- every selectable method exposes its requirements, capability wording, component evidence, content mode, and runtime status;
+- a method selection can be retained in a local project with authorized video, text, reference speech, time window, and rights information;
+- unavailable execution remains an explicit, useful state, not an empty page or simulated result;
+- Evidence Room and public documentation explain the source, license, weight/runtime status, and responsible-use boundary;
+- automated quality checks, manifest validation, production build, link check, and target-viewport visual QA pass;
+- the release commit, known limits, evidence index, recorded route, and submitted Word form describe the same state.
 
-## Task Explorer
+## Concept Content Unit
 
-- Video, Text and Reference Speech are independently selectable.
-- Generated Speech and Dubbed Video are distinct outputs.
-- the formal equation agrees with the natural-language task definition.
-- one time cursor synchronizes media, tokens and signals.
-- auto-tour can be interrupted, paused and replayed.
-- desktop, tablet and mobile visual QA pass.
-- it works with static build and no API.
+A Method Manifest or Concept component is complete only when it has a stable identifier, primary paper/source evidence, truthful graph relations, reviewable copy, status label, accessible UI treatment, and tests or validation that prevent an ungrounded claim.
 
-## Method Canvas
+## Qualified Replay
 
-- each of the three core methods has an approved full path from inputs to output.
-- every core node provides problem, inputs, outputs, evidence and mode-aware signal slots.
-- all graph edges are real information dependencies.
-- selecting a node and pinning a signal are keyboard accessible.
-- missing signals degrade to an explicit reason.
-- Concept values are labelled Illustrative.
-- React Flow canvas is nonblank and readable at target viewports.
+Replay is complete only when its media, input hashes, source revision, rights record, timing policy, reviewer, and output hash are stored together. It is labelled as a recorded result and never implies a fresh current run.
 
-## Comparison Lab
+## Fair Comparison
 
-- public candidate tracks pass same-input gate.
-- at most one candidate audio plays.
-- switching preserves time within 50ms.
-- equal listening-gain policy is visible.
-- metrics compare only equal IDs, versions and preprocessing hashes.
-- unavailable and not-applicable states are not replaced by zeros.
-- blind listening hides method identity until explicit reveal.
-- exported report contains hashes, modes and scope limitation.
+Comparison is complete only when every candidate passes the same-input gate. At most one audio track may play; metrics must be applicable and documented; missing or non-comparable fields remain explicit. This is P4, not a P0-P3 requirement.
 
 ## Live Method
 
-- source commit, code license, weight terms and SHA-256 are recorded.
-- adapter runs isolated without mutating global site-packages.
-- real smoke test uses authorized media and creates target audio.
-- run manifest records environment, inputs, parameters and output hash.
-- VisualizationProvider outputs only genuine registered signals.
-- a failed Live run cannot surface as Replay or Live success.
+Live is complete only when one complete method has source revision, code license, weight terms and hash, authorized smoke input, isolated environment, genuine output, run manifest, and registered genuine intermediate artifacts. This is P5, not a P0-P3 requirement.
 
-## Grant Film
+## Application Film
 
-- shot log includes commit, content-lock, route, case, mode and approval.
-- every narration sentence has paper/source/test/run evidence.
-- all media is rights-approved.
-- all Concept/Replay/Live labels remain visible after edit.
-- branch A/B selection matches comparison gate result.
-- captions, video and audio pass final checks.
-- exported files and evidence archive have checksums.
-
-## Release `v0.1.0-atlas`
-
-- all required `SCOPE_AND_SUCCESS.md` items have objective evidence.
-- `make check`, content validation, web tests, build and Playwright pass.
-- README, citations, license, model status and known limitations agree.
-- no private paths, checkpoints, user content or tokens are committed.
-- release tag, static artifact and film shot log identify the same commit.
+The film is complete only when it demonstrates the platform path, keeps content modes visible, uses approved assets, maps every sentence to evidence, and does not edit Concept/Replay footage into a false Live claim.

@@ -1,0 +1,49 @@
+1
+00:00:00,000 --> 00:00:14,000
+OpenDub v0.0.1-alpha.0
+面向 AIGC 内容生产的多模态智能视频配音开源平台
+An Open-Source Platform for Multimodal Intelligent Video Dubbing
+
+2
+00:00:14,000 --> 00:00:28,000
+Video + Target Text + Authorized Reference Speech
+一套完整配音方法生成目标语音，再混流为配音视频。
+One complete method produces target speech, then a dubbed video.
+
+3
+00:00:28,000 --> 00:00:39,000
+按首要需求选择完整方法：
+视觉韵律与场景节奏 -> HPMDubbing
+Choose by need: visual prosody and scene rhythm -> HPMDubbing
+
+4
+00:00:39,000 --> 00:00:50,000
+发音清晰度与角色风格 -> StyleDubber
+显式情感方向 -> EmoDubber
+Pronunciation / character style -> StyleDubber; explicit emotion -> EmoDubber
+
+5
+00:00:50,000 --> 00:01:07,000
+Method Canvas 可点击检查完整方法的节点、信号和机制。
+情感控制仅作 Concept 机制说明，不伪造新的音频输出。
+Inspect method mechanisms interactively. Concept does not imply generated audio.
+
+6
+00:01:07,000 --> 00:01:23,000
+Studio 固定选择与证据版本，并记录授权输入和准备条件。
+Preparation manifest is not a generation request.
+
+7
+00:01:23,000 --> 00:01:38,000
+没有代码、权重权利、哈希和真实 smoke test，方法不会被标为 Live。
+Without complete evidence, a method is not marked Live.
+
+8
+00:01:38,000 --> 00:01:48,000
+没有合格的同输入 Replay Bundle，就不展示伪造的音频、指标或排名。
+No qualified replay bundle: no invented audio, metrics, or rankings.
+
+9
+00:01:48,000 --> 00:01:50,000
+OpenDub：可理解、可选择、可准备、可核查。
+github.com/wsincos/OpenDub | Apache-2.0 | v0.0.1-alpha.0

@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { ArrowLeft, ArrowUpRight, BookOpen, ChevronRight, Code2, Eye, Pin, Waves } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, BookOpen, ChevronRight, Code2, Eye, FolderPlus, Pin, Waves } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 
-import { getMethod, GraphPosition, MethodNode } from "../../content/methods";
+import { englishIndefiniteArticle, getMethod, GraphPosition, MethodNode } from "../../content/methods";
 import { MethodConceptPanel } from "./concepts/MethodConceptPanel";
 import "./concepts/method-concepts.css";
 import "./method-canvas.css";
@@ -49,7 +49,7 @@ export function MethodCanvasPage() {
       <header className="method-canvas-header">
         <Link className="back-link" to="/methods"><ArrowLeft size={15} /> All methods</Link>
         <div className="method-title"><span>{method.venue} {method.year}</span><h1>{method.title}</h1><p>{method.question}</p></div>
-        <div className="header-status"><span><i /> {method.status}</span><a href={method.paperUrl} rel="noreferrer" target="_blank"><BookOpen size={14} /> Paper <ArrowUpRight size={13} /></a></div>
+        <div className="header-status"><span><i /> {method.status}</span><Link aria-label={`Prepare ${englishIndefiniteArticle(method.title)} ${method.title} project`} className="prepare-project" to={`/studio?method=${method.slug}`}><FolderPlus size={14} /> Prepare project</Link><a href={method.paperUrl} rel="noreferrer" target="_blank"><BookOpen size={14} /> Paper <ArrowUpRight size={13} /></a></div>
       </header>
 
       <section className="canvas-layout">

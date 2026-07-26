@@ -1,117 +1,63 @@
 # OpenDub Project Charter
 
-## 项目使命
+## Mission
 
-OpenDub 让研究者、创作者和开发者能够直观理解、交互探索、统一比较并在条件允许时复现视频配音生成方法。
+OpenDub is an open-source platform for multimodal intelligent video dubbing in AIGC content creation. It makes complete video-dubbing methods understandable, selectable, inspectable, reproducible, and, when verification permits, locally runnable.
 
-普通文本转语音解决的是：
+The platform's defining public experience is not a generic model dashboard. It is an interactive visual workbench where a user can see how video, text, and authorized reference speech become target dubbing speech through one complete method.
 
-> 这段文字应该怎样被念出来？
+## Problem
 
-视频配音生成解决的是：
+Video dubbing is constrained by video timing, lip movement, facial expression, scene context, target text, speaker identity, and desired style or emotion. Existing work is often released as a paper, an isolated training repository, and a static demonstration. This leaves three gaps:
 
-> 这个角色在这个画面、这个时间窗和这个情绪下，应该用目标音色怎样说出这段台词？
+1. Creators cannot easily determine which complete method fits their stated need.
+2. Students and reviewers cannot trace a method from multimodal inputs through its own components to output.
+3. Developers cannot fairly compare or reproduce methods when inputs, source revisions, rights, checkpoints, and output evidence are fragmented.
 
-OpenDub 不再创造一个混合多个论文模块的新模型。它将团队已有的 HPMDubbing、StyleDubber 和 EmoDubber 保留为完整方法，并围绕这些方法建设统一的解释、观察、比较和复现层。
+## Product Promise
 
-## 要解决的问题
+```text
+Video + Target Text + Authorized Reference Speech
+                    -> select one complete dubbing method
+                    -> Target Dubbed Speech
+                    -> muxed Dubbed Video
+```
 
-现有视频配音研究成果存在五类使用障碍：
+OpenDub provides the surrounding product and evidence layer. It does not claim to alter the scientific internals of HPMDubbing, StyleDubber, or EmoDubber.
 
-1. 新用户难以理解 Video、Text 和 Reference Speech 分别约束什么。
-2. 论文架构图是静态的，无法把组件与视频帧、音素、韵律和音频结果对应起来。
-3. 不同方法的数据格式、时间基准、运行环境和输出形式不统一。
-4. Demo 分散在论文网页和仓库中，难以用同一输入进行公平比较。
-5. 概念展示、历史结果和真实现场推理容易混淆，降低开源可信度。
+## Primary Users
 
-## 核心产品承诺
+| User | Main outcome |
+|---|---|
+| AIGC content creator | understand the requirements and constraints of a dubbing task; prepare an authorized local project; select a suitable complete method |
+| reviewer, teacher, or student | understand the task and inspect the evidence-backed mechanism of each method in minutes |
+| method developer | publish a complete method through a documented manifest, evidence record, replay package, and optional isolated adapter |
 
-### Task-first
+## Product Pillars
 
-进入项目后首先看到可操作的任务解释器。用户通过播放、暂停、拖动时间轴和点击输入，理解视频配音不是只有文字输入的 TTS。
+1. **Interactive visualization is the front door.** Task Explorer, Atlas, Canvas, and signal views are the normal way users enter and operate the platform.
+2. **Complete methods are selected, not spliced.** The method selector compares declared properties of independent end-to-end methods.
+3. **The Studio turns selection into a project.** It records authorized media, script, reference speech, timing, and selected-method requirements.
+4. **Evidence precedes a claim.** Paper, source, license, checkpoint, rights, result, and runtime state are visible and independently recorded.
+5. **AIGC use is local-first and responsible.** The platform requires owned or authorized inputs and avoids claiming unrestricted voice cloning or arbitrary media use.
 
-### Whole-method
+## Application Value
 
-HPMDubbing、StyleDubber、EmoDubber 是三套完整方法。OpenDub 统一外围接口，但不改变论文方法内部的数据流和声称。
+For the seed grant, the project delivers an open, reusable AIGC tool rather than another single-paper repository:
 
-### Observable
+- a task-first education and decision interface for multimodal video dubbing;
+- a reusable manifest and evidence model for complete methods;
+- an interactive workspace that links method understanding to project preparation;
+- a foundation for later replay, comparison, local inference, and third-party method contribution.
 
-每个方法以可点击的 Method Canvas 呈现。组件节点、连接和可视化信号都有论文或运行产物依据。
+## Non-Goals for the First Application Release
 
-### Comparable
+- training a new hybrid network;
+- claiming live generation for unverified public checkpoints;
+- promising multilingual, multi-character, or agentic automation before it is tested;
+- integrating unrelated repositories merely to increase the project count;
+- publishing copyrighted video, unconsented voice, or result media without distribution rights.
 
-Comparison Lab 使用同一输入、同一裁剪和共同适用指标，对齐播放不同方法的结果。OpenDub 不宣称存在对所有场景都最优的单一模型。
+## Release Logic
 
-### Reproducible
-
-结果保留方法版本、源码提交、权重哈希、输入摘要、参数、运行模式和指标。历史 Demo 回放和真实 Live 运行必须可区分。
-
-## 目标用户
-
-### 主要用户：AI 与多媒体评审、研究者和学生
-
-希望在几分钟内理解视频配音任务、三套方法的差异及团队连续研究贡献，并能深入到具体组件和信号。
-
-### 次要用户：视频与音频创作者
-
-希望比较不同配音方法的生成结果，选择更符合口型、音色、风格或情感要求的候选，并导出可用配音。
-
-### 扩展用户：模型开发者
-
-希望将新的完整视频配音方法接入统一的输入、可视化、结果和复现协议。
-
-## 项目边界
-
-### OpenDub 是什么
-
-- 视频配音任务的交互式解释器。
-- 团队三套原创完整方法的可视化图谱。
-- 同输入、多方法的结果比较实验室。
-- 可选择接入真实模型的本地运行和复现框架。
-- 有许可证、来源和生成证据的开放项目。
-
-### OpenDub 不是什么
-
-- 不是把三篇论文的内部模块拼成一个新网络。
-- 不是只罗列论文链接和 Demo 视频的静态网站。
-- 不是未验证情况下承诺“一键运行所有模型”的统一封装。
-- 不是实时换声、视频翻译或直播配音平台。
-- 不是用视觉动画替代真实模型证据的营销页面。
-
-## 项目独立贡献
-
-OpenDub 的新贡献不是声称第四种视频配音模型，而是：
-
-1. 建立统一、准确且可交互的视频配音任务表达。
-2. 建立完整方法的声明式图谱和可视化信号协议。
-3. 将视频、音素、韵律、频谱和音频绑定到统一时间轴。
-4. 建立 Concept、Replay、Live、Planned 四级真实性状态。
-5. 建立同输入方法比较、证据追踪和可复现导出机制。
-6. 将团队连续研究成果转化为可学习、可检验、可扩展的开源资产。
-
-## 申报成功叙事
-
-评审在三分钟内应形成以下认识：
-
-1. 视频配音比普通 TTS 多了视频时间、口型、面部情绪、场景和角色音色约束。
-2. 团队已经围绕这些挑战形成 HPMDubbing、StyleDubber、EmoDubber 的连续原创研究。
-3. OpenDub 不是旧成果打包，而是对方法理解、比较和复现方式的开源工程创新。
-4. 资助周期目标明确、范围有限、成果可在线展示和可由社区继续扩展。
-
-## 版本路线
-
-### `v0.1.0-atlas`
-
-完成 Task Explorer、三套 Concept Method Canvas、至少一组授权 Replay 数据、方法选择和可访问的响应式体验。
-
-### `v0.2.0-compare`
-
-完成同输入 Comparison Lab、同步播放、统一结果包、共同指标和可分享比较报告。
-
-### `v0.3.0-live`
-
-在许可、权重和环境齐备的前提下，将至少一套方法升级为 Live，并将真实中间产物导入 Method Canvas。
-
-### `v1.0.0`
-
-三套核心方法的内容和状态均经过作者核验，平台支持第三方完整方法扩展，申报影片、公开文档和可复现实例齐全。
+The required release is a polished `Concept` platform with three complete method experiences and a usable local project-preparation path. `Replay`, same-input comparison, and `Live` execution are additive phases with explicit gates. A blocked checkpoint never invalidates the initial platform release.

@@ -333,7 +333,7 @@ Evaluate all audio elements and assert at most one is not paused. Confirm curren
 
 Run at 1440x900, 1280x720 and 390x844. Check no track overflow, long method names wrap and metric states remain legible.
 
-- [ ] **Step 4: Run full M3 verification**
+- [ ] **Step 4: Run full P4 verification**
 
 ```bash
 uv run pytest tests/unit/atlas tests/integration/atlas -q

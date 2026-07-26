@@ -13,12 +13,15 @@ OpenDub 的视觉主题是：
 ## 品牌
 
 - 品牌：`OpenDub`
-- 中文全称：`OpenDub 视频配音生成交互式方法图谱与开源平台`
-- 英文副标题：`Interactive Atlas for Visual Dubbing`
+- 中文全称：`OpenDub：面向 AIGC 内容生产的多模态智能视频配音开源平台`
+- 英文名称：`OpenDub: An Open-Source Platform for Multimodal Intelligent Video Dubbing`
+- 产品描述：`Interactive Method Atlas, Visual Comparison, and Complete-Method Workbench`
 - 核心英文句：`See how a scene becomes a voice.`
 - 核心中文句：`看见画面如何成为声音。`
 
 品牌文案使用短句、具体名词和可验证动词。避免“颠覆、革命性、全球领先、完美生成、一键最佳”。
+
+Atlas 是平台的首要使用入口：用户在这里理解任务、选择完整方法、查看输入要求和证据状态，并将选择带入 Studio 的本地授权项目。它不是只为申报视频准备的展示页。
 
 ## 色彩系统
 

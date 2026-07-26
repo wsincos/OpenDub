@@ -417,7 +417,7 @@ Expected: failures identify missing responsive or media states.
 
 Use `minmax(0, 1fr)`, fixed media aspect ratios and wrapped labels. At mobile widths transform the three columns into a controlled vertical sequence without hiding the timeline.
 
-- [ ] **Step 4: Run full M1 verification**
+- [ ] **Step 4: Run full P1 verification**
 
 ```bash
 uv run opendub atlas validate content

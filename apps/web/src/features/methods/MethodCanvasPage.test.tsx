@@ -63,4 +63,17 @@ describe("MethodCanvasPage", () => {
     expect(screen.getByRole("heading", { name: "Reference speech" })).toBeVisible();
     expect(screen.getByText("Reference speech provides speaker information.")).toBeVisible();
   });
+
+  it("hands the selected complete method to Studio project preparation", () => {
+    render(
+      <MemoryRouter initialEntries={["/methods/styledubber"]}>
+        <Routes><Route element={<MethodCanvasPage />} path="/methods/:methodSlug" /></Routes>
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByRole("link", { name: "Prepare a StyleDubber project" })).toHaveAttribute(
+      "href",
+      "/studio?method=styledubber",
+    );
+  });
 });
