@@ -1,8 +1,8 @@
 # V2 实施记录与当前交付状态
 
 **更新日期：** 2026-07-27
-**当前阶段：** 实现完成，正在进行发布级验证和独立严格审查。
-**发布状态：** 尚未创建 `v2.0.0-showcase` tag；`v0.0.1-alpha.0` 仍是唯一已发布基线。
+**当前阶段：** 实现、发布级验证、受控来源登记和独立严格审查均已完成。
+**发布状态：** `v2.0.0-showcase` 是 V2 正式展示发布；`v0.0.1-alpha.0` 保留为 V1 基线。
 
 本记录用最直接的方式说明：现在仓库里已经有什么、它能说明什么、以及它没有声称什么。它用于项目申请核查，不以计划文字替代已实现事实。
 
@@ -40,7 +40,7 @@ Silent Video + Target Text + Authorized Reference Speech
 | `human-0` | 真人肖像 | GT、HPMDubbing、StyleDubber、EmoDubber | `Archived research example` |
 | `animation-1` | 动画角色 | GT、HPMDubbing、StyleDubber、EmoDubber | `Archived research example` |
 
-每个 case manifest 均含项目负责人确认的 V2 再分发声明、原始本地来源、每条媒体 SHA-256、方法标识、历史结果来源和内容状态。`scripts/build_showcase_features.py` 在核对原始哈希后，才复制批准媒体并从 GT 音频离线导出波形、F0、能量和 log-mel。产物的来源记录位于各 case 的 `provenance.json`。
+每个 case manifest 均含项目负责人确认的 V2 再分发声明、原始本地来源、每条媒体 SHA-256、方法标识、历史结果来源和内容状态。受限原始素材的哈希锚点、受控核验通道和撤回处理记录于 [V2 Controlled Source-Evidence Register](../../docs/rights/showcase-source-evidence-v2.md)。`scripts/build_showcase_features.py` 在核对原始哈希后，才复制批准媒体并从 GT 音频离线导出波形、F0、能量和 log-mel。产物的来源记录位于各 case 的 `provenance.json`。
 
 这两组样例**没有**足以公开核对的 canonical transcript、IPA 对齐或同输入合同。因此它们不进入 Replay、Compare 排名或 Live 声称。页面和影片均固定标示：`Archived research example. Not a fresh OpenDub run.`
 
@@ -75,7 +75,7 @@ Silent Video + Target Text + Authorized Reference Speech
 ## 6. 当前待完成项
 
 1. [x] 已建立 scoped V2 commit 与候选 tag `v2.0.0-showcase-rc.1`；干净 clone 的 Vite 生产构建、样例媒体与影片 SHA-256 已通过；
-2. [ ] 接受严格独立复审；若低于 `9/10`，按意见修复后复审；
-3. [ ] 复审通过后创建正式 V2 tag 并推送公开仓库。
+2. [x] 严格独立复审第 4 轮为 `9.1 / 10`，达到 `9/10`，报告见 `review/round-04-v2-strict-audit.md`；
+3. [x] 已创建正式 V2 tag `v2.0.0-showcase` 并推送公开仓库；随后按远端 tag 重新检出和验证。
 
 这些是发布收口工作，不是新增模型能力。所有新的模型推理、真实 case IPA、Replay 或 Live 均保留在已有证据门之后。

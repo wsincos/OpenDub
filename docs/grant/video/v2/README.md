@@ -13,8 +13,11 @@
 | Narration | [Chinese recording script](narration.zh-CN.md) |
 | Fact boundary | [fact-check.md](fact-check.md) |
 | File hashes | [delivery-manifest.json](delivery-manifest.json) and `OpenDub_VTTS_Showcase_v2.0.0.sha256` |
+| Source evidence | [controlled source-evidence register](../../../rights/showcase-source-evidence-v2.md) |
 
 The film is caption-led so the visual task explanation and real sample audio can be checked without presenting a synthetic narrator as a model result. Its first 20 seconds are actual browser recordings of the task flow, cue switching, and timeline dragging; they use an in-frame-labeled non-speech explanation track. The Chinese narration script remains available for a human recording pass; do not replace the labeled GT segments with an unmarked voice-over.
+
+The historical source media are intentionally not shipped as an open dataset. Public verification covers the released copies, provenance, and hashes; a maintainer-mediated source verification route is documented in the linked source-evidence register.
 
 ## What The Film Shows
 

@@ -2,15 +2,16 @@
 
 All notable OpenDub platform changes are recorded here. Version labels describe the platform and evidence layer; they do not imply that an upstream research method has passed the OpenDub `Live` admission gate.
 
-## Unreleased: v2.0.0-showcase
+## v2.0.0-showcase - 2026-07-27
 
 ### Added
 
 - VTTS Task Stage as the default route: an interactive, controllable explanation of `Video + Target Text + Authorized Reference Speech -> Complete Method -> Target Speech + Dubbed Video`.
 - Face, Lip, and Environment inspection layers plus GT-audio-derived waveform, F0, energy, and log-mel displays. The visible IPA is explicitly task notation, not a transcription of the archived cases.
 - Two manifest-bound historical example families (`human-0` and `animation-1`) with GT, HPMDubbing, StyleDubber, and EmoDubber media panels, source hashes, feature provenance, a public-scope authorization record, and one-track playback coordination.
-- An 86-second V2 caption-led film with actual browser-recorded task interactions, explicit non-speech explanation audio, labeled GT sample audio, embedded Chinese/English subtitles, build script, delivery manifest, and SHA-256 verification.
+- An 84.203-second V2 caption-led film with actual browser-recorded task interactions, explicit non-speech explanation audio, labeled GT sample audio, embedded Chinese/English subtitles, build script, delivery manifest, and SHA-256 verification.
 - Case-bundle verification that checks source media, public copies, derived features, provenance hashes, authorization record, and Replay claim boundaries.
+- A controlled source-evidence register for the restricted historical inputs, with per-artifact hash anchors, permitted display scope, maintainer verification contact, and withdrawal handling.
 
 ### Deliberate limitations
 

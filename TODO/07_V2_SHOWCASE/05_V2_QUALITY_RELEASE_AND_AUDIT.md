@@ -31,8 +31,8 @@
 - [x] `make check`、Registry、Manifest、showcase feature verify、Web build 全部通过；
 - [x] V2 文件使用新的版本名与 SHA-256；V1 视频、V1 manifest、原 tag 和审核报告不被覆盖；
 - [x] 生成 `CHANGELOG` 条目、README 入口、V2 状态说明和申请材料差异清单；
-- [x] 使用候选 tag `v2.0.0-showcase-rc.1` 创建干净 clone；Vite 生产构建、样例媒体与 V2 视频 SHA-256 均通过。正式 tag 保留给复审通过后；
-- [ ] 由独立审查者对任务准确性、样例边界、视觉完成度和申报叙事重新评分。
+- [x] 使用候选 tag `v2.0.0-showcase-rc.1` 创建干净 clone；Vite 生产构建、样例媒体与 V2 视频 SHA-256 均通过；正式 tag `v2.0.0-showcase` 冻结发布内容；
+- [x] 独立审查者已对任务准确性、样例边界、视觉完成度和申报叙事重新评分：第 4 轮严格审核为 `9.1 / 10`，达到发布门槛，记录见 `review/round-04-v2-strict-audit.md`。
 
 ## 2. 发布门禁
 

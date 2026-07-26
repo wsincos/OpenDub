@@ -13,6 +13,8 @@ The issuing project owner confirms that the team may redistribute the four liste
 
 The authorization covers the exact files identified by each manifest's SHA-256 values, not a general authorization for unrelated source footage, voices, identities, checkpoints, datasets, or downstream reuse. Derived waveform, F0, energy, log-mel, poster, and provenance files inherit this same limited display scope.
 
+The restricted-source hash anchors, approval channel, and controlled verification procedure are recorded in the [V2 Controlled Source-Evidence Register](showcase-source-evidence-v2.md). That register does not make the source media public or turn these historical examples into a benchmark.
+
 ## Required public boundary
 
 - The cases must stay labeled `Archived research example. Not a fresh OpenDub run.`
