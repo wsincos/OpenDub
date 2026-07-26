@@ -62,6 +62,8 @@ The public method manifests are versioned data, not hand-written UI text:
 
 The command validates all nodes, edges, signals, fixed source commits, and method graph references. The current checkpoint availability audit is documented in [docs/atlas/checkpoint-audit-2026-07-26.md](docs/atlas/checkpoint-audit-2026-07-26.md); accessible Drive files remain candidates until their hashes, terms, runtime, and authorized fixtures are independently recorded.
 
+For a plain-language overview of the current project, implemented pages, evidence boundary, recording route, and next steps, see [Project Current State](docs/PROJECT_CURRENT_STATE.md).
+
 ## Responsible Use
 
 Only process video, scripts, and voice references that you own or are authorized to use. Do not impersonate people, mislead audiences, or distribute restricted media. OpenDub is designed to run locally by default and does not upload user media for telemetry.
