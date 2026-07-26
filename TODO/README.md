@@ -18,6 +18,12 @@ OpenDub is a platform, not a fourth dubbing model. Its flagship experience is an
 
 These five documents override earlier detailed planning documents when wording conflicts. The remaining files are implementation, evidence, film, and governance appendices.
 
+## Current V2 Showcase Redesign
+
+The released `v0.0.1-alpha.0` application remains the evidence-backed V1 baseline. The separately scoped **V2 cinematic VTTS showcase redesign** is implemented in the current working tree and awaiting final QA / strict review: an animated task-first route, approved real examples, real case-derived signals, and a completely remade application film.
+
+Start the V2 work here: [V2 showcase redesign overview](07_V2_SHOWCASE/README.md). Its requirements, asset gate, web plan, film plan, and release audit take precedence over older V1 film wording for V2 work only. They do not change the established `Concept` / `Replay` / `Live` rules.
+
 ## Locked Product Line
 
 ```text
@@ -100,6 +106,17 @@ P0-P3 are the simple, most appropriate seed-grant scope. P4 and P5 are evidence-
 - [Film production pack](04_OPEN_SOURCE/DEMO_FILM/README.md)
 - [Decisions and gates](05_GOVERNANCE/DECISIONS_AND_RISKS.md)
 - [Definition of done](05_GOVERNANCE/DEFINITION_OF_DONE.md)
+
+### V2 showcase redesign
+
+- [V2 overview](07_V2_SHOWCASE/README.md)
+- [Feedback and requirements](07_V2_SHOWCASE/00_FEEDBACK_AND_REQUIREMENTS.md)
+- [VTTS visual and interaction specification](07_V2_SHOWCASE/01_VTTS_VISUAL_AND_INTERACTION_SPEC.md)
+- [Example evidence and asset plan](07_V2_SHOWCASE/02_EXAMPLE_EVIDENCE_AND_ASSET_PLAN.md)
+- [Web V2 implementation plan](07_V2_SHOWCASE/03_WEB_V2_IMPLEMENTATION_PLAN.md)
+- [Film V2 production plan](07_V2_SHOWCASE/04_FILM_V2_PRODUCTION_PLAN.md)
+- [V2 quality, release, and audit](07_V2_SHOWCASE/05_V2_QUALITY_RELEASE_AND_AUDIT.md)
+- [V2 implementation record](07_V2_SHOWCASE/06_IMPLEMENTATION_RECORD.md)
 
 ## Implementation Rule
 

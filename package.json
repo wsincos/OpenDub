@@ -6,5 +6,8 @@
     "web:build": "pnpm --filter @opendub/web build",
     "web:check": "pnpm --filter @opendub/web check",
     "web:dev": "pnpm --filter @opendub/web dev"
+  },
+  "devDependencies": {
+    "playwright": "1.62.0"
   }
 }

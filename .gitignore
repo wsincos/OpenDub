@@ -42,6 +42,7 @@ tools/*/obj/
 *.mp4
 *.mov
 *.webm
+docs/grant/video/v2/.work/
 
 # System and editor files
 .DS_Store

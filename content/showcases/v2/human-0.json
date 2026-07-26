@@ -1,0 +1,65 @@
+{
+  "schema_version": "opendub.showcase/v1",
+  "case_id": "human-0",
+  "display_name": "Human portrait case",
+  "visual_type": "human",
+  "content_status": "archived_research_example",
+  "timeline_eligible": false,
+  "rights": {
+    "video": "confirmed-by-project-owner",
+    "reference_speech": "confirmed-by-project-owner",
+    "redistribution": "allowed-for-opendub-v2"
+  },
+  "authorization_record": {
+    "record_path": "docs/rights/showcase-media-rights-v2.md",
+    "approver_role": "OpenDub project owner",
+    "approved_on": "2026-07-27",
+    "public_scope": [
+      "repository",
+      "grant-application-video"
+    ]
+  },
+  "input_contract": {
+    "target_text_source": "unavailable-for-gallery-only",
+    "target_text": null,
+    "ipa_source": "unavailable-for-gallery-only",
+    "same_input_across_methods": false
+  },
+  "artifacts": [
+    {
+      "role": "ground_truth",
+      "label": "Ground truth",
+      "path": "gt.mp4",
+      "source_path": "reference/example/GT0.mp4",
+      "sha256": "a0860898765540b2e615d7f5784b20391fa7b2ef5c2957277e0cc2a302c380bb"
+    },
+    {
+      "role": "method_output",
+      "method_id": "galaxycong/hpmdubbing",
+      "label": "HPMDubbing",
+      "path": "hpmdubbing.mp4",
+      "source_path": "reference/example/0-video1.mp4",
+      "sha256": "8d3524b7caeec9ff854357ba9773bf01170c869c7f418ec03fc35c1f123d2bd9"
+    },
+    {
+      "role": "method_output",
+      "method_id": "galaxycong/styledubber",
+      "label": "StyleDubber",
+      "path": "styledubber.mp4",
+      "source_path": "reference/example/0-video2.mp4",
+      "sha256": "c5869d3d6840315ee66042070a8a09c7a6ff7876bcbcfb4f1b0efc37d0a94199"
+    },
+    {
+      "role": "method_output",
+      "method_id": "galaxycong/emodubber",
+      "label": "EmoDubber",
+      "path": "emodubber.mp4",
+      "source_path": "reference/example/0-video3.mp4",
+      "sha256": "7a871e0323ff8f32643a9d3e956180e4e231dc64fb192911f9fc822d763ad302"
+    }
+  ],
+  "provenance": {
+    "method_revision": "historical-results; upstream source commits are pinned in model-registry/upstreams.yaml",
+    "result_origin": "team-provided historical output"
+  }
+}

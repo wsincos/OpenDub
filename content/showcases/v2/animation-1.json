@@ -1,0 +1,65 @@
+{
+  "schema_version": "opendub.showcase/v1",
+  "case_id": "animation-1",
+  "display_name": "Animated character case",
+  "visual_type": "animation",
+  "content_status": "archived_research_example",
+  "timeline_eligible": false,
+  "rights": {
+    "video": "confirmed-by-project-owner",
+    "reference_speech": "confirmed-by-project-owner",
+    "redistribution": "allowed-for-opendub-v2"
+  },
+  "authorization_record": {
+    "record_path": "docs/rights/showcase-media-rights-v2.md",
+    "approver_role": "OpenDub project owner",
+    "approved_on": "2026-07-27",
+    "public_scope": [
+      "repository",
+      "grant-application-video"
+    ]
+  },
+  "input_contract": {
+    "target_text_source": "unavailable-for-gallery-only",
+    "target_text": null,
+    "ipa_source": "unavailable-for-gallery-only",
+    "same_input_across_methods": false
+  },
+  "artifacts": [
+    {
+      "role": "ground_truth",
+      "label": "Ground truth",
+      "path": "gt.mp4",
+      "source_path": "reference/example/GT1.mp4",
+      "sha256": "ade15d9a93fe060d40b20931c75b7f9ac68cff8a54c35ffac259e4edaaab50b3"
+    },
+    {
+      "role": "method_output",
+      "method_id": "galaxycong/hpmdubbing",
+      "label": "HPMDubbing",
+      "path": "hpmdubbing.mp4",
+      "source_path": "reference/example/1-video1.mp4",
+      "sha256": "b07f33292ad3de2ed44d58388b69aef51d6a267b6f7ba7b18ba0557f99d0cc49"
+    },
+    {
+      "role": "method_output",
+      "method_id": "galaxycong/styledubber",
+      "label": "StyleDubber",
+      "path": "styledubber.mp4",
+      "source_path": "reference/example/1-video2.mp4",
+      "sha256": "8142dcf5f3799554ff5c586ce6e29cfedf81e042a54f73aec25925107b18aaf2"
+    },
+    {
+      "role": "method_output",
+      "method_id": "galaxycong/emodubber",
+      "label": "EmoDubber",
+      "path": "emodubber.mp4",
+      "source_path": "reference/example/1-video3.mp4",
+      "sha256": "73af4ad278d19bfeb3bb650edc8c00ba89a9ee986e103f3e6c56390e52574f2a"
+    }
+  ],
+  "provenance": {
+    "method_revision": "historical-results; upstream source commits are pinned in model-registry/upstreams.yaml",
+    "result_origin": "team-provided historical output"
+  }
+}

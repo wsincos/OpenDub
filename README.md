@@ -19,6 +19,8 @@ Video + Target Text + Authorized Reference Speech
 
 It is an open-source, local-first platform for understanding the task, selecting an appropriate complete method, preparing authorized inputs, inspecting method evidence, and conditionally comparing or running a method when the evidence permits. Rather than presenting a gallery of papers or combining incompatible internal modules into a new unverified model, OpenDub keeps each research method intact and builds a shared explanation, evidence, and preparation layer around it.
 
+The current V2 showcase working tree opens with an interactive **VTTS Task Stage** at `/vtts`: a controllable explanation of the three inputs, their synchronized Face/Lip/Environment cues, and the two outputs. Its paired [archived method examples](docs/grant/video/v2/README.md) expose manifest-bounded historical GT / method media without claiming a fresh OpenDub run, Replay bundle, or fair benchmark.
+
 ## Method Atlas
 
 The first public Concept release focuses on three related but independent research foundations:
@@ -40,7 +42,7 @@ The platform never represents Concept illustrations as model output. `Replay` re
 
 ## Project Status
 
-OpenDub is under active development. The current application release is `v0.0.1-alpha.0`; its verified scope, known limits, and next evidence gates are recorded in [Project Current State](docs/PROJECT_CURRENT_STATE.md).
+OpenDub is under active development. The current published application release is `v0.0.1-alpha.0`; the V2 showcase is implemented in the working tree and undergoing final release QA and independent review. Its verified scope, known limits, and next evidence gates are recorded in [Project Current State](docs/PROJECT_CURRENT_STATE.md) and the [V2 implementation record](TODO/07_V2_SHOWCASE/06_IMPLEMENTATION_RECORD.md).
 
 The verified application-release path is:
 

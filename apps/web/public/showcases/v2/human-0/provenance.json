@@ -1,0 +1,44 @@
+{
+  "schema_version": "opendub.showcase-build/v1",
+  "case_id": "human-0",
+  "content_status": "archived_research_example",
+  "generated_at": "2026-07-26T17:46:13+00:00",
+  "generator": "scripts/build_showcase_features.py",
+  "ffmpeg_version": "ffmpeg version 4.2.7-0ubuntu0.1 Copyright (c) 2000-2022 the FFmpeg developers",
+  "produced": [
+    {
+      "artifact_path": "gt.mp4",
+      "artifact_sha256": "a0860898765540b2e615d7f5784b20391fa7b2ef5c2957277e0cc2a302c380bb",
+      "feature_path": "features/gt.json",
+      "feature_sha256": "e87553a1db6f38b865356e8ead46511301cd5d0f9b3e7ab5061cdf7cda5548cb",
+      "mel_png_path": "features/gt.mel.png",
+      "mel_png_sha256": "0d072e8d6f16a0531049bd31bf8444a6ad8c253a6e4040622bc0e959bc195715",
+      "poster_path": "poster.jpg",
+      "poster_sha256": "2891cf5b3ffae0f0adc51de2b63eef0601d89f1c65a61307b070334df561aa8f"
+    },
+    {
+      "artifact_path": "hpmdubbing.mp4",
+      "artifact_sha256": "8d3524b7caeec9ff854357ba9773bf01170c869c7f418ec03fc35c1f123d2bd9",
+      "feature_path": "features/hpmdubbing.json",
+      "feature_sha256": "a47e77e5f32cbab8f40e88c6a1b5a699d7601b69a33b435eff2642db333cc678",
+      "mel_png_path": "features/hpmdubbing.mel.png",
+      "mel_png_sha256": "94378f610f889378003af0618e8185053b1690899800b012c7fac44e440e5dd3"
+    },
+    {
+      "artifact_path": "styledubber.mp4",
+      "artifact_sha256": "c5869d3d6840315ee66042070a8a09c7a6ff7876bcbcfb4f1b0efc37d0a94199",
+      "feature_path": "features/styledubber.json",
+      "feature_sha256": "b548266a1596f039ff0973b635073afc7be360a0fc4c63072fc901f11a15e035",
+      "mel_png_path": "features/styledubber.mel.png",
+      "mel_png_sha256": "775c6f65475f382796eee47a7d7dbebf60a8aca765c74c07935656f7cc2261f9"
+    },
+    {
+      "artifact_path": "emodubber.mp4",
+      "artifact_sha256": "7a871e0323ff8f32643a9d3e956180e4e231dc64fb192911f9fc822d763ad302",
+      "feature_path": "features/emodubber.json",
+      "feature_sha256": "5dee3aaf5c967cf156f85eb957506fb46a4c2a038a1992b3ec10d4ed2db209cd",
+      "mel_png_path": "features/emodubber.mel.png",
+      "mel_png_sha256": "8da1f416952fb3774aa51c09c0bc8fccdbcc49568fab48961e37cc86ba8a1113"
+    }
+  ]
+}

@@ -1,12 +1,13 @@
 # OpenDub 项目当前状态说明
 
-**更新时间：** 2026-07-26<br>
+**更新时间：** 2026-07-27<br>
 **主仓库：** <https://github.com/wsincos/OpenDub><br>
-**当前开发版本：** `v0.0.1-alpha.0`
+**已发布基线：** `v0.0.1-alpha.0`<br>
+**当前工作树：** `v2.0.0-showcase`（实施完成，尚未创建发布 tag）
 
 ## 1. 一句话结论
 
-OpenDub 当前已完成申报版的 **P0-P3 交付闭环**：它可以清楚解释视频配音生成任务、交互式展示并选择三套完整研究方法、将选择和授权输入保存为本地项目，并导出可复现的准备记录。申报演示视频、双语字幕、校验和和交付清单已随仓库提供。
+OpenDub 的已发布 V1 基线完成了申报版的 **P0-P3 交付闭环**。当前 V2 工作树进一步完成了任务优先的交互展示：它可以清楚解释视频配音生成任务、可视化视频/文本/参考声音如何进入一套完整方法、展示可追溯的历史研究样例、交互式展示并选择三套完整研究方法、将选择和授权输入保存为本地项目，并导出可复现的准备记录。V2 申报演示视频、双语字幕、校验和和交付清单已随仓库提供，正在接受最终严格审查。
 
 当前版本没有把任何未通过证据门槛的模型伪装成可用的 Live 推理能力，也没有伪造多方法音频比较结果。
 
@@ -31,16 +32,26 @@ Video + Target Text + Authorized Reference Speech
 
 ## 3. 当前的核心体验
 
-### 3.1 Task Explorer：先讲清楚任务
+### 3.1 VTTS Task Stage：先讲清楚任务
 
-入口：`/explore`
+入口：`/vtts`（默认首页）；详细任务页：`/explore`
 
-- 交互解释 Video、Target Text、Authorized Reference Speech 的不同作用；
-- 明确区分研究输出 `Target Speech` 与产品输出 `Dubbed Video`；
-- 用同步时间线说明视觉、文本、韵律和输出的关系；
-- 所有示意波形、频谱和画面均标记为 `Concept`，不会被表述为新生成音频。
+- 交互解释 Video、Target Text、Authorized Reference Speech 的不同作用；三条输入通过可播放、暂停、重置的数据流进入一套完整方法；
+- 明确区分研究输出 `Target Speech` 与产品输出 `Dubbed Video`；二者在任务舞台均标记为 `Task illustration · no fresh run`；
+- 用 Face、Lip、Environment 的可切换观察层，以及同源 GT 音频派生的波形、F0、能量和 log-mel，说明同步约束；
+- 当前两个历史案例没有 canonical transcript / IPA 合同。因此任务页的英文文本和 IPA 直标为 `task notation`，不是案例媒体的转写或对齐；
+- 所有任务示意都不会被表述为新生成音频。
 
-### 3.2 Method Atlas：展示团队已有的三套完整方法
+### 3.2 Archived Method Examples：检查已有工作，而不是承诺新的运行
+
+入口：`/examples`（也嵌入 `/vtts`）
+
+- 真人 `human-0` 与动画 `animation-1` 各展示 GT、HPMDubbing、StyleDubber、EmoDubber 四个历史媒体面板；
+- 每个 case manifest 包含来源路径、SHA-256、项目负责人确认的 V2 再分发记录、方法标识和内容状态；
+- Gallery 同时只允许一个音轨播放，且固定说明 `Archived research example. Not a fresh OpenDub run.`；
+- 这些样例没有被写成同输入公平基准、Replay 或 Live。它们证明团队已有多条完整研究路径，但不取代后续公开可复现结果的证据要求。
+
+### 3.3 Method Atlas：展示团队已有的三套完整方法
 
 入口：`/methods`
 
@@ -54,7 +65,7 @@ Video + Target Text + Authorized Reference Speech
 
 Atlas 首屏另提供按首要需求的可解释导览：视觉韵律与场景节奏对应 HPMDubbing，发音清晰度与角色风格对应 StyleDubber，显式情感方向对应 EmoDubber。它只建议“优先理解 / 准备”的完整方法，不宣称全局最优或实时生成。
 
-### 3.3 从方法选择到本地项目准备
+### 3.4 从方法选择到本地项目准备
 
 用户可从 Atlas 或任何 Method Canvas 点击 **Prepare project**。平台会将下列记录写入项目：
 
@@ -74,7 +85,7 @@ Studio 进一步支持：
 
 准备导出会重新校验视频 SHA-256、文本指纹、参考语音同意记录、时间线和方法一致性。该清单是后续方法作者或合格 Adapter 的可复现输入交接，不是一次生成请求。
 
-### 3.4 Evidence Room 与比较边界
+### 3.5 Evidence Room 与比较边界
 
 入口：`/evidence` 和 `/compare`
 
@@ -93,6 +104,7 @@ Comparison Lab 已定义“相同视频、文本、参考语音、时间策略�
 | 能力 | 当前状态 | 可如实表述 |
 | --- | --- | --- |
 | 任务解释、方法 Canvas、组件交互 | 已完成 / `Concept` | 可以交互理解并检查三个完整方法 |
+| V2 任务舞台与两组历史方法样例 | 已完成 / `Task illustration` + `Archived research example` | 可以理解 VTTS 约束并检查有来源的既有媒体；不是新运行、Replay 或排名 |
 | 选择记录、授权项目与准备导出 | 已完成 | 可以选择一个方法，保存授权输入并导出准备清单 |
 | 同输入公开结果回放与比较 | 条件升级 | 已定义规则；需合格 Replay Bundle 后开放 |
 | 真实模型推理与新音频生成 | 不可用 | 需一个完整方法通过代码、权重、许可、哈希、隔离环境和真实 smoke test 准入 |
@@ -103,6 +115,7 @@ Comparison Lab 已定义“相同视频、文本、参考语音、时间策略�
 - [申报摘要](grant/project-summary.md)：可直接用于填写申报表的事实底稿；
 - [证据索引](grant/evidence-index.md)：每项功能声明对应的代码、测试和视频画面；
 - [演示视频交付](grant/video/README.md)：110 秒 MP4、中英字幕、校验和、来源和事实边界；
+- [V2 申报视频交付](grant/video/v2/README.md)：86 秒真实浏览器交互录制、案例媒体事实边界、双语字幕、校验和与重建脚本；
 - [演示脚本](grant/demo-script.md)：录制路径、旁白和事实边界；
 - [平台架构图](architecture/README.md)：可编辑 draw.io 源与 SVG；
 - [完整规划](../TODO/README.md)：后续开发、质量、发行、视频和条件升级计划。
@@ -113,13 +126,14 @@ Comparison Lab 已定义“相同视频、文本、参考语音、时间策略�
 
 | 检查项 | 结果 |
 | --- | --- |
-| Python 格式、静态检查、类型检查与测试 | `108 passed`；仅保留一个上游 `Starlette TestClient` 弃用警告 |
-| Web 类型检查、组件测试与生产构建 | 已纳入 `make check` / CI 强制门禁；TypeScript 通过，`11` 个文件、`22` 项组件测试通过，Vite 生产构建通过 |
+| Python 格式、静态检查、类型检查与测试 | `117 passed`；mypy 检查 `76` 个源文件，ruff 通过；仅保留一个上游 `Starlette TestClient` 弃用警告 |
+| Web 类型检查、组件测试与生产构建 | TypeScript 通过，`13` 个文件、`25` 项组件测试通过，Vite 生产构建通过 |
 | 内容与模型注册表 | `3 method manifests validated`；Registry 校验通过 |
+| V2 案例资产 | 两个 case manifest、原始源文件、公开副本、派生特征和 provenance SHA-256 已通过只读核验 |
 | 文档与差异检查 | 本地 Markdown 链接与 `git diff --check` 通过 |
-| 浏览器 QA | 在 `1440x900` 检查 Task Explorer、Method Atlas、Studio 已选方法界面；在 `390x844` 检查 Task Explorer 与 Method Atlas；无重叠或截断 |
+| 浏览器 QA | `/vtts` 已在 `1920x1080`、`1440x900`、`1280x720`、`768x1024`、`390x844` 检查；桌面横向流与移动端纵向流均无重叠或截断 |
 | 本地端口回归 | Studio 已在替代 Vite 端口 `5180` 对本地 API 完成 CORS 访问验证 |
-| 申报视频交付 | `110.043` 秒、`1920x1080`、30 FPS；MP4 内嵌中英字幕轨，独立 SRT 与 SHA-256 见视频交付目录 |
+| V2 申报视频交付 | `84.203` 秒、`1920x1080`、30 FPS、H.264/AAC；前 20 秒为真实浏览器任务交互录制，MP4 内嵌中英字幕轨，独立 SRT、contact sheet 与 SHA-256 位于 `grant/video/v2/` |
 | 申报 Word 表 | OpenXML 校验通过；LibreOffice 渲染为两页 A4 并完成视觉检查 |
 
 ## 8. 录制时最重要的三句话
