@@ -4,6 +4,7 @@ import { NavLink, Navigate, Route, Routes } from "react-router-dom";
 
 import { TaskExplorerPage } from "../features/explore/TaskExplorerPage";
 import { ComparisonLabPage } from "../features/compare/ComparisonLabPage";
+import { EvidenceRoomPage } from "../features/evidence/EvidenceRoomPage";
 import { MethodAtlasPage } from "../features/methods/MethodAtlasPage";
 import { MethodCanvasPage } from "../features/methods/MethodCanvasPage";
 import { StudioApp } from "./StudioApp";
@@ -23,6 +24,7 @@ export function OpenDubApp() {
           <NavItem label="Explore" to="/explore" onNavigate={() => setMenuOpen(false)} />
           <NavItem label="Methods" to="/methods" onNavigate={() => setMenuOpen(false)} />
           <NavItem label="Compare" to="/compare" onNavigate={() => setMenuOpen(false)} />
+          <NavItem label="Evidence" to="/evidence" onNavigate={() => setMenuOpen(false)} />
           <NavItem label="Studio" to="/studio" onNavigate={() => setMenuOpen(false)} />
         </nav>
         <a aria-label="OpenDub repository" className="repo-link" href="https://github.com/wsincos/OpenDub" rel="noreferrer" target="_blank"><Github size={16} /> <span>Repository</span></a>
@@ -33,6 +35,7 @@ export function OpenDubApp() {
         <Route element={<MethodAtlasPage />} path="/methods" />
         <Route element={<MethodCanvasPage />} path="/methods/:methodSlug" />
         <Route element={<ComparisonLabPage />} path="/compare" />
+        <Route element={<EvidenceRoomPage />} path="/evidence" />
         <Route element={<StudioApp />} path="/studio" />
         <Route element={<Navigate replace to="/explore" />} path="*" />
       </Routes>

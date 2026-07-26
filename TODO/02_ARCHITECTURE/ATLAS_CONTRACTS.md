@@ -21,6 +21,12 @@ export type MethodId =
 export type ContentMode = "concept" | "replay" | "live" | "planned";
 export type RuntimeStatus = "unavailable" | "experimental" | "stable";
 
+export interface SourceReference {
+  repository: string; // immutable upstream repository URL
+  commit: string; // exactly 40 lowercase hexadecimal characters
+  license: string; // source-code license verified at the pinned source
+}
+
 export interface MethodManifest {
   schemaVersion: "opendub.method/v1";
   id: MethodId;
@@ -97,6 +103,7 @@ export interface MethodGraph {
 - edge 两端节点必须存在。
 - `overviewPath` 中节点必须形成可解释的有向主路径。
 - `signalIds` 必须在方法 signal catalog 中存在。
+- `source.repository`、`source.commit` 和 `source.license` 必须同时存在；源码许可不能从 checkpoint 许可推断。
 - 禁止自环。
 - 输入节点没有来自方法内部的入边。
 - 输出节点没有流向方法内部的出边。

@@ -20,7 +20,8 @@
   },
   "source": {
     "repository": "https://github.com/GalaxyCong/EmoDubber",
-    "commit": "553fa054160fed17e757125d185e5a61ef6ed437"
+    "commit": "553fa054160fed17e757125d185e5a61ef6ed437",
+    "license": "MIT"
   },
   "runtime_status": "unavailable",
   "content_modes": ["concept", "planned"],

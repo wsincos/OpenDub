@@ -17,7 +17,7 @@ def valid_method_payload() -> dict[str, object]:
         "question": {"zh_cn": "如何让视觉约束韵律？", "en": "How does video constrain prosody?"},
         "contribution": {"zh_cn": "分层韵律", "en": "Hierarchical prosody"},
         "paper": {"title": "Paper", "url": "https://example.com/paper"},
-        "source": {"repository": "https://github.com/GalaxyCong/HPMDubbing", "commit": "a" * 40},
+        "source": {"repository": "https://github.com/GalaxyCong/HPMDubbing", "commit": "a" * 40, "license": "MIT"},
         "runtime_status": "unavailable",
         "content_modes": ["concept"],
         "required_inputs": ["video", "text", "reference_speech"],

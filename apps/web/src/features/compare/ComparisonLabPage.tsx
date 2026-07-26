@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import { AudioLines, Check, FileText, Film, LockKeyhole, ScanSearch, ShieldCheck, Waves } from "lucide-react";
+import { Link } from "react-router-dom";
 
 import "./comparison-lab.css";
 
@@ -48,7 +49,7 @@ export function ComparisonLabPage() {
       </section>
 
       <section className="candidate-section" aria-label="Candidate method results">
-        <div className="candidate-heading"><div><p>RESULT CANDIDATES</p><h2>Three complete methods. Zero invented outputs.</h2></div><span><ScanSearch size={15} /> Evidence room</span></div>
+        <div className="candidate-heading"><div><p>RESULT CANDIDATES</p><h2>Three complete methods. Zero invented outputs.</h2></div><Link to="/evidence"><ScanSearch size={15} /> Evidence room</Link></div>
         <div className="candidate-list">
           {candidates.map((candidate, index) => (
             <article className="candidate-row" key={candidate.name} style={{ "--candidate": candidate.color } as CSSProperties}>

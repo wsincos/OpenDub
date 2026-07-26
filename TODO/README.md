@@ -13,6 +13,16 @@
 
 ## 最高优先级结论
 
+### 范围锁定与直接启动入口
+
+后续实现只围绕 `HPMDubbing`、`StyleDubber`、`EmoDubber` 三套**完整**视频配音方法展开。选择这一结构的理由、产品主线、每个方法的专属交互和严格的 Concept/Replay/Live 边界，见：
+
+1. [范围锁定与产品决策](00_PRODUCT/SCOPE_LOCK_AND_PRODUCT_DECISION.md)
+2. [三方法交互体验规格](01_CAPABILITIES/METHOD_EXPERIENCE_SPEC.md)
+3. [从零启动执行手册](03_EXECUTION/START_HERE.md)
+
+这三份文档是未来收到“开始实现”指令后的第一阅读顺序；其余文档提供数据契约、素材、影片、质量和治理的深入标准。
+
 ### 申报项目形式
 
 本次只申报一个项目和一个主仓库：
@@ -70,59 +80,61 @@ Studio / Live
 ### 产品定义
 
 1. [项目章程](00_PRODUCT/PROJECT_CHARTER.md)
-2. [视频配音任务定义](00_PRODUCT/TASK_DEFINITION.md)
-3. [Method Atlas 产品规格](00_PRODUCT/METHOD_ATLAS_SPEC.md)
-4. [产品与视觉体验](00_PRODUCT/PRODUCT_EXPERIENCE.md)
-5. [范围与成功标准](00_PRODUCT/SCOPE_AND_SUCCESS.md)
-6. [用户工作流](00_PRODUCT/USER_WORKFLOWS.md)
+2. [范围锁定与产品决策](00_PRODUCT/SCOPE_LOCK_AND_PRODUCT_DECISION.md)
+3. [视频配音任务定义](00_PRODUCT/TASK_DEFINITION.md)
+4. [Method Atlas 产品规格](00_PRODUCT/METHOD_ATLAS_SPEC.md)
+5. [产品与视觉体验](00_PRODUCT/PRODUCT_EXPERIENCE.md)
+6. [范围与成功标准](00_PRODUCT/SCOPE_AND_SUCCESS.md)
+7. [用户工作流](00_PRODUCT/USER_WORKFLOWS.md)
 
 ### 方法与内容
 
-7. [方法与模型映射](01_CAPABILITIES/CAPABILITY_AND_MODEL_MAP.md)
-8. [三套方法内容规格](01_CAPABILITIES/CORE_METHODS.md)
-9. [可视化信号清单](01_CAPABILITIES/VISUALIZATION_SIGNAL_MAP.md)
-10. [上游基线](01_CAPABILITIES/UPSTREAM_BASELINE.md)
+8. [方法与模型映射](01_CAPABILITIES/CAPABILITY_AND_MODEL_MAP.md)
+9. [三方法交互体验规格](01_CAPABILITIES/METHOD_EXPERIENCE_SPEC.md)
+10. [三套方法内容规格](01_CAPABILITIES/CORE_METHODS.md)
+11. [可视化信号清单](01_CAPABILITIES/VISUALIZATION_SIGNAL_MAP.md)
+12. [上游基线](01_CAPABILITIES/UPSTREAM_BASELINE.md)
 
 ### 技术设计
 
-11. [系统架构](02_ARCHITECTURE/SYSTEM_ARCHITECTURE.md)
-12. [Atlas 数据契约](02_ARCHITECTURE/ATLAS_CONTRACTS.md)
-13. [已有领域契约](02_ARCHITECTURE/DOMAIN_CONTRACTS.md)
-14. [仓库结构](02_ARCHITECTURE/REPOSITORY_LAYOUT.md)
-15. [安全、许可与伦理](02_ARCHITECTURE/SAFETY_LICENSING.md)
+13. [系统架构](02_ARCHITECTURE/SYSTEM_ARCHITECTURE.md)
+14. [Atlas 数据契约](02_ARCHITECTURE/ATLAS_CONTRACTS.md)
+15. [已有领域契约](02_ARCHITECTURE/DOMAIN_CONTRACTS.md)
+16. [仓库结构](02_ARCHITECTURE/REPOSITORY_LAYOUT.md)
+17. [安全、许可与伦理](02_ARCHITECTURE/SAFETY_LICENSING.md)
 
 ### 执行计划
 
-16. [执行总纲](03_EXECUTION/IMPLEMENTATION_PLAN.md)
-17. [任务解释器计划](03_EXECUTION/01_TASK_EXPLORER_PLAN.md)
-18. [方法图谱计划](03_EXECUTION/02_METHOD_ATLAS_PLAN.md)
-19. [比较实验室计划](03_EXECUTION/03_COMPARISON_LAB_PLAN.md)
-20. [Live 运行与内容计划](03_EXECUTION/04_LIVE_AND_CONTENT_PLAN.md)
-21. [质量计划](03_EXECUTION/QUALITY_PLAN.md)
-22. [当前实现状态](03_EXECUTION/STATUS.md)
+18. [从零启动执行手册](03_EXECUTION/START_HERE.md)
+19. [执行总纲](03_EXECUTION/IMPLEMENTATION_PLAN.md)
+20. [任务解释器计划](03_EXECUTION/01_TASK_EXPLORER_PLAN.md)
+21. [方法图谱计划](03_EXECUTION/02_METHOD_ATLAS_PLAN.md)
+22. [比较实验室计划](03_EXECUTION/03_COMPARISON_LAB_PLAN.md)
+23. [Live 运行与内容计划](03_EXECUTION/04_LIVE_AND_CONTENT_PLAN.md)
+24. [质量计划](03_EXECUTION/QUALITY_PLAN.md)
+25. [当前实现状态](03_EXECUTION/STATUS.md)
 
 ### 申报与演示
 
-23. [申报叙事与交付物](04_OPEN_SOURCE/GRANT_AND_DEMO.md)
-24. [申报冲刺](04_OPEN_SOURCE/APPLICATION_FAST_TRACK.md)
-25. [演示影片制作包](04_OPEN_SOURCE/DEMO_FILM/README.md)
-26. [CNN 可视化参考转译](06_REFERENCE/CNN_VISUALIZATION_TRANSLATION.md)
+26. [申报叙事与交付物](04_OPEN_SOURCE/GRANT_AND_DEMO.md)
+27. [申报冲刺](04_OPEN_SOURCE/APPLICATION_FAST_TRACK.md)
+28. [演示影片制作包](04_OPEN_SOURCE/DEMO_FILM/README.md)
+29. [CNN 可视化参考转译](06_REFERENCE/CNN_VISUALIZATION_TRANSLATION.md)
 
 ### 治理
 
-27. [决策与风险](05_GOVERNANCE/DECISIONS_AND_RISKS.md)
-28. [完成定义](05_GOVERNANCE/DEFINITION_OF_DONE.md)
-29. [追踪矩阵](05_GOVERNANCE/TRACEABILITY_MATRIX.md)
+30. [决策与风险](05_GOVERNANCE/DECISIONS_AND_RISKS.md)
+31. [完成定义](05_GOVERNANCE/DEFINITION_OF_DONE.md)
+32. [追踪矩阵](05_GOVERNANCE/TRACEABILITY_MATRIX.md)
 
 ## 后续启动方式
 
 后续收到“开始实现”指令时，严格按照以下顺序执行：
 
-1. 读取 [当前实现状态](03_EXECUTION/STATUS.md)，确认工作树和依赖。
-2. 执行 [任务解释器计划](03_EXECUTION/01_TASK_EXPLORER_PLAN.md)。
-3. 执行 [方法图谱计划](03_EXECUTION/02_METHOD_ATLAS_PLAN.md)。
-4. 执行 [比较实验室计划](03_EXECUTION/03_COMPARISON_LAB_PLAN.md)。
-5. 根据 checkpoint 和素材可用性执行 [Live 运行与内容计划](03_EXECUTION/04_LIVE_AND_CONTENT_PLAN.md)。
-6. 完成申报影片和证据包，运行全量验收。
+1. 读取 [从零启动执行手册](03_EXECUTION/START_HERE.md) 和 [当前实现状态](03_EXECUTION/STATUS.md)，确认工作树和依赖。
+2. 按 `M0 -> M3` 建设无需 checkpoint 也成立的录制级 Concept Atlas。
+3. 只有在合法同输入结果存在后，执行 `M4` Comparison Lab；否则保持证据门控页面。
+4. 根据 checkpoint 和素材可用性执行 `M5` Live；未通过准入时明确跳过。
+5. 以 `M3` 或更高已验证版本录制申报影片，并运行全量验收。
 
 任何范围变化先记录到 [决策与风险](05_GOVERNANCE/DECISIONS_AND_RISKS.md)，再修改对应规格。不得直接以临时代码改变产品定义。

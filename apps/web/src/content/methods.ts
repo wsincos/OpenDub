@@ -11,6 +11,17 @@ export type MethodNode = {
   signals: string[];
 };
 
+export type MethodEdge = {
+  id: string;
+  source: string;
+  target: string;
+};
+
+export type GraphPosition = {
+  x: number;
+  y: number;
+};
+
 export type MethodDefinition = {
   slug: "hpmdubbing" | "styledubber" | "emodubber";
   id: "galaxycong/hpmdubbing" | "galaxycong/styledubber" | "galaxycong/emodubber";
@@ -24,8 +35,13 @@ export type MethodDefinition = {
   paperUrl: string;
   sourceUrl: string;
   sourceCommit: string;
+  sourceLicense: string;
+  runtimeStatus: "unavailable" | "experimental" | "stable";
   path: string[];
   nodes: MethodNode[];
+  edges: MethodEdge[];
+  positions: Record<string, GraphPosition>;
+  overviewNodeIds: string[];
 };
 
 type ManifestNode = {
@@ -38,6 +54,7 @@ type ManifestNode = {
 };
 
 type ManifestSignal = { id: string; label: { en: string } };
+type ManifestEdge = { id: string; source: string; target: string };
 
 type MethodManifestFile = {
   id: MethodDefinition["id"];
@@ -49,23 +66,39 @@ type MethodManifestFile = {
   contribution: { en: string };
   content_modes: string[];
   paper: { url: string };
-  source: { repository: string; commit: string };
-  graph: { nodes: ManifestNode[]; overview_path: string[] };
+  source: { repository: string; commit: string; license: string };
+  runtime_status: MethodDefinition["runtimeStatus"];
+  graph: { nodes: ManifestNode[]; edges: ManifestEdge[]; overview_path: string[] };
   signals: ManifestSignal[];
 };
 
-const presentation: Record<MethodDefinition["id"], { color: string; canvasNodeIds: string[] }> = {
+const presentation: Record<MethodDefinition["id"], { color: string; overviewNodeIds: string[]; positions: Record<string, GraphPosition> }> = {
   "galaxycong/hpmdubbing": {
     color: "#1877c9",
-    canvasNodeIds: ["lip_duration", "face_affect", "scene_emotion", "hierarchical_prosody", "mel_decoder", "vocoder"],
+    overviewNodeIds: ["lip_duration", "face_affect", "scene_emotion", "hierarchical_prosody", "mel_decoder", "vocoder"],
+    positions: {
+      video: { x: 9, y: 22 }, text: { x: 9, y: 50 }, reference_speech: { x: 9, y: 78 },
+      lip_duration: { x: 29, y: 22 }, face_affect: { x: 29, y: 50 }, scene_emotion: { x: 29, y: 78 },
+      hierarchical_prosody: { x: 52, y: 50 }, mel_decoder: { x: 70, y: 50 }, vocoder: { x: 84, y: 50 }, dubbed_speech: { x: 96, y: 50 },
+    },
   },
   "galaxycong/styledubber": {
     color: "#7656c1",
-    canvasNodeIds: ["phoneme_view", "mpa", "pla", "usl", "mel_decoder", "refinement"],
+    overviewNodeIds: ["phoneme_view", "mpa", "pla", "usl", "mel_decoder", "refinement"],
+    positions: {
+      video: { x: 9, y: 22 }, text: { x: 9, y: 50 }, reference_speech: { x: 9, y: 78 },
+      phoneme_view: { x: 27, y: 50 }, mpa: { x: 46, y: 30 }, pla: { x: 46, y: 70 },
+      usl: { x: 64, y: 50 }, mel_decoder: { x: 78, y: 50 }, refinement: { x: 89, y: 50 }, dubbed_speech: { x: 97, y: 50 },
+    },
   },
   "galaxycong/emodubber": {
     color: "#c84b61",
-    canvasNodeIds: ["lpa", "pe", "speaker_identity", "emotion_control", "fuec", "pngm"],
+    overviewNodeIds: ["lpa", "pe", "speaker_identity", "emotion_control", "fuec", "pngm"],
+    positions: {
+      video: { x: 9, y: 23 }, text: { x: 9, y: 51 }, reference_speech: { x: 9, y: 79 },
+      lpa: { x: 28, y: 32 }, pe: { x: 43, y: 48 }, speaker_identity: { x: 59, y: 64 },
+      emotion_control: { x: 59, y: 27 }, fuec: { x: 75, y: 48 }, pngm: { x: 87, y: 48 }, dubbed_speech: { x: 97, y: 48 },
+    },
   },
 };
 
@@ -95,10 +128,14 @@ function toMethod(manifest: MethodManifestFile): MethodDefinition {
     paperUrl: manifest.paper.url,
     sourceUrl: `${manifest.source.repository}/tree/${manifest.source.commit}`,
     sourceCommit: manifest.source.commit,
+    sourceLicense: manifest.source.license,
+    runtimeStatus: manifest.runtime_status,
     path: manifest.graph.overview_path,
-    nodes: config.canvasNodeIds.map((nodeId) => {
-      const node = nodesById.get(nodeId);
-      if (!node) throw new Error(`Atlas manifest ${manifest.id} is missing canvas node ${nodeId}`);
+    overviewNodeIds: config.overviewNodeIds,
+    positions: config.positions,
+    edges: manifest.graph.edges.map((edge) => ({ ...edge })),
+    nodes: manifest.graph.nodes.map((node) => {
+      if (!config.positions[node.id]) throw new Error(`Atlas presentation ${manifest.id} is missing a position for ${node.id}`);
       return {
         id: node.id,
         label: node.label.en,

@@ -66,6 +66,7 @@ class PaperReference(AtlasModel):
 class SourceReference(AtlasModel):
     repository: str = Field(pattern=r"^https://github\.com/")
     commit: str = Field(pattern=r"^[0-9a-f]{40}$")
+    license: str = Field(min_length=1, max_length=100)
 
 
 class PaperAnchor(AtlasModel):

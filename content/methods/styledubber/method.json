@@ -20,7 +20,8 @@
   },
   "source": {
     "repository": "https://github.com/GalaxyCong/StyleDubber",
-    "commit": "bc431c8f67e885433c5c23163a8eaccb0dd41175"
+    "commit": "bc431c8f67e885433c5c23163a8eaccb0dd41175",
+    "license": "MIT"
   },
   "runtime_status": "unavailable",
   "content_modes": ["concept", "planned"],

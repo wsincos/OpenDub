@@ -23,7 +23,10 @@ export function MethodAtlasPage() {
               <span>{method.contribution}</span>
             </div>
             <div className="method-mini-flow" aria-label={`${method.title} method flow`}>
-              {method.nodes.slice(0, 4).map((node, nodeIndex) => <div key={node.id}><b>{node.short}</b>{nodeIndex < 3 ? <ChevronRight size={15} /> : null}</div>)}
+              {method.overviewNodeIds.slice(0, 4).map((nodeId, nodeIndex) => {
+                const node = method.nodes.find((item) => item.id === nodeId);
+                return node ? <div key={node.id}><b>{node.short}</b>{nodeIndex < 3 ? <ChevronRight size={15} /> : null}</div> : null;
+              })}
             </div>
             <div className="method-actions">
               <Link aria-label={`Explore method ${method.title}`} to={`/methods/${method.slug}`}><ScanSearch size={15} /> Explore method</Link>

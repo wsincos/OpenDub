@@ -1,8 +1,9 @@
 # OpenDub Implementation Status
 
 **Last updated:** 2026-07-26
-**Repository state:** `v0.0.1-alpha.0` foundation complete; public Concept Atlas first slice implemented and under evidence review.
-**Planning source:** [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md)
+**Repository state:** `v0.0.1-alpha.0` foundation complete; recording-ready Concept Atlas, complete-method graphs and Evidence Room implemented. Replay and Live remain explicitly gated.
+**Planning source:** [START_HERE.md](START_HERE.md)
+**Latest local verification:** 2026-07-26: Python `98 passed` (one upstream deprecation warning), web `13 passed`, three manifests validated, production web build passed. Desktop and mobile screenshots were manually checked for the three method canvases and Evidence Room.
 
 ## 已完成的真实基础
 
@@ -16,7 +17,7 @@
 | API/CLI | 项目、素材、片段、候选、评测、渲染、任务事件 |
 | Web Studio | 本地项目列表、媒体导入、授权、片段、时间线、候选和导出 |
 | 文档与申报 | 现有申报表草案、证据索引、上游审计 |
-| 自动化 | 最近一次记录为 89 tests passing；正式启动前重新运行确认 |
+| 自动化 | Python 98 tests、web 13 tests、manifest validation 与 production build 最近一次已通过 |
 
 ## 新方向已完成的规划
 
@@ -24,7 +25,8 @@
 - HPMDubbing、StyleDubber、EmoDubber 三套完整方法范围。
 - Concept、Replay、Live、Planned 内容状态。
 - Method Manifest、Case、Replay、Signal 数据契约。
-- Method Canvas、Comparison Lab、Evidence Room 产品设计。
+- 任务解释器、Method Canvas、Comparison Lab、Evidence Room 产品设计。
+- 范围锁定、逐方法交互规格和从零启动执行手册。
 - 四份按测试和提交边界拆分的实施计划。
 - 申报影片新的任务解释和方法可视化主线。
 
@@ -33,8 +35,9 @@
 | 能力 | 当前状态 | 下一证据 |
 |---|---|---|
 | `/explore` Task Explorer | Concept 页面、输入/输出解释、时间线和方法入口已实现 | 真实案例与 E2E |
-| 三套 Method Manifest | 3 份结构化 manifest 已通过 `opendub atlas validate` | 论文作者或负责人语义复核 |
-| 三套 Method Canvas | 总览、三张可点击 Concept 画布和 Signal Dock 已实现 | manifest 驱动布局、真实或授权信号 |
+| 三套 Method Manifest | 3 份结构化 manifest 已通过 `opendub atlas validate`，固定 commit 和 MIT 源码许可已记录 | 论文作者或负责人语义复核 |
+| 三套 Method Canvas | 全节点/真实边的 manifest 驱动图谱、组件检查器、Signal Dock、HPM/Style/Emo 专属 Concept Lab 已实现 | 作者复核、真实或授权信号 |
+| `/evidence` Evidence Room | 论文、固定源提交、MIT 源码许可、未核验权重条款、运行时状态与 Concept 边界已实现 | 构建时从公共注册表聚合的自动化证据导出 |
 | 合法 Replay Bundle | 尚未选定 | 素材/声音权利审计和 hash |
 | 同输入 Comparison Lab 内容 | 证据门控界面已实现；没有公开 replay 结果 | 至少两个方法对同一输入的合法输出 |
 | Live Emo/HPM/Style | unavailable；已发现若干待审计 Drive 候选 | 明确许可的 checkpoint、hash、真实 smoke |
@@ -47,12 +50,12 @@
 - **可能需要 checkpoint**：生成同一输入的多方法结果。
 - **必须需要 checkpoint**：修改输入后的现场 Live 生成、真实中间产物捕获。
 
-因此下一动作不是等待 checkpoint，而是完成 Concept 内容的权利记录、manifest 驱动客户端和作者复核，再审计可公开 Replay。候选详情见 `docs/atlas/checkpoint-audit-2026-07-26.md`。
+因此下一动作不是等待 checkpoint，而是完成三套方法的作者语义复核、Concept 资产权利记录和录制路径 E2E，再审计可公开 Replay。候选详情见 `docs/atlas/checkpoint-audit-2026-07-26.md`。
 
 ## 下一执行顺序
 
-1. 完成 Concept 资产权利记录和 manifest 驱动客户端。
-2. 进行三套方法的论文/代码语义复核。
+1. 进行三套方法的论文/代码语义复核，并记录 reviewer。
+2. 固定录制版本，完成 `/explore`、三张方法页、`/compare`、`/evidence` 的生产构建截图与浏览器 E2E。
 3. 审计并打包可公开 Replay。
 4. 只有通过相同输入门槛才解锁 Comparison Lab 的试听、信号和指标。
 5. checkpoint 条件满足后再升级一套方法为 Live。
