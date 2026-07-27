@@ -17,6 +17,7 @@ def test_v3_source_map_has_every_required_browser_capture() -> None:
     root = Path(__file__).parents[3]
     validator = _load_validator()
 
-    assert validator.verify_audio_map(
-        root / "docs/grant/video/v3/source-audio-map.json", root, True
-    ) == []
+    assert (
+        validator.verify_audio_map(root / "docs/grant/video/v3/source-audio-map.json", root, True)
+        == []
+    )
