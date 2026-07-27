@@ -14,23 +14,22 @@ describe("VttsTaskStagePage", () => {
     expect(screen.getByRole("button", { name: /target text input/i })).toBeVisible();
     expect(screen.getByRole("button", { name: /authorized reference speech input/i })).toBeVisible();
     expect(screen.getByRole("link", { name: /inspect complete methods/i })).toHaveAttribute("href", "/methods");
-    expect(screen.getByText(/target speech/i)).toBeVisible();
-    expect(screen.getByText(/dubbed video/i)).toBeVisible();
-    expect(screen.getByAltText("Actual log-mel feature from human-0 ground truth")).toBeVisible();
+    expect(screen.getByText("TARGET SPEECH", { exact: true })).toBeVisible();
+    expect(screen.getByText("DUBBED VIDEO", { exact: true })).toBeVisible();
+    expect(screen.getByText(/task illustration · concept scene/i)).toBeVisible();
   });
 
-  it("offers a controllable flow and exposes face, lip, and environment cues", async () => {
+  it("offers a controllable flow and keeps the task illustration separate from archived examples", async () => {
     const user = userEvent.setup();
     render(<MemoryRouter><VttsTaskStagePage /></MemoryRouter>);
 
     await user.click(screen.getByRole("button", { name: /play task flow/i }));
 
     expect(screen.getByRole("button", { name: /pause task flow/i })).toBeVisible();
-    expect(screen.getByRole("button", { name: "Face cue" })).toBeVisible();
-    expect(screen.getByRole("button", { name: "Lip cue" })).toBeVisible();
-    expect(screen.getByRole("button", { name: "Environment cue" })).toBeVisible();
-    await user.click(screen.getByRole("button", { name: "Environment cue" }));
-    expect(screen.getByRole("button", { name: "Environment cue" })).toHaveAttribute("aria-pressed", "true");
-    expect(screen.getAllByText(/task illustration/i)).toHaveLength(2);
+    expect(screen.getByRole("button", { name: /hide face overlay/i })).toBeVisible();
+    expect(screen.getByRole("button", { name: /hide lip overlay/i })).toBeVisible();
+    await user.click(screen.getByRole("button", { name: /hide lip overlay/i }));
+    expect(screen.queryByText("Lip motion", { exact: true })).not.toBeInTheDocument();
+    expect(screen.getByText(/task illustration · no case audio or transcript/i)).toBeVisible();
   });
 });
