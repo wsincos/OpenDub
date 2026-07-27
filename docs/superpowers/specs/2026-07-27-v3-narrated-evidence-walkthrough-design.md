@@ -126,12 +126,12 @@ The target duration is 100–112 seconds at 1920x1080 and 30 FPS.
 | --- | ---: | --- | --- |
 | Identity | 0–14 s | V3 task-stage opening | V1 opening narration |
 | Task illustration | 14–28 s | real browser capture of V3 task flow, female Face/Lip panel, and illustrated timeline | V1 task-definition narration |
-| Human examples | 28–40 s | four real browser captures: GT, HPMDubbing, StyleDubber, EmoDubber, one active panel at a time | each active `human-0` artifact's own audio, 3 s each |
-| Animated examples | 40–52 s | four real browser captures: GT, HPMDubbing, StyleDubber, EmoDubber, one active panel at a time | each active `animation-1` artifact's own audio, 3 s each |
-| Complete methods | 52–74 s | method selection and the three method entries | V1 method-selection narration |
-| Method inspection | 74–91 s | interactive Method Canvas capture | V1 method-inspection narration |
-| Evidence boundary | 91–106 s | Evidence Room capture and status labels | V1 evidence-gate narration |
-| Close | 106–112 s | return to V3 task flow and project identity | V1 closing narration |
+| Human examples | 28–37 s | four real browser captures: GT, HPMDubbing, StyleDubber, EmoDubber, one active panel at a time | each active `human-0` artifact's own audio, 2.25 s each |
+| Animated examples | 37–46 s | four real browser captures: GT, HPMDubbing, StyleDubber, EmoDubber, one active panel at a time | each active `animation-1` artifact's own audio, 2.25 s each |
+| Complete methods | 46–68 s | method selection and the three method entries | V1 method-selection narration |
+| Method inspection | 68–85 s | interactive Method Canvas capture | V1 method-inspection narration |
+| Evidence boundary | 85–100 s | Evidence Room capture and status labels | V1 evidence-gate narration |
+| Close | 100–112 s | return to V3 task flow and project identity | V1 closing narration |
 
 The exact browser clip duration can differ by less than one second only when media durations require it; the source-audio map and SRT must be regenerated from the final timeline. Sample clips never overlap each other, and their final frame visibly identifies the active artifact.
 

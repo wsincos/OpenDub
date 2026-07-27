@@ -253,7 +253,7 @@ Add test_require_captures_rejects_missing_visual: use a valid map with one missi
 
 - [ ] **Step 2: Implement deterministic Playwright capture**
 
-capture_v3_web_clips.mjs opens Chromium at 1920x1080, captures /vtts?tour=flow, captures the task illustration after Face/Lip interaction, then captures each map item by opening /examples, selecting its case, clicking the target native video, waiting for its AUDIBLE label, and recording three seconds.
+capture_v3_web_clips.mjs opens Chromium at 1920x1080, captures /vtts?tour=flow, captures the task illustration after Face/Lip interaction, then captures each map item by opening /examples, selecting its case, clicking the target native video, waiting for its AUDIBLE label, and recording at least three seconds. The film builder trims every archive segment to 2.25 seconds, which keeps the complete delivery inside the 112-second limit.
 
 The script records browser visual only. FFmpeg adds audio later. It fails when a map visual path, accessible video label, or AUDIBLE status is missing. It writes exactly the map visual_source paths.
 
@@ -307,7 +307,7 @@ The builder first runs the V3 map validator. It defines these constructors:
     make_narrated_clip "01-identity" "$capture" "00:00:00" "14"
     make_archive_clip "human-0-styledubber" "$capture" \
       "apps/web/public/showcases/v2/human-0/styledubber.mp4" \
-      "AUDIBLE: StyleDubber" "3"
+      "AUDIBLE: StyleDubber" "2.25"
 
 make_narrated_clip extracts V1 a:0, applies loudnorm=I=-16:TP=-1:LRA=11, and pairs it with a task/method/evidence browser visual. make_archive_clip maps browser 0:v and exact public artifact 1:a:0, then draws AUDIBLE label plus ARCHIVED RESEARCH EXAMPLE · Not a fresh OpenDub run.
 

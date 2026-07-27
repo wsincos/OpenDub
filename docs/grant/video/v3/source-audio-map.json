@@ -1,0 +1,86 @@
+{
+  "schema_version": "opendub.v3-source-audio-map/v1",
+  "narration_source": "docs/grant/video/OpenDub_Application_Walkthrough_v0.0.1-alpha.0.mp4#a:0",
+  "narration_clips": [
+    { "clip_id": "identity", "source_range": "00:00-00:14", "subtitle_id": 1 },
+    { "clip_id": "task-illustration", "source_range": "00:14-00:28", "subtitle_id": 2 },
+    { "clip_id": "complete-methods", "source_range": "00:28-00:50", "subtitle_id": "3-4" },
+    { "clip_id": "method-canvas", "source_range": "00:50-01:07", "subtitle_id": 5 },
+    { "clip_id": "evidence-boundary", "source_range": "01:23-01:38", "subtitle_id": 7 },
+    { "clip_id": "closing", "source_range": "01:38-01:50", "subtitle_id": "8-9" }
+  ],
+  "archive_clips": [
+    {
+      "clip_id": "human-0-gt",
+      "case_id": "human-0",
+      "artifact_path": "gt.mp4",
+      "visual_source": "docs/grant/video/v3/assets/browser-captures/human-0-gt.webm",
+      "audio_source": "apps/web/public/showcases/v2/human-0/gt.mp4#a:0",
+      "in_frame_label": "AUDIBLE: Ground truth",
+      "content_status": "archived_research_example"
+    },
+    {
+      "clip_id": "human-0-hpmdubbing",
+      "case_id": "human-0",
+      "artifact_path": "hpmdubbing.mp4",
+      "visual_source": "docs/grant/video/v3/assets/browser-captures/human-0-hpmdubbing.webm",
+      "audio_source": "apps/web/public/showcases/v2/human-0/hpmdubbing.mp4#a:0",
+      "in_frame_label": "AUDIBLE: HPMDubbing",
+      "content_status": "archived_research_example"
+    },
+    {
+      "clip_id": "human-0-styledubber",
+      "case_id": "human-0",
+      "artifact_path": "styledubber.mp4",
+      "visual_source": "docs/grant/video/v3/assets/browser-captures/human-0-styledubber.webm",
+      "audio_source": "apps/web/public/showcases/v2/human-0/styledubber.mp4#a:0",
+      "in_frame_label": "AUDIBLE: StyleDubber",
+      "content_status": "archived_research_example"
+    },
+    {
+      "clip_id": "human-0-emodubber",
+      "case_id": "human-0",
+      "artifact_path": "emodubber.mp4",
+      "visual_source": "docs/grant/video/v3/assets/browser-captures/human-0-emodubber.webm",
+      "audio_source": "apps/web/public/showcases/v2/human-0/emodubber.mp4#a:0",
+      "in_frame_label": "AUDIBLE: EmoDubber",
+      "content_status": "archived_research_example"
+    },
+    {
+      "clip_id": "animation-1-gt",
+      "case_id": "animation-1",
+      "artifact_path": "gt.mp4",
+      "visual_source": "docs/grant/video/v3/assets/browser-captures/animation-1-gt.webm",
+      "audio_source": "apps/web/public/showcases/v2/animation-1/gt.mp4#a:0",
+      "in_frame_label": "AUDIBLE: Ground truth",
+      "content_status": "archived_research_example"
+    },
+    {
+      "clip_id": "animation-1-hpmdubbing",
+      "case_id": "animation-1",
+      "artifact_path": "hpmdubbing.mp4",
+      "visual_source": "docs/grant/video/v3/assets/browser-captures/animation-1-hpmdubbing.webm",
+      "audio_source": "apps/web/public/showcases/v2/animation-1/hpmdubbing.mp4#a:0",
+      "in_frame_label": "AUDIBLE: HPMDubbing",
+      "content_status": "archived_research_example"
+    },
+    {
+      "clip_id": "animation-1-styledubber",
+      "case_id": "animation-1",
+      "artifact_path": "styledubber.mp4",
+      "visual_source": "docs/grant/video/v3/assets/browser-captures/animation-1-styledubber.webm",
+      "audio_source": "apps/web/public/showcases/v2/animation-1/styledubber.mp4#a:0",
+      "in_frame_label": "AUDIBLE: StyleDubber",
+      "content_status": "archived_research_example"
+    },
+    {
+      "clip_id": "animation-1-emodubber",
+      "case_id": "animation-1",
+      "artifact_path": "emodubber.mp4",
+      "visual_source": "docs/grant/video/v3/assets/browser-captures/animation-1-emodubber.webm",
+      "audio_source": "apps/web/public/showcases/v2/animation-1/emodubber.mp4#a:0",
+      "in_frame_label": "AUDIBLE: EmoDubber",
+      "content_status": "archived_research_example"
+    }
+  ]
+}
