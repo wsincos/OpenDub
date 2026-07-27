@@ -17,13 +17,23 @@ describe("ExampleGalleryPage", () => {
     expect(screen.getByText("EmoDubber")).toBeVisible();
     expect(screen.getByText(/archived research example\. not a fresh opendub run/i)).toBeVisible();
 
+    const gtPlayer = screen.getByLabelText(/human portrait case, ground truth/i) as HTMLVideoElement;
     const hpmPlayer = screen.getByLabelText(/human portrait case, hpmdubbing/i) as HTMLVideoElement;
-    const pause = vi.spyOn(hpmPlayer, "pause");
-    fireEvent.play(screen.getByLabelText(/human portrait case, ground truth/i));
-    expect(pause).toHaveBeenCalled();
+    const stylePlayer = screen.getByLabelText(/human portrait case, styledubber/i) as HTMLVideoElement;
+    const gtPause = vi.spyOn(gtPlayer, "pause").mockImplementation(() => undefined);
+    const hpmPause = vi.spyOn(hpmPlayer, "pause").mockImplementation(() => undefined);
+
+    fireEvent.play(stylePlayer);
+
+    expect(gtPause).toHaveBeenCalled();
+    expect(hpmPause).toHaveBeenCalled();
+    expect(screen.getByText("AUDIBLE: StyleDubber")).toBeVisible();
+    expect(screen.queryByText("AUDIBLE: Ground truth")).not.toBeInTheDocument();
+    expect(stylePlayer.closest("article")).toHaveClass("is-active-artifact");
 
     await user.click(screen.getByRole("tab", { name: /animated character/i }));
 
+    expect(stylePlayer.currentTime).toBe(0);
     expect(screen.getByRole("tab", { name: /animated character/i })).toHaveAttribute("aria-selected", "true");
     expect(screen.getByLabelText(/animated character case, ground truth/i)).toBeVisible();
   });
