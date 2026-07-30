@@ -30,6 +30,9 @@ export type MethodDefinition = {
   title: "HPMDubbing" | "StyleDubber" | "EmoDubber";
   venue: string;
   year: number;
+  teamLabel: "TEAM-DEVELOPED COMPLETE METHOD";
+  originalFocus: string;
+  publishedRecord: { title: string; venue: string; year: number };
   question: string;
   contribution: string;
   status: "CONCEPT" | "REPLAY" | "LIVE";
@@ -67,16 +70,17 @@ type MethodManifestFile = {
   question: { en: string };
   contribution: { en: string };
   content_modes: string[];
-  paper: { url: string };
+  paper: { title: string; url: string };
   source: { repository: string; commit: string; license: string };
   runtime_status: MethodDefinition["runtimeStatus"];
   graph: { nodes: ManifestNode[]; edges: ManifestEdge[]; overview_path: string[] };
   signals: ManifestSignal[];
 };
 
-const presentation: Record<MethodDefinition["id"], { color: string; overviewNodeIds: string[]; positions: Record<string, GraphPosition> }> = {
+const presentation: Record<MethodDefinition["id"], { color: string; originalFocus: string; overviewNodeIds: string[]; positions: Record<string, GraphPosition> }> = {
   "galaxycong/hpmdubbing": {
     color: "#1877c9",
+    originalFocus: "Visual prosody across lip, face, and scene cues.",
     overviewNodeIds: ["lip_duration", "face_affect", "scene_emotion", "hierarchical_prosody", "mel_decoder", "vocoder"],
     positions: {
       video: { x: 9, y: 22 }, text: { x: 9, y: 50 }, reference_speech: { x: 9, y: 78 },
@@ -86,6 +90,7 @@ const presentation: Record<MethodDefinition["id"], { color: string; overviewNode
   },
   "galaxycong/styledubber": {
     color: "#7656c1",
+    originalFocus: "Local pronunciation and global character style.",
     overviewNodeIds: ["phoneme_view", "mpa", "pla", "usl", "mel_decoder", "refinement"],
     positions: {
       video: { x: 9, y: 22 }, text: { x: 9, y: 50 }, reference_speech: { x: 9, y: 78 },
@@ -95,6 +100,7 @@ const presentation: Record<MethodDefinition["id"], { color: string; overviewNode
   },
   "galaxycong/emodubber": {
     color: "#c84b61",
+    originalFocus: "Alignment, pronunciation, identity, and directed emotion.",
     overviewNodeIds: ["lpa", "pe", "speaker_identity", "emotion_control", "fuec", "pngm"],
     positions: {
       video: { x: 9, y: 23 }, text: { x: 9, y: 51 }, reference_speech: { x: 9, y: 79 },
@@ -160,6 +166,9 @@ function toMethod(manifest: MethodManifestFile): MethodDefinition {
     title: manifest.short_title,
     venue: manifest.conference,
     year: manifest.year,
+    teamLabel: "TEAM-DEVELOPED COMPLETE METHOD",
+    originalFocus: config.originalFocus,
+    publishedRecord: { title: manifest.paper.title, venue: manifest.conference, year: manifest.year },
     question: manifest.question.en,
     contribution: manifest.contribution.en,
     status: deriveContentStatus(manifest.content_modes),

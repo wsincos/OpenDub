@@ -17,6 +17,7 @@ def test_load_case_manifest_accepts_an_archived_gallery_case(tmp_path: Path) -> 
     assert case.case_id == "human-0"
     assert case.content_status == "archived_research_example"
     assert case.timeline_eligible is False
+    assert case.duration_seconds == 3.0
     assert case.artifacts[1].method_id == "galaxycong/hpmdubbing"
 
 
@@ -60,6 +61,7 @@ def _valid_manifest() -> dict[str, object]:
         "schema_version": "opendub.showcase/v1",
         "case_id": "human-0",
         "display_name": "Human portrait case",
+        "duration_seconds": 3.0,
         "content_status": "archived_research_example",
         "timeline_eligible": False,
         "rights": {

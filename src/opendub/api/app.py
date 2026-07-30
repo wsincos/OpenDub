@@ -242,7 +242,7 @@ def create_app(*, workspace: Path | None = None) -> FastAPI:
     artifacts = ArtifactStore(root)
     repository_root = Path(__file__).resolve().parents[3]
     model_registry = ModelRegistry(repository_root / "model-registry" / "upstreams.yaml")
-    app = FastAPI(title="OpenDub Local API", version="0.0.1a0", docs_url="/api/docs")
+    app = FastAPI(title="OpenDub Local API", version="0.4.0", docs_url="/api/docs")
     app.add_middleware(
         CORSMiddleware,
         allow_origins=[

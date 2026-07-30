@@ -1,116 +1,156 @@
+<div align="center">
+
 # OpenDub
 
-> **OpenDub: An Open-Source Platform for Multimodal Intelligent Video Dubbing**<br>
-> **OpenDub：面向 AIGC 内容生产的多模态智能视频配音开源平台**
+### An Open-Source Platform for Multimodal Intelligent Video Dubbing
+### 多模态智能视频配音开源平台
 
-> *Interactive Method Atlas, Visual Comparison, and Complete-Method Workbench.*
+**Make video dubbing understandable, inspectable, and reusable.**
 
-OpenDub explains the video dubbing task as a synchronized transformation:
+[Project Film](docs/showcase/OpenDub_Project_Introduction_V4.6.mp4) · [Interactive Web App](apps/web) · [Methods](#team-developed-methods) · [Playable Examples](#listen-to-archived-examples) · [Documentation](docs/README.md)
+
+</div>
+
+[![Watch the OpenDub project introduction](docs/showcase/assets/opendub-project-introduction-v4.6-poster.jpg)](docs/showcase/OpenDub_Project_Introduction_V4.6.mp4)
+
+<div align="center">
+
+**[Watch the OpenDub project introduction](docs/showcase/OpenDub_Project_Introduction_V4.6.mp4)**
+
+`4 min 37 s` · `1920 x 1080` · `Chinese / English subtitles` · [delivery details](docs/showcase/README.md)
+
+</div>
+
+OpenDub is a local-first research platform for **multimodal video dubbing**. It
+turns a difficult research task into a clear, interactive experience: explain
+the inputs, inspect complete methods developed by the team, listen to authorized
+archived examples, relate hearing to observable acoustic evidence, and prepare a
+rights-aware local project.
+
+> OpenDub does **not** splice internal modules from different papers into a new,
+> unverified model. HPMDubbing, StyleDubber, and EmoDubber remain independent,
+> complete methods. OpenDub makes their task assumptions, evidence, and usage
+> boundaries visible in one place.
+
+## The Task
 
 ```text
-Video + Target Text + Authorized Reference Speech
-                    │
-                    ▼
-            one complete dubbing method
-                    │
-                    ▼
-          Target Dubbed Speech -> Dubbed Video
+Silent Video + Text + Authorized Reference Speech
+                         │
+                         ▼
+                 One complete dubbing method
+                         │
+                         ▼
+         Target Dubbed Speech + Dubbed Video
 ```
 
-It is an open-source, local-first platform for understanding the task, selecting an appropriate complete method, preparing authorized inputs, inspecting method evidence, and conditionally comparing or running a method when the evidence permits. Rather than presenting a gallery of papers or combining incompatible internal modules into a new unverified model, OpenDub keeps each research method intact and builds a shared explanation, evidence, and preparation layer around it.
+Video dubbing is more than reading a sentence aloud. The video carries lip
+motion, facial expression, scene context, and timing; text defines the intended
+content; authorized reference speech supplies an identity and style condition.
+OpenDub exposes these signals as an interactive, time-aware task rather than a
+black-box audio button.
 
-The current V2 showcase working tree opens with an interactive **VTTS Task Stage** at `/vtts`: a controllable explanation of the three inputs, their synchronized Face/Lip/Environment cues, and the two outputs. Its paired [archived method examples](docs/grant/video/v2/README.md) expose manifest-bounded historical GT / method media without claiming a fresh OpenDub run, Replay bundle, or fair benchmark.
+## What You Can Explore
 
-## Method Atlas
+| Task Stage | Method Atlas |
+| --- | --- |
+| ![OpenDub task stage](docs/showcase/assets/task-stage.jpg) | ![OpenDub method atlas](docs/showcase/assets/method-atlas.jpg) |
+| Start with the synchronized roles of video, text, and reference speech. Inspect face, lip, environment, phoneme, prosody, and output views. | Explore each complete team-developed method through its original architecture, clickable components, and source record. |
 
-The first public Concept release focuses on three related but independent research foundations:
+| Compare Workbench | Evidence and Studio |
+| --- | --- |
+| ![OpenDub comparison workbench](docs/showcase/assets/compare-workbench.jpg) | ![OpenDub studio](docs/showcase/assets/evidence-studio.jpg) |
+| Relate archived video and audio to waveform, log-mel, F0, energy, and frame contacts in one synchronized record. | Trace evidence, select a complete method, record authorized inputs, and export a versioned local preparation record. |
 
-| Method | Research focus | Atlas status |
-|---|---|---|
-| [HPMDubbing](https://github.com/GalaxyCong/HPMDubbing) | Hierarchical visual prosody from lip motion, face affect, and scene context | `Concept` |
-| [StyleDubber](https://github.com/GalaxyCong/StyleDubber) | Phoneme-level and utterance-level multi-scale style learning | `Concept` |
-| [EmoDubber](https://github.com/GalaxyCong/EmoDubber) | Lip-aware synchronization, pronunciation, identity, and emotion-guided dubbing | `Concept` |
+## Listen To Archived Examples
 
-Each method is pinned to an upstream source commit and described by a validated Method Manifest. The interactive web atlas contains:
+The following clips are **authorized, team-provided historical research
+examples**. Select a method name to open its MP4 in GitHub's video viewer; run
+the local web app to inspect the same assets with synchronized playback and
+acoustic features. These are not fresh OpenDub runs, common-input replay, or
+rankings.
 
-- **Task Explorer**: distinguishes the research output, target speech, from the product output, a muxed dubbed video.
-- **Method Atlas and Canvas**: lets a viewer trace complete method-specific paths and inspect evidence-bound components and signals.
-- **Comparison Lab**: permits rankings only when methods share exactly the same video, text, reference speech, rights record, and timing policy.
-- **Studio**: turns an Atlas selection into a local project, records authorized inputs, and exports a versioned preparation manifest for the selected complete method.
+### Example Gallery
 
-The platform never represents Concept illustrations as model output. `Replay` requires an authorized result bundle; `Live` requires a verified checkpoint, isolated runtime, and real smoke test.
+| Human portrait case · 3.0 s | Animated character case · 1.36 s |
+| --- | --- |
+| [![Play human portrait example](apps/web/public/showcases/v2/human-0/poster.jpg)](apps/web/public/showcases/v2/human-0/emodubber.mp4) | [![Play animated character example](apps/web/public/showcases/v2/animation-1/poster.jpg)](apps/web/public/showcases/v2/animation-1/emodubber.mp4) |
+| [Reference performance](apps/web/public/showcases/v2/human-0/gt.mp4) · [HPMDubbing](apps/web/public/showcases/v2/human-0/hpmdubbing.mp4) · [StyleDubber](apps/web/public/showcases/v2/human-0/styledubber.mp4) · [EmoDubber](apps/web/public/showcases/v2/human-0/emodubber.mp4) | [Reference performance](apps/web/public/showcases/v2/animation-1/gt.mp4) · [HPMDubbing](apps/web/public/showcases/v2/animation-1/hpmdubbing.mp4) · [StyleDubber](apps/web/public/showcases/v2/animation-1/styledubber.mp4) · [EmoDubber](apps/web/public/showcases/v2/animation-1/emodubber.mp4) |
+| [Case record](content/showcases/v2/human-0.json) · [authorization record](docs/rights/showcase-media-rights-v2.md) | [Case record](content/showcases/v2/animation-1.json) · [authorization record](docs/rights/showcase-media-rights-v2.md) |
 
-## Project Status
+### Comparison Workbench
 
-OpenDub is under active development. The current published application release is `v0.0.1-alpha.0`; the V2 showcase is implemented in the working tree and undergoing final release QA and independent review. Its verified scope, known limits, and next evidence gates are recorded in [Project Current State](docs/PROJECT_CURRENT_STATE.md) and the [V2 implementation record](TODO/07_V2_SHOWCASE/06_IMPLEMENTATION_RECORD.md).
+| Animated cinematic scene · 1.56 s | Presenter and display scene · 7.8 s |
+| --- | --- |
+| [![Play animated cinematic example](apps/web/public/showcases/v3/case-03/poster.jpg)](apps/web/public/showcases/v3/case-03/emodubber.mp4) | [![Play presenter and display example](apps/web/public/showcases/v4/case-04/poster.jpg)](apps/web/public/showcases/v4/case-04/styledubber.mp4) |
+| [Reference performance](apps/web/public/showcases/v3/case-03/gt.mp4) · [HPMDubbing](apps/web/public/showcases/v3/case-03/hpmdubbing.mp4) · [StyleDubber](apps/web/public/showcases/v3/case-03/styledubber.mp4) · [EmoDubber](apps/web/public/showcases/v3/case-03/emodubber.mp4) | [Reference performance](apps/web/public/showcases/v4/case-04/gt.mp4) · [HPMDubbing](apps/web/public/showcases/v4/case-04/hpmdubbing.mp4) · [StyleDubber](apps/web/public/showcases/v4/case-04/styledubber.mp4) · [EmoDubber](apps/web/public/showcases/v4/case-04/emodubber.mp4) |
+| [Case record](content/showcases/v3/case-03.json) · [authorization record](docs/rights/showcase-media-rights-v3.md) | [Case record](content/showcases/v4/case-04.json) · [authorization record](docs/rights/showcase-media-rights-v4.md) |
 
-The verified application-release path is:
+**Archived research example — not a fresh OpenDub run or a common-input ranking.**
 
-1. explain the multimodal task in Task Explorer;
-2. inspect one of three complete Concept methods and its evidence;
-3. persist an evidence-bound method selection in a local Studio project;
-4. record the selected method's authorized video, text, and reference-speech inputs;
-5. export a versioned preparation manifest without claiming a fresh model output.
+## Team-Developed Methods
 
-Model integrations are only marked as supported after source, weights, license, and real inference verification. See [the upstream baseline](TODO/01_CAPABILITIES/UPSTREAM_BASELINE.md) for the current evidence boundary.
+OpenDub presents the team's original work as complete methods with distinct
+priorities, rather than treating them as interchangeable fragments.
 
-## Research Foundations
+| Method | Complete-method focus | Upstream source |
+| --- | --- | --- |
+| **HPMDubbing** | Hierarchical visual prosody: lip motion, facial affect, and scene context guide duration, pitch, energy, and emotion. | [Repository](https://github.com/GalaxyCong/HPMDubbing) · [paper](https://openaccess.thecvf.com/content/CVPR2023/html/Cong_Learning_To_Dub_Movies_via_Hierarchical_Prosody_Models_CVPR_2023_paper.html) |
+| **StyleDubber** | Multi-scale style learning: visual frames, phonemes, and utterance-level context support clear pronunciation and character style. | [Repository](https://github.com/GalaxyCong/StyleDubber) |
+| **EmoDubber** | Emotion-controllable movie dubbing: lip-related alignment, pronunciation, speaker identity, and emotion-guided generation. | [Repository](https://github.com/GalaxyCong/EmoDubber) · [paper](https://openaccess.thecvf.com/content/CVPR2025/html/Cong_EmoDubber_Towards_High_Quality_and_Emotion_Controllable_Movie_Dubbing_CVPR_2025_paper.html) |
 
-OpenDub is designed around the team's prior open work in movie dubbing. HPMDubbing, StyleDubber, and EmoDubber are the three complete core methods in the first Method Atlas. HPMDubbing_Vocoder is supporting acoustic infrastructure, not a fourth method. None are automatically production backends: their source, weights, runtime, asset rights, and result provenance are reviewed independently.
+## Public Scope
 
-## Validate The Atlas
+| Available now | Evidence-gated by design |
+| --- | --- |
+| Interactive task explanation, method canvases, original-paper component views, local Studio preparation, evidence records, and authorized archived examples. | Fresh model execution, numerical comparison, replay, and live generation require a verified method runtime, licensed weights, authorized inputs, and a real smoke test. |
 
-The public method manifests are versioned data, not hand-written UI text:
+This distinction is deliberate. It prevents mechanism illustrations or historical
+media from being misrepresented as a new inference result. See the
+[project overview](docs/PROJECT_OVERVIEW.md) and [model admission policy](docs/adapters/research-backend-gate.md).
+
+## Run Locally
+
+The interactive experience runs entirely on your machine.
 
 ```bash
-.venv/bin/opendub atlas validate --content content
+pnpm install
+pnpm web:dev
 ```
 
-The command validates all nodes, edges, signals, fixed source commits, and method graph references. The current checkpoint availability audit is documented in [docs/atlas/checkpoint-audit-2026-07-26.md](docs/atlas/checkpoint-audit-2026-07-26.md); accessible Drive files remain candidates until their hashes, terms, runtime, and authorized fixtures are independently recorded.
-
-For a plain-language overview of the current project, implemented pages, evidence boundary, recording route, and next steps, see [Project Current State](docs/PROJECT_CURRENT_STATE.md). The platform-level workflow is shown in the editable [architecture figure](docs/architecture/README.md).
-
-## Responsible Use
-
-Only process video, scripts, and voice references that you own or are authorized to use. Do not impersonate people, mislead audiences, or distribute restricted media. OpenDub is designed to run locally by default and does not upload user media for telemetry.
-
-## Documentation
-
-- [Local Alpha Quick Start](docs/getting-started/local-alpha.md)
-- [Model Admission Status](docs/adapters/model-status.md)
-- [Grant project summary](docs/grant/project-summary.md) and [evidence index](docs/grant/evidence-index.md)
-- [Application video delivery](docs/grant/video/README.md), [subtitle source](docs/grant/video/OpenDub_Application_Walkthrough_v0.0.1-alpha.0_CN_EN.srt), and [recording script](docs/grant/demo-script.md)
-- [Release history](CHANGELOG.md)
-- The detailed engineering, product, release, grant, and formal-film plans remain in [TODO/README.md](TODO/README.md).
-
-## Local Containers
-
-The optional compose stack keeps both services on loopback addresses and stores project data in a
-named local Docker volume. It contains no model weights.
+Open `http://127.0.0.1:5173` and visit **Task**, **Methods**, **Examples**,
+**Compare**, **Evidence**, and **Studio**. The Studio/API workflow is also
+available through the local compose stack:
 
 ```bash
 docker compose up --build
 ```
 
-Open the Studio at `http://127.0.0.1:8080`. The API is available at
-`http://127.0.0.1:8000/api/docs`.
-
-## Redistributable Examples
-
-Build two synthetic, no-model alpha projects with FFmpeg test media:
+For the full quality gate:
 
 ```bash
-uv run python scripts/build_examples.py --workspace /tmp/opendub-examples
+make check
 ```
 
-See [examples/ASSET_LICENSES.md](examples/ASSET_LICENSES.md) for the media policy. These examples
-exercise the current project, authorization, and timeline workflow; they do not provide real
-dubbing output.
+## Documentation
 
-## Contributing
+- [Public project overview](docs/PROJECT_OVERVIEW.md)
+- [Project film, subtitles, and checksum](docs/showcase/README.md)
+- [Documentation index](docs/README.md)
+- [Platform architecture](docs/architecture/README.md)
+- [Method admission status](docs/adapters/model-status.md)
+- [Example-media rights records](docs/rights/)
+- [Contribution guide](CONTRIBUTING.md)
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). Security issues must be reported through [SECURITY.md](SECURITY.md), not public issues.
+## Responsible Use
 
-## License
+Use only video, text, and reference speech that you own or are authorized to
+process. Do not impersonate people, misrepresent generated media, or redistribute
+restricted source material. OpenDub is designed for local-first workflows and
+keeps evidence, input authorization, and runtime admission explicit.
 
-New OpenDub platform code is licensed under [Apache-2.0](LICENSE). Model adapters, upstream source code, weights, datasets, and example media may carry separate terms; see [NOTICE](NOTICE).
+## License and Citation
+
+New OpenDub platform code is released under [Apache-2.0](LICENSE). Upstream
+methods, model weights, datasets, and example media remain subject to their own
+licenses and permission records. See [NOTICE](NOTICE) and [CITATION.cff](CITATION.cff).

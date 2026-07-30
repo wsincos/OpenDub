@@ -3,6 +3,7 @@
   "case_id": "human-0",
   "display_name": "Human portrait case",
   "visual_type": "human",
+  "duration_seconds": 3.0,
   "content_status": "archived_research_example",
   "timeline_eligible": false,
   "rights": {

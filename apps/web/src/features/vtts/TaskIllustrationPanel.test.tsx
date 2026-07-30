@@ -5,25 +5,35 @@ import { describe, expect, it } from "vitest";
 import { TaskIllustrationPanel } from "./TaskIllustrationPanel";
 
 describe("TaskIllustrationPanel", () => {
-  it("labels the female scene as task illustration rather than a historical case", () => {
+  it("uses the quiet task-illustration treatment for the selected input", () => {
     render(<TaskIllustrationPanel />);
 
-    expect(screen.getByText(/task illustration · concept scene/i)).toBeVisible();
-    expect(screen.getByText(/task illustration · no case audio or transcript/i)).toBeVisible();
-    expect(screen.queryByText(/human-0\s*\/\s*gt audio/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/one scene carries several timing cues/i)).toBeVisible();
+    expect(screen.queryByText("ONE SYNCHRONIZED TIMELINE")).not.toBeInTheDocument();
   });
 
-  it("keeps English IPA and illustrated signal tracks on one controllable playhead", async () => {
+  it("provides matching illustration modules for text and reference audio", () => {
+    const { rerender } = render(<TaskIllustrationPanel activeInput="text" />);
+
+    expect(screen.getByText("Reference and target text share one timing view.")).toBeVisible();
+
+    rerender(<TaskIllustrationPanel activeInput="reference" />);
+
+    expect(screen.getByText("Reference audio anchors identity and style.")).toBeVisible();
+    expect(screen.getByLabelText("Reference identity waveform")).toHaveAttribute("data-illustration", "reference-identity");
+    expect(screen.getByText("ILLUSTRATED / NO ARCHIVE AUDIO OR TRANSCRIPT")).toBeVisible();
+  });
+
+  it("restores environment as an independently inspectable scene cue", async () => {
     const user = userEvent.setup();
-    render(<TaskIllustrationPanel />);
+    const { container } = render(<TaskIllustrationPanel />);
 
-    expect(screen.getByText("ðə")).toBeVisible();
-    expect(screen.getByText("ˈtʃeɪn.dʒɪz")).toBeVisible();
-    expect(screen.getByText(/illustrated pitch \+ energy/i)).toBeVisible();
-    expect(screen.getByText(/illustrated target speech/i)).toBeVisible();
+    expect(screen.getByRole("button", { name: /hide environment overlay/i })).toBeVisible();
+    expect(container.querySelector(".task-illustration-environment")).toBeVisible();
 
-    await user.click(screen.getByRole("button", { name: /hide face overlay/i }));
+    await user.click(screen.getByRole("button", { name: /hide environment overlay/i }));
 
-    expect(screen.queryByText(/face affect/i)).not.toBeInTheDocument();
+    expect(container.querySelector(".task-illustration-environment")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /show environment overlay/i })).toBeVisible();
   });
 });

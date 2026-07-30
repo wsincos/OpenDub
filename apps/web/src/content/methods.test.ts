@@ -11,6 +11,13 @@ test("derives the three method summaries from their fixed source manifests", () 
   ]);
   expect(methods.every((method) => method.sourceUrl.endsWith(`/tree/${method.sourceCommit}`))).toBe(true);
   expect(methods.every((method) => method.status === "CONCEPT")).toBe(true);
+  expect(methods.every((method) => method.teamLabel === "TEAM-DEVELOPED COMPLETE METHOD")).toBe(true);
+  expect(methods.map((method) => method.originalFocus)).toEqual([
+    "Visual prosody across lip, face, and scene cues.",
+    "Local pronunciation and global character style.",
+    "Alignment, pronunciation, identity, and directed emotion.",
+  ]);
+  expect(methods.every((method) => method.publishedRecord.title.length > 0)).toBe(true);
 });
 
 test("creates an evidence-bound selection draft without inventing shared controls", () => {

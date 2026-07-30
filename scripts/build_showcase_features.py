@@ -62,6 +62,8 @@ def build_case(case_path: Path, output_directory: Path, repo_root: Path) -> None
     output_directory.mkdir(parents=True, exist_ok=True)
     features_directory = output_directory / "features"
     features_directory.mkdir(parents=True, exist_ok=True)
+    contacts_directory = output_directory / "contacts"
+    contacts_directory.mkdir(parents=True, exist_ok=True)
     ffmpeg_version = _ffmpeg_version()
     produced: list[dict[str, object]] = []
 
@@ -92,6 +94,12 @@ def build_case(case_path: Path, output_directory: Path, repo_root: Path) -> None
         )
         _write_json(feature_json, feature_payload)
         _write_mel_png(feature_png, features.mel)
+        contact_records = _write_contact_frames(
+            source,
+            contacts_directory,
+            destination.stem,
+            duration_seconds=case.duration_seconds,
+        )
         record: dict[str, object] = {
             "artifact_path": destination.name,
             "artifact_sha256": _sha256(destination),
@@ -99,6 +107,14 @@ def build_case(case_path: Path, output_directory: Path, repo_root: Path) -> None
             "feature_sha256": _sha256(feature_json),
             "mel_png_path": feature_png.relative_to(output_directory).as_posix(),
             "mel_png_sha256": _sha256(feature_png),
+            "contact_frames": [
+                {
+                    "path": contact_path.relative_to(output_directory).as_posix(),
+                    "sha256": _sha256(contact_path),
+                    "time_seconds": time_seconds,
+                }
+                for contact_path, time_seconds in contact_records
+            ],
         }
         if artifact.get("role") == "ground_truth":
             poster = output_directory / "poster.jpg"
@@ -230,6 +246,43 @@ def _write_poster(source: Path, destination: Path) -> None:
         check=True,
         capture_output=True,
     )
+
+
+def _write_contact_frames(
+    source: Path,
+    destination_directory: Path,
+    artifact_stem: str,
+    *,
+    duration_seconds: float,
+) -> list[tuple[Path, float]]:
+    """Extract a fixed set of real frames for an archive-file contact strip."""
+    fractions = (0.0, 0.25, 0.5, 0.75, 1.0)
+    safe_last_frame = max(0.0, duration_seconds - 1 / 25)
+    records: list[tuple[Path, float]] = []
+    for index, fraction in enumerate(fractions):
+        time_seconds = min(duration_seconds * fraction, safe_last_frame)
+        destination = destination_directory / f"{artifact_stem}-{index}.jpg"
+        subprocess.run(
+            [
+                "ffmpeg",
+                "-y",
+                "-v",
+                "error",
+                "-ss",
+                f"{time_seconds:.6f}",
+                "-i",
+                str(source),
+                "-frames:v",
+                "1",
+                "-q:v",
+                "3",
+                str(destination),
+            ],
+            check=True,
+            capture_output=True,
+        )
+        records.append((destination, time_seconds))
+    return records
 
 
 def _png_chunk(kind: bytes, payload: bytes) -> bytes:

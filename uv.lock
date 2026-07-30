@@ -479,7 +479,7 @@ wheels = [
 
 [[package]]
 name = "opendub"
-version = "0.0.1a0"
+version = "0.4.0"
 source = { editable = "." }
 dependencies = [
     { name = "fastapi" },

@@ -11,7 +11,7 @@ from .manifest import load_case_manifest
 
 
 def verify_public_case(case_path: Path, public_directory: Path, repo_root: Path) -> None:
-    """Verify source media, public copies, derived features, and provenance hashes."""
+    """Verify a public bundle, its derived features, and its provenance hashes."""
     case = load_case_manifest(case_path)
     manifest = _read_object(case_path, "showcase manifest")
     provenance = _read_object(public_directory / "provenance.json", "showcase provenance")
@@ -31,9 +31,7 @@ def verify_public_case(case_path: Path, public_directory: Path, repo_root: Path)
             raise ValueError("showcase manifest artifact must be an object")
         relative_path = _required_string(artifact, "path")
         expected_hash = _required_string(artifact, "sha256")
-        source = _source_path(repo_root, artifact)
-        if _sha256(source) != expected_hash:
-            raise ValueError(f"source artifact SHA-256 mismatch: {source}")
+        _verify_optional_local_source(repo_root, artifact, expected_hash)
 
         public_artifact = _relative_public_path(public_directory, relative_path)
         if not public_artifact.is_file():
@@ -47,6 +45,7 @@ def verify_public_case(case_path: Path, public_directory: Path, repo_root: Path)
         if record.get("artifact_sha256") != expected_hash:
             raise ValueError(f"provenance artifact SHA-256 mismatch: {relative_path}")
         _verify_feature(public_directory, record, case.case_id, expected_hash)
+        _verify_contact_frames(public_directory, record)
         if artifact.get("role") == "ground_truth":
             _verify_poster(public_directory, record)
 
@@ -98,14 +97,47 @@ def _verify_poster(public_directory: Path, record: dict[str, Any]) -> None:
         raise ValueError(f"poster SHA-256 mismatch: {poster_path}")
 
 
-def _source_path(repo_root: Path, artifact: dict[str, Any]) -> Path:
-    source_path = Path(_required_string(artifact, "source_path"))
+def _verify_contact_frames(public_directory: Path, record: dict[str, Any]) -> None:
+    """Verify optional contact frames emitted by the current archive builder."""
+    contact_frames = record.get("contact_frames")
+    if contact_frames is None:
+        return
+    if not isinstance(contact_frames, list) or len(contact_frames) != 5:
+        raise ValueError("contact_frames must contain five derived frame records")
+    for frame in contact_frames:
+        if not isinstance(frame, dict):
+            raise ValueError("contact frame record must be an object")
+        frame_path = _relative_public_path(public_directory, _required_string(frame, "path"))
+        if not frame_path.is_file():
+            raise ValueError(f"contact frame is missing: {frame_path}")
+        if _sha256(frame_path) != _required_string(frame, "sha256"):
+            raise ValueError(f"contact frame SHA-256 mismatch: {frame_path}")
+        time_seconds = frame.get("time_seconds")
+        if (
+            isinstance(time_seconds, bool)
+            or not isinstance(time_seconds, (int, float))
+            or time_seconds < 0
+        ):
+            raise ValueError("contact frame time_seconds must be non-negative")
+
+
+def _verify_optional_local_source(
+    repo_root: Path, artifact: dict[str, Any], expected_hash: str
+) -> None:
+    """Check a local source copy when present without requiring private media."""
+    source_value = artifact.get("source_path")
+    if source_value is None:
+        return
+    if not isinstance(source_value, str) or not source_value:
+        raise ValueError("source_path must be a non-empty string when provided")
+    source_path = Path(source_value)
     if source_path.is_absolute() or ".." in source_path.parts:
         raise ValueError("source_path must be repository-relative")
     source = repo_root / source_path
     if not source.is_file():
-        raise ValueError(f"source media does not exist: {source}")
-    return source
+        return
+    if _sha256(source) != expected_hash:
+        raise ValueError(f"source artifact SHA-256 mismatch: {source}")
 
 
 def _relative_public_path(public_directory: Path, value: str) -> Path:

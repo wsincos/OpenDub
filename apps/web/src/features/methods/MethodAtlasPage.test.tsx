@@ -6,27 +6,30 @@ import { describe, expect, it } from "vitest";
 import { MethodAtlasPage } from "./MethodAtlasPage";
 
 describe("MethodAtlasPage", () => {
-  it("presents the three complete dubbing methods as separate paths", () => {
+  it("presents original complete methods and an evidence-limited expanding catalog", () => {
     render(<MemoryRouter><MethodAtlasPage /></MemoryRouter>);
 
-    expect(screen.getAllByRole("heading", { name: "HPMDubbing" })).toHaveLength(2);
-    expect(screen.getByRole("heading", { name: "StyleDubber" })).toBeVisible();
-    expect(screen.getByRole("heading", { name: "EmoDubber" })).toBeVisible();
-    expect(screen.getAllByRole("link", { name: /explore method/i })).toHaveLength(3);
-    expect(screen.getByRole("link", { name: "Prepare an HPMDubbing project" })).toHaveAttribute("href", "/studio?method=hpmdubbing");
-    expect(screen.getByRole("link", { name: "Prepare a StyleDubber project" })).toHaveAttribute("href", "/studio?method=styledubber");
-    expect(screen.getByRole("link", { name: "Prepare an EmoDubber project" })).toHaveAttribute("href", "/studio?method=emodubber");
+    expect(screen.getByRole("heading", { name: "Multiple original methods. One shared dubbing task." })).toBeVisible();
+    expect(screen.getByRole("button", { name: "Inspect HPMDubbing original method" })).toBeVisible();
+    expect(screen.getByRole("button", { name: "Inspect StyleDubber original method" })).toBeVisible();
+    expect(screen.getByRole("button", { name: "Inspect EmoDubber original method" })).toBeVisible();
+    expect(screen.getAllByText("TEAM-DEVELOPED COMPLETE METHOD")).toHaveLength(3);
+    expect(screen.getByText("PUBLISHED RECORD")).toBeVisible();
+    expect(screen.getByLabelText("Expanding methods in OpenDub")).toHaveTextContent("InstructDubber");
+    expect(screen.getByLabelText("Expanding methods in OpenDub")).toHaveTextContent("Speaker2Dub");
+    expect(screen.getByText("In development in OpenDub.")).toBeVisible();
+    expect(screen.getByRole("img", { name: "HPMDubbing original method architecture" })).toHaveAttribute("src", "/methods/papers/hpmdubbing-architecture.png");
+    expect(screen.queryByText("CVPR · 2023")).not.toBeInTheDocument();
   });
 
-  it("turns a declared primary need into an evidence-aware complete-method orientation", async () => {
+  it("switches the original method reader without ranking the methods", async () => {
     const user = userEvent.setup();
     render(<MemoryRouter><MethodAtlasPage /></MemoryRouter>);
 
-    await user.click(screen.getByRole("button", { name: /explicit emotion direction/i }));
+    await user.click(screen.getByRole("button", { name: "Inspect EmoDubber original method" }));
 
-    expect(screen.getByText(/recommended for inspection and preparation/i)).toBeVisible();
-    expect(screen.getByText("EmoDubber", { selector: ".decision-result h2" })).toBeVisible();
-    expect(screen.getByRole("link", { name: "Prepare an EmoDubber project from this recommendation" })).toHaveAttribute("href", "/studio?method=emodubber");
-    expect(screen.getByText(/not a claim of live runtime or global superiority/i)).toBeVisible();
+    expect(screen.getByRole("img", { name: "EmoDubber original method architecture" })).toHaveAttribute("src", "/methods/papers/emodubber-architecture.png");
+    expect(screen.getByText("Flow-based User Emotion Controlling")).toBeVisible();
+    expect(screen.queryByText(/recommended for inspection/i)).not.toBeInTheDocument();
   });
 });

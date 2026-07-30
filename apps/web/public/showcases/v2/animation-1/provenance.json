@@ -2,7 +2,7 @@
   "schema_version": "opendub.showcase-build/v1",
   "case_id": "animation-1",
   "content_status": "archived_research_example",
-  "generated_at": "2026-07-26T17:46:14+00:00",
+  "generated_at": "2026-07-27T10:23:55+00:00",
   "generator": "scripts/build_showcase_features.py",
   "ffmpeg_version": "ffmpeg version 4.2.7-0ubuntu0.1 Copyright (c) 2000-2022 the FFmpeg developers",
   "produced": [
@@ -13,6 +13,33 @@
       "feature_sha256": "83ec36ec973f1507b4dd67a2dc730a0beb395ed3f95c3d345b599e8f97687b07",
       "mel_png_path": "features/gt.mel.png",
       "mel_png_sha256": "4153aafd54f73867ad054fbd084c3b34f4c30f98520a18c8069dfd7e31a9cc2f",
+      "contact_frames": [
+        {
+          "path": "contacts/gt-0.jpg",
+          "sha256": "4b68ed622c070749d9454e8e9ab74e719a075f2a564f8d198e92fc7cdd24069a",
+          "time_seconds": 0.0
+        },
+        {
+          "path": "contacts/gt-1.jpg",
+          "sha256": "03e31653d8bdd57d2b89263fa1d6671d8067bfbadee201871719a668e26e8738",
+          "time_seconds": 0.34
+        },
+        {
+          "path": "contacts/gt-2.jpg",
+          "sha256": "0ec416c3fce8a776a7817602767bd2798522fb790597f38f0368ff34845b67e5",
+          "time_seconds": 0.68
+        },
+        {
+          "path": "contacts/gt-3.jpg",
+          "sha256": "e5a8ae56c4fe7ae68f2c6d8731550cb416c192425b1e6b0f3bec8384f7b5833a",
+          "time_seconds": 1.02
+        },
+        {
+          "path": "contacts/gt-4.jpg",
+          "sha256": "27b89e9305a9c75a00e72000b761e5377e391fa3849e340330d14e46447d94ac",
+          "time_seconds": 1.32
+        }
+      ],
       "poster_path": "poster.jpg",
       "poster_sha256": "bd7fa1b7ade74070dae626c544368ffaae38da16dfa02077d9cd3dab922ea1eb"
     },
@@ -22,7 +49,34 @@
       "feature_path": "features/hpmdubbing.json",
       "feature_sha256": "ee43133cfc90096c9540532ad5e1874410fb64f15e8523705e16fcb586e3a96a",
       "mel_png_path": "features/hpmdubbing.mel.png",
-      "mel_png_sha256": "9bcfba42a8319053255f48321fc87a2764a007a563131de3e0adb9b7444db29f"
+      "mel_png_sha256": "9bcfba42a8319053255f48321fc87a2764a007a563131de3e0adb9b7444db29f",
+      "contact_frames": [
+        {
+          "path": "contacts/hpmdubbing-0.jpg",
+          "sha256": "4b68ed622c070749d9454e8e9ab74e719a075f2a564f8d198e92fc7cdd24069a",
+          "time_seconds": 0.0
+        },
+        {
+          "path": "contacts/hpmdubbing-1.jpg",
+          "sha256": "03e31653d8bdd57d2b89263fa1d6671d8067bfbadee201871719a668e26e8738",
+          "time_seconds": 0.34
+        },
+        {
+          "path": "contacts/hpmdubbing-2.jpg",
+          "sha256": "0ec416c3fce8a776a7817602767bd2798522fb790597f38f0368ff34845b67e5",
+          "time_seconds": 0.68
+        },
+        {
+          "path": "contacts/hpmdubbing-3.jpg",
+          "sha256": "e5a8ae56c4fe7ae68f2c6d8731550cb416c192425b1e6b0f3bec8384f7b5833a",
+          "time_seconds": 1.02
+        },
+        {
+          "path": "contacts/hpmdubbing-4.jpg",
+          "sha256": "27b89e9305a9c75a00e72000b761e5377e391fa3849e340330d14e46447d94ac",
+          "time_seconds": 1.32
+        }
+      ]
     },
     {
       "artifact_path": "styledubber.mp4",
@@ -30,7 +84,34 @@
       "feature_path": "features/styledubber.json",
       "feature_sha256": "6038be41c248763d5f0769e27bf59188484147c0b47417e803d9acbbf0ee29a8",
       "mel_png_path": "features/styledubber.mel.png",
-      "mel_png_sha256": "2221446bd0d23e18a6bc92e4ee333ce392a06835d05e4973c115a57e82052baf"
+      "mel_png_sha256": "2221446bd0d23e18a6bc92e4ee333ce392a06835d05e4973c115a57e82052baf",
+      "contact_frames": [
+        {
+          "path": "contacts/styledubber-0.jpg",
+          "sha256": "4b68ed622c070749d9454e8e9ab74e719a075f2a564f8d198e92fc7cdd24069a",
+          "time_seconds": 0.0
+        },
+        {
+          "path": "contacts/styledubber-1.jpg",
+          "sha256": "03e31653d8bdd57d2b89263fa1d6671d8067bfbadee201871719a668e26e8738",
+          "time_seconds": 0.34
+        },
+        {
+          "path": "contacts/styledubber-2.jpg",
+          "sha256": "0ec416c3fce8a776a7817602767bd2798522fb790597f38f0368ff34845b67e5",
+          "time_seconds": 0.68
+        },
+        {
+          "path": "contacts/styledubber-3.jpg",
+          "sha256": "e5a8ae56c4fe7ae68f2c6d8731550cb416c192425b1e6b0f3bec8384f7b5833a",
+          "time_seconds": 1.02
+        },
+        {
+          "path": "contacts/styledubber-4.jpg",
+          "sha256": "27b89e9305a9c75a00e72000b761e5377e391fa3849e340330d14e46447d94ac",
+          "time_seconds": 1.32
+        }
+      ]
     },
     {
       "artifact_path": "emodubber.mp4",
@@ -38,7 +119,34 @@
       "feature_path": "features/emodubber.json",
       "feature_sha256": "005e7777d3316f0a8169015cb3b79f08b3067db512e86ebb02490b5d003e2382",
       "mel_png_path": "features/emodubber.mel.png",
-      "mel_png_sha256": "0788f727a1c19cd20141c8bd19cbac8b8035702a4e4a2d47a34ad957912d0107"
+      "mel_png_sha256": "0788f727a1c19cd20141c8bd19cbac8b8035702a4e4a2d47a34ad957912d0107",
+      "contact_frames": [
+        {
+          "path": "contacts/emodubber-0.jpg",
+          "sha256": "4b68ed622c070749d9454e8e9ab74e719a075f2a564f8d198e92fc7cdd24069a",
+          "time_seconds": 0.0
+        },
+        {
+          "path": "contacts/emodubber-1.jpg",
+          "sha256": "03e31653d8bdd57d2b89263fa1d6671d8067bfbadee201871719a668e26e8738",
+          "time_seconds": 0.34
+        },
+        {
+          "path": "contacts/emodubber-2.jpg",
+          "sha256": "0ec416c3fce8a776a7817602767bd2798522fb790597f38f0368ff34845b67e5",
+          "time_seconds": 0.68
+        },
+        {
+          "path": "contacts/emodubber-3.jpg",
+          "sha256": "e5a8ae56c4fe7ae68f2c6d8731550cb416c192425b1e6b0f3bec8384f7b5833a",
+          "time_seconds": 1.02
+        },
+        {
+          "path": "contacts/emodubber-4.jpg",
+          "sha256": "27b89e9305a9c75a00e72000b761e5377e391fa3849e340330d14e46447d94ac",
+          "time_seconds": 1.32
+        }
+      ]
     }
   ]
 }

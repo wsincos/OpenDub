@@ -1,0 +1,154 @@
+1
+00:00:07,030 --> 00:00:11,134
+视频配音，不只是为画面添加声音。
+Video dubbing is more than adding sound to a picture.
+
+2
+00:00:11,334 --> 00:00:17,046
+这也是视频配音与传统文本转语音之间最关键的区别。
+This is the key difference between video dubbing and conventional text-to-speech.
+
+3
+00:00:17,246 --> 00:00:21,878
+它需要理解人物的表情、口型与场景节奏；
+It must understand facial expression, lip motion, and scene rhythm.
+
+4
+00:00:22,078 --> 00:00:26,038
+从文本中把握语义、发音和停顿；
+It must also interpret meaning, pronunciation, and pauses from text.
+
+5
+00:00:26,238 --> 00:00:31,350
+再由参考语音确定目标声音的身份与表达风格。
+A reference voice then anchors the target voice's identity and expressive style.
+
+6
+00:00:31,550 --> 00:00:37,502
+OpenDub 将这些信息组织为一个可交互、可解释的统一任务。
+OpenDub organizes these signals into one interactive, intelligible task.
+
+7
+00:00:37,702 --> 00:00:46,366
+最终，所有信号在同一条时间线上协同，形成与画面同步的目标语音和配音视频。
+Finally, they work on one synchronized timeline to form target speech and a dubbed video aligned with the scene.
+
+8
+00:00:46,388 --> 00:00:55,340
+在统一的视频配音任务之上，OpenDub 汇集了团队面向不同场景持续发展的原创完整方法。
+On top of one video-dubbing task, OpenDub brings together original complete methods developed by our team for different scenes.
+
+9
+00:00:55,540 --> 00:00:59,932
+HPMDubbing 关注视觉节奏与韵律协同。
+HPMDubbing focuses on visual rhythm and prosodic coordination.
+
+10
+00:01:00,132 --> 00:01:04,308
+StyleDubber 面向清晰发音与角色风格。
+StyleDubber addresses clear pronunciation and character style.
+
+11
+00:01:04,508 --> 00:01:07,940
+EmoDubber 提供可控的情感表达。
+EmoDubber provides controllable emotional expression.
+
+12
+00:01:08,140 --> 00:01:14,620
+它们各自服务于不同的表达重点，也保留独立而完整的建模路径。
+Each serves a different expressive priority while retaining an independent, complete modeling path.
+
+13
+00:01:14,820 --> 00:01:21,060
+这种完整方法导向，让研究线索和用户选择始终保持清晰。
+This complete-method orientation keeps both research traces and user choices clear.
+
+14
+00:01:21,260 --> 00:01:36,980
+OpenDub 保持每种方法的完整性，并让用户以完整方法为单位理解、浏览和选择。通过 Method Canvas，方法的核心模块、信号路径与设计重点都可以逐层查看。
+OpenDub preserves every method as a complete approach, so users can understand, inspect, and select it as a whole. Method Canvas exposes its key modules, signal paths, and design priorities layer by layer.
+
+15
+00:01:37,180 --> 00:01:42,316
+更多方法也会随着 OpenDub 的持续开发不断加入。
+More methods will join as OpenDub continues to grow.
+
+16
+00:01:42,338 --> 00:01:45,986
+如下是几种方法的基本效果展示。
+The following presents representative results from several methods.
+
+17
+00:02:03,438 --> 00:02:13,614
+OpenDub 的 Compare 工作台将归档媒体、时间波形、Mel 频谱、基频和能量曲线放在同一个可交互界面中。
+OpenDub's Compare workbench brings archived media, waveforms, Mel spectrograms, pitch, and energy curves into one interactive view.
+
+18
+00:02:13,814 --> 00:02:22,358
+用户可以沿着场景索引切换视频，并观察每个文件的视听特征如何随选择同步更新。
+Users can move through the scene index and observe each file's audiovisual features update with the selection.
+
+19
+00:02:43,235 --> 00:02:51,371
+当选定文件切换时，所有特征并非静态装饰，而是与当前媒体记录同步更新。
+When the selected file changes, every feature is refreshed with the current media record rather than serving as static decoration.
+
+20
+00:02:51,571 --> 00:03:05,443
+同一界面中的图像帧和声音轨迹，帮助用户把主观听感与可观察的声学细节联系起来，并为方法比较与研究复用保留同一条可追溯的上下文。
+Frames and sound trajectories in one view connect subjective listening with observable acoustic detail, retaining one traceable context for method comparison and research reuse.
+
+21
+00:03:05,643 --> 00:03:16,323
+这样的可视化，让视频配音不再只是一个最终音频结果，而成为能够被聆听、观察和讨论的多模态创作过程。
+This visualization turns video dubbing from a final audio result into a multimodal creative process that can be heard, observed, and discussed.
+
+22
+00:03:16,338 --> 00:03:26,970
+OpenDub 同时把开源研究转化为可追溯的工作流。Evidence 记录方法的代码、版本、媒体与权利信息。
+OpenDub also turns open research into a traceable workflow. Evidence records each method's code, version, media, and rights information.
+
+23
+00:03:27,170 --> 00:03:33,098
+每一项归档资源，都保留对应的来源、版本和使用边界。
+Every archived asset retains its associated source, version, and usage boundary.
+
+24
+00:03:33,298 --> 00:03:42,658
+Studio 则将视频、文本、参考语音、方法选择与授权状态组织成清晰的项目准备界面。
+Studio organizes video, text, reference speech, method selection, and authorization state into a clear project-preparation workspace.
+
+25
+00:03:42,858 --> 00:03:49,026
+在 Studio 中，输入与方法选择围绕实际项目准备流程呈现。
+In Studio, inputs and method selection are presented around a practical project-preparation flow.
+
+26
+00:03:49,226 --> 00:03:52,922
+这也让团队协作保持透明和连贯。
+It also keeps collaboration transparent and continuous.
+
+27
+00:03:53,122 --> 00:04:01,690
+这种从证据到准备界面的衔接，也为后续的协作、复现和持续维护建立共同基础。
+This connection from evidence to preparation also establishes a shared foundation for later collaboration, reproduction, and sustained maintenance.
+
+28
+00:04:01,890 --> 00:04:08,538
+这样，研究成果既能被展示，也能被理解、复用和持续完善。
+In this way, research contributions can be presented, understood, reused, and continuously improved.
+
+29
+00:04:08,560 --> 00:04:16,264
+OpenDub 汇聚本团队原创的完整视频配音方法，形成开放、可交互的平台。
+OpenDub brings together original complete video-dubbing methods developed by our team into an open, interactive platform.
+
+30
+00:04:16,464 --> 00:04:29,016
+Methods 用于理解与选择，Examples 和 Compare 呈现归档结果与声学证据，Evidence 和 Studio 让资源与项目准备保持可追溯。
+Methods supports understanding and selection; Examples and Compare present archived results and acoustic evidence; Evidence and Studio keep resources and project preparation traceable.
+
+31
+00:04:29,216 --> 00:04:36,800
+OpenDub 将持续扩展方法与工具，让视频配音研究更可理解、更可复用。
+OpenDub will continue to expand its methods and tools, making video-dubbing research easier to understand and reuse.

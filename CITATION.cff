@@ -1,7 +1,8 @@
 cff-version: 1.2.0
 message: "If you use OpenDub, please cite it using the metadata below."
-title: "OpenDub: Video-aware, emotion-directed dubbing"
+title: "OpenDub: An Open-Source Platform for Multimodal Intelligent Video Dubbing"
 type: software
+version: "0.4.0"
 authors:
   - family-names: Li
     given-names: Liang
@@ -10,5 +11,5 @@ authors:
   - family-names: Wang
     given-names: Jinyu
 license: Apache-2.0
-repository-code: "https://github.com/GalaxyCong/OpenDub"
-abstract: "A local-first open-source studio for synchronized, emotion-directed video dubbing."
+repository-code: "https://github.com/wsincos/OpenDub"
+abstract: "A local-first open-source platform for understanding, inspecting, and preparing multimodal intelligent video dubbing workflows."

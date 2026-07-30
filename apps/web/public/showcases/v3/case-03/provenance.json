@@ -1,0 +1,152 @@
+{
+  "schema_version": "opendub.showcase-build/v1",
+  "case_id": "case-03",
+  "content_status": "archived_research_example",
+  "generated_at": "2026-07-27T10:24:01+00:00",
+  "generator": "scripts/build_showcase_features.py",
+  "ffmpeg_version": "ffmpeg version 4.2.7-0ubuntu0.1 Copyright (c) 2000-2022 the FFmpeg developers",
+  "produced": [
+    {
+      "artifact_path": "gt.mp4",
+      "artifact_sha256": "eb6406fb6b84f46eb789439c8c4da246beab1f5410bb92f73b08f3352f4d61e2",
+      "feature_path": "features/gt.json",
+      "feature_sha256": "950340f8d0685547650ead405a3cf4d0c33fa27e4c481803319ab84c00304e52",
+      "mel_png_path": "features/gt.mel.png",
+      "mel_png_sha256": "a55f8f0b6b36cee5bb9854b7b6421271ea9e3567b08926a75c5102810d07c6c6",
+      "contact_frames": [
+        {
+          "path": "contacts/gt-0.jpg",
+          "sha256": "294b46f43d5deb80a336b457e88aaddb11df0d08777129b98c749316ad9ede8c",
+          "time_seconds": 0.0
+        },
+        {
+          "path": "contacts/gt-1.jpg",
+          "sha256": "b24100fe81721310dd06a9f47788ede2af7cdaa08dfbf29e08dc25d08be5f960",
+          "time_seconds": 0.39
+        },
+        {
+          "path": "contacts/gt-2.jpg",
+          "sha256": "b1ecb730f34b27fb18967dcd73ff26fca9446d4da2b4e25abc371b6953531246",
+          "time_seconds": 0.78
+        },
+        {
+          "path": "contacts/gt-3.jpg",
+          "sha256": "fda467635441f833d4aa8935d45030ddea74617b0d01a6a42f87493b06904f13",
+          "time_seconds": 1.17
+        },
+        {
+          "path": "contacts/gt-4.jpg",
+          "sha256": "e4ba9362dd3efd22f4fa3cb2f5e890ce7778b7a8ef8adf4887cab0100868b344",
+          "time_seconds": 1.52
+        }
+      ],
+      "poster_path": "poster.jpg",
+      "poster_sha256": "7e7c62edec3c8634a1523bb958d45bdcd13c41f8381b04a7b3a061161233b41b"
+    },
+    {
+      "artifact_path": "hpmdubbing.mp4",
+      "artifact_sha256": "bfb6b98c916fa5f78de85d219a15cf1739dace858e71addc6d57ba5effd22ffd",
+      "feature_path": "features/hpmdubbing.json",
+      "feature_sha256": "c8c893449b8040d30426cc9ec424f59bd90550944c0508aaeec61918b70ec3d9",
+      "mel_png_path": "features/hpmdubbing.mel.png",
+      "mel_png_sha256": "19eaee0332b9d720c2eeeaca0d6718735d79c6255d032baf5be65d2902f89673",
+      "contact_frames": [
+        {
+          "path": "contacts/hpmdubbing-0.jpg",
+          "sha256": "294b46f43d5deb80a336b457e88aaddb11df0d08777129b98c749316ad9ede8c",
+          "time_seconds": 0.0
+        },
+        {
+          "path": "contacts/hpmdubbing-1.jpg",
+          "sha256": "b24100fe81721310dd06a9f47788ede2af7cdaa08dfbf29e08dc25d08be5f960",
+          "time_seconds": 0.39
+        },
+        {
+          "path": "contacts/hpmdubbing-2.jpg",
+          "sha256": "b1ecb730f34b27fb18967dcd73ff26fca9446d4da2b4e25abc371b6953531246",
+          "time_seconds": 0.78
+        },
+        {
+          "path": "contacts/hpmdubbing-3.jpg",
+          "sha256": "fda467635441f833d4aa8935d45030ddea74617b0d01a6a42f87493b06904f13",
+          "time_seconds": 1.17
+        },
+        {
+          "path": "contacts/hpmdubbing-4.jpg",
+          "sha256": "e4ba9362dd3efd22f4fa3cb2f5e890ce7778b7a8ef8adf4887cab0100868b344",
+          "time_seconds": 1.52
+        }
+      ]
+    },
+    {
+      "artifact_path": "styledubber.mp4",
+      "artifact_sha256": "244edbf33cf8e2b7152151e226987380861366b964c59f6a32560c8a8b9a377e",
+      "feature_path": "features/styledubber.json",
+      "feature_sha256": "c6622071aa48c96fff892c2f8d463d22bff6e52c575471835217f61500fbe4e7",
+      "mel_png_path": "features/styledubber.mel.png",
+      "mel_png_sha256": "44c7648a50825a7d62f7676ad64f5603cb5c0088ed57221ea04fc99e90842d27",
+      "contact_frames": [
+        {
+          "path": "contacts/styledubber-0.jpg",
+          "sha256": "294b46f43d5deb80a336b457e88aaddb11df0d08777129b98c749316ad9ede8c",
+          "time_seconds": 0.0
+        },
+        {
+          "path": "contacts/styledubber-1.jpg",
+          "sha256": "b24100fe81721310dd06a9f47788ede2af7cdaa08dfbf29e08dc25d08be5f960",
+          "time_seconds": 0.39
+        },
+        {
+          "path": "contacts/styledubber-2.jpg",
+          "sha256": "b1ecb730f34b27fb18967dcd73ff26fca9446d4da2b4e25abc371b6953531246",
+          "time_seconds": 0.78
+        },
+        {
+          "path": "contacts/styledubber-3.jpg",
+          "sha256": "fda467635441f833d4aa8935d45030ddea74617b0d01a6a42f87493b06904f13",
+          "time_seconds": 1.17
+        },
+        {
+          "path": "contacts/styledubber-4.jpg",
+          "sha256": "e4ba9362dd3efd22f4fa3cb2f5e890ce7778b7a8ef8adf4887cab0100868b344",
+          "time_seconds": 1.52
+        }
+      ]
+    },
+    {
+      "artifact_path": "emodubber.mp4",
+      "artifact_sha256": "a00f392acbbe4728561593274acd8ff7bf75b7cdf4a48567ad47d65fa8a990f5",
+      "feature_path": "features/emodubber.json",
+      "feature_sha256": "9251d09f64428d63cdcdcc532f3e1f5bdddec520567804a11ab61aab7f760b61",
+      "mel_png_path": "features/emodubber.mel.png",
+      "mel_png_sha256": "532b7a41c08f29f0fa21ed05654fbd55c4f5fd19246c08b927c67325238fa9ad",
+      "contact_frames": [
+        {
+          "path": "contacts/emodubber-0.jpg",
+          "sha256": "294b46f43d5deb80a336b457e88aaddb11df0d08777129b98c749316ad9ede8c",
+          "time_seconds": 0.0
+        },
+        {
+          "path": "contacts/emodubber-1.jpg",
+          "sha256": "b24100fe81721310dd06a9f47788ede2af7cdaa08dfbf29e08dc25d08be5f960",
+          "time_seconds": 0.39
+        },
+        {
+          "path": "contacts/emodubber-2.jpg",
+          "sha256": "b1ecb730f34b27fb18967dcd73ff26fca9446d4da2b4e25abc371b6953531246",
+          "time_seconds": 0.78
+        },
+        {
+          "path": "contacts/emodubber-3.jpg",
+          "sha256": "fda467635441f833d4aa8935d45030ddea74617b0d01a6a42f87493b06904f13",
+          "time_seconds": 1.17
+        },
+        {
+          "path": "contacts/emodubber-4.jpg",
+          "sha256": "e4ba9362dd3efd22f4fa3cb2f5e890ce7778b7a8ef8adf4887cab0100868b344",
+          "time_seconds": 1.52
+        }
+      ]
+    }
+  ]
+}

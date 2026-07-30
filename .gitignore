@@ -44,6 +44,24 @@ tools/*/obj/
 *.webm
 docs/grant/video/v2/.work/
 
+# Public-release curation
+# Keep local application materials, review rounds, and media-production history
+# outside the public repository. These folders remain available locally under
+# archive/private/ when a release needs to be audited or rebuilt.
+archive/private/
+.tmp/
+TODO/
+review/
+reference/
+docs/grant/
+docs/superpowers/
+
+# The final project film and the authorized V3/V4 showcase media are deliberate
+# public release assets. All other captured video remains ignored above.
+!docs/showcase/OpenDub_Project_Introduction_V4.6.mp4
+!apps/web/public/showcases/v3/case-03/*.mp4
+!apps/web/public/showcases/v4/case-04/*.mp4
+
 # System and editor files
 .DS_Store
 Thumbs.db

@@ -3,6 +3,7 @@
   "case_id": "animation-1",
   "display_name": "Animated character case",
   "visual_type": "animation",
+  "duration_seconds": 1.36,
   "content_status": "archived_research_example",
   "timeline_eligible": false,
   "rights": {

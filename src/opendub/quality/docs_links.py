@@ -8,7 +8,7 @@ from pathlib import Path
 from urllib.parse import unquote
 
 _LINK_PATTERN = re.compile(r"(?<!!)\[[^\]]*\]\(\s*(?:<([^>]+)>|([^\s)]+))")
-_SKIPPED_DIRECTORIES = frozenset({".git", ".venv", "node_modules"})
+_SKIPPED_DIRECTORIES = frozenset({".git", ".venv", "archive", "node_modules"})
 
 
 @dataclass(frozen=True)

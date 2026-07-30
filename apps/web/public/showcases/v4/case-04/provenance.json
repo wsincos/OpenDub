@@ -1,0 +1,152 @@
+{
+  "schema_version": "opendub.showcase-build/v1",
+  "case_id": "case-04",
+  "content_status": "archived_research_example",
+  "generated_at": "2026-07-27T15:29:29+00:00",
+  "generator": "scripts/build_showcase_features.py",
+  "ffmpeg_version": "ffmpeg version 4.2.7-0ubuntu0.1 Copyright (c) 2000-2022 the FFmpeg developers",
+  "produced": [
+    {
+      "artifact_path": "gt.mp4",
+      "artifact_sha256": "6ae298272ff5f1312a215d12c108b0903590a4327c42a42c6663de0ee4adf1dd",
+      "feature_path": "features/gt.json",
+      "feature_sha256": "b06cd85d148f321a90f44c8a9376228d46bed9f28b5a6c4d68136a6fec1c7112",
+      "mel_png_path": "features/gt.mel.png",
+      "mel_png_sha256": "033c90ef7615b4c72f8814eb9a4efce2d371d487e67393abf728637442a3e8ae",
+      "contact_frames": [
+        {
+          "path": "contacts/gt-0.jpg",
+          "sha256": "4e71a7eba0342f6a11f50c00ba3c019eafac0beaf50629106f7b923e9cfbf438",
+          "time_seconds": 0.0
+        },
+        {
+          "path": "contacts/gt-1.jpg",
+          "sha256": "9c6bace522a381ce5a93924de94e7f59bb460e76af2ef0c895e11792b9af6459",
+          "time_seconds": 1.95
+        },
+        {
+          "path": "contacts/gt-2.jpg",
+          "sha256": "3366dcd8dce3f9828b88c2f8a15dafbe351d977638d1c05fee62b7c1ba0e68df",
+          "time_seconds": 3.9
+        },
+        {
+          "path": "contacts/gt-3.jpg",
+          "sha256": "13bee5bcb7d746c898d2ae747d61e9880930f1f07977e822dfc354f8507e9e30",
+          "time_seconds": 5.85
+        },
+        {
+          "path": "contacts/gt-4.jpg",
+          "sha256": "edca3021c6d21cd199db7d40e180499fae74abfc4a625fcfe34fd41fe1082854",
+          "time_seconds": 7.76
+        }
+      ],
+      "poster_path": "poster.jpg",
+      "poster_sha256": "724a6176846583115dc7786325a0fb9fe3cba896efa635ff7afeedbf63b8ade2"
+    },
+    {
+      "artifact_path": "hpmdubbing.mp4",
+      "artifact_sha256": "6ae298272ff5f1312a215d12c108b0903590a4327c42a42c6663de0ee4adf1dd",
+      "feature_path": "features/hpmdubbing.json",
+      "feature_sha256": "f293a1f3bbec55409dbfb6c388cf12fa7845abe65ae33d8090132a1217de7686",
+      "mel_png_path": "features/hpmdubbing.mel.png",
+      "mel_png_sha256": "033c90ef7615b4c72f8814eb9a4efce2d371d487e67393abf728637442a3e8ae",
+      "contact_frames": [
+        {
+          "path": "contacts/hpmdubbing-0.jpg",
+          "sha256": "4e71a7eba0342f6a11f50c00ba3c019eafac0beaf50629106f7b923e9cfbf438",
+          "time_seconds": 0.0
+        },
+        {
+          "path": "contacts/hpmdubbing-1.jpg",
+          "sha256": "9c6bace522a381ce5a93924de94e7f59bb460e76af2ef0c895e11792b9af6459",
+          "time_seconds": 1.95
+        },
+        {
+          "path": "contacts/hpmdubbing-2.jpg",
+          "sha256": "3366dcd8dce3f9828b88c2f8a15dafbe351d977638d1c05fee62b7c1ba0e68df",
+          "time_seconds": 3.9
+        },
+        {
+          "path": "contacts/hpmdubbing-3.jpg",
+          "sha256": "13bee5bcb7d746c898d2ae747d61e9880930f1f07977e822dfc354f8507e9e30",
+          "time_seconds": 5.85
+        },
+        {
+          "path": "contacts/hpmdubbing-4.jpg",
+          "sha256": "edca3021c6d21cd199db7d40e180499fae74abfc4a625fcfe34fd41fe1082854",
+          "time_seconds": 7.76
+        }
+      ]
+    },
+    {
+      "artifact_path": "styledubber.mp4",
+      "artifact_sha256": "a1cd74da9ac0f80a71273e3547331f202000d6afd5eec0cf41d7221c0a9773bc",
+      "feature_path": "features/styledubber.json",
+      "feature_sha256": "801f0cd3fd9b7f64281fcfb76a01dafadc74ad485852223c944b68982975672f",
+      "mel_png_path": "features/styledubber.mel.png",
+      "mel_png_sha256": "b3f8bb999ec4d03f96010a809afc23a232e0f940148463f6e1b0980a11cd2ef9",
+      "contact_frames": [
+        {
+          "path": "contacts/styledubber-0.jpg",
+          "sha256": "4e71a7eba0342f6a11f50c00ba3c019eafac0beaf50629106f7b923e9cfbf438",
+          "time_seconds": 0.0
+        },
+        {
+          "path": "contacts/styledubber-1.jpg",
+          "sha256": "9c6bace522a381ce5a93924de94e7f59bb460e76af2ef0c895e11792b9af6459",
+          "time_seconds": 1.95
+        },
+        {
+          "path": "contacts/styledubber-2.jpg",
+          "sha256": "3366dcd8dce3f9828b88c2f8a15dafbe351d977638d1c05fee62b7c1ba0e68df",
+          "time_seconds": 3.9
+        },
+        {
+          "path": "contacts/styledubber-3.jpg",
+          "sha256": "13bee5bcb7d746c898d2ae747d61e9880930f1f07977e822dfc354f8507e9e30",
+          "time_seconds": 5.85
+        },
+        {
+          "path": "contacts/styledubber-4.jpg",
+          "sha256": "edca3021c6d21cd199db7d40e180499fae74abfc4a625fcfe34fd41fe1082854",
+          "time_seconds": 7.76
+        }
+      ]
+    },
+    {
+      "artifact_path": "emodubber.mp4",
+      "artifact_sha256": "4461c59412641e04c71129f6f8fb93dcaf45ece4eefd4b2d65e1c571adbbd16a",
+      "feature_path": "features/emodubber.json",
+      "feature_sha256": "9f5a080c6ad5bedb2f72c99873c61c653b3246f8428f7d91c8ce7e37a6d4cc18",
+      "mel_png_path": "features/emodubber.mel.png",
+      "mel_png_sha256": "d25d0e88f511921e4d4f94925dd8a8e85d94fb1f7861c09b80db6c9fcebe2b2e",
+      "contact_frames": [
+        {
+          "path": "contacts/emodubber-0.jpg",
+          "sha256": "4e71a7eba0342f6a11f50c00ba3c019eafac0beaf50629106f7b923e9cfbf438",
+          "time_seconds": 0.0
+        },
+        {
+          "path": "contacts/emodubber-1.jpg",
+          "sha256": "9c6bace522a381ce5a93924de94e7f59bb460e76af2ef0c895e11792b9af6459",
+          "time_seconds": 1.95
+        },
+        {
+          "path": "contacts/emodubber-2.jpg",
+          "sha256": "3366dcd8dce3f9828b88c2f8a15dafbe351d977638d1c05fee62b7c1ba0e68df",
+          "time_seconds": 3.9
+        },
+        {
+          "path": "contacts/emodubber-3.jpg",
+          "sha256": "13bee5bcb7d746c898d2ae747d61e9880930f1f07977e822dfc354f8507e9e30",
+          "time_seconds": 5.85
+        },
+        {
+          "path": "contacts/emodubber-4.jpg",
+          "sha256": "edca3021c6d21cd199db7d40e180499fae74abfc4a625fcfe34fd41fe1082854",
+          "time_seconds": 7.76
+        }
+      ]
+    }
+  ]
+}

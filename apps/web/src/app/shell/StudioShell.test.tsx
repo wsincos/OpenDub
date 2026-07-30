@@ -93,6 +93,12 @@ describe("StudioShell", () => {
       </MemoryRouter>,
     );
 
+    const authorizationStatus = screen.getByLabelText("Preparation authorization status");
+    expect(within(authorizationStatus).getByText("Video authorized")).toBeVisible();
+    expect(within(authorizationStatus).getByText("Target text authorized")).toBeVisible();
+    expect(within(authorizationStatus).getByText("Reference speech authorized")).toBeVisible();
+    expect(screen.getByRole("button", { name: "Export preparation record" })).toBeEnabled();
+
     await user.click(screen.getByRole("button", { name: "Export preparation record" }));
 
     await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
@@ -100,5 +106,38 @@ describe("StudioShell", () => {
       `http://127.0.0.1:8000/api/v1/projects/${preparedProject.id}/preparation-export`,
       { method: "POST" },
     );
+  });
+
+  it("shows an evidence-aware preparation context without changing the selected method boundary", () => {
+    render(
+      <MemoryRouter>
+        <StudioShell onBack={vi.fn()} onRefresh={vi.fn()} project={preparedProject} />
+      </MemoryRouter>,
+    );
+
+    const context = screen.getByRole("region", { name: "Preparation context" });
+    expect(within(context).getByText("PREPARATION CONTEXT")).toBeVisible();
+    expect(within(context).getByText("Video")).toBeVisible();
+    expect(within(context).getByText("Text")).toBeVisible();
+    expect(within(context).getByText("Authorized reference")).toBeVisible();
+    expect(within(context).getByText("EmoDubber")).toBeVisible();
+    expect(within(context).getByText("EVIDENCE-AWARE PREPARATION RECORD")).toBeVisible();
+    expect(screen.getByText(/Live generation is unavailable/i)).toBeVisible();
+  });
+
+  it("uses the empty candidate lane to show a factual preparation trace rather than a fabricated output", () => {
+    render(
+      <MemoryRouter>
+        <StudioShell onBack={vi.fn()} onRefresh={vi.fn()} project={preparedProject} />
+      </MemoryRouter>,
+    );
+
+    const trace = screen.getByLabelText("Preparation trace");
+    expect(within(trace).getByText("PREPARATION PATH")).toBeVisible();
+    expect(within(trace).getByText("AUTHORIZED VIDEO")).toBeVisible();
+    expect(within(trace).getByText("DECLARED TEXT")).toBeVisible();
+    expect(within(trace).getByText("AUTHORIZED REFERENCE")).toBeVisible();
+    expect(within(trace).getByText("EmoDubber")).toBeVisible();
+    expect(within(trace).getByText("VERIFIED ADAPTER REQUIRED")).toBeVisible();
   });
 });

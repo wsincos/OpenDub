@@ -1,0 +1,66 @@
+{
+  "schema_version": "opendub.showcase/v1",
+  "case_id": "case-03",
+  "display_name": "Animated cinematic scene",
+  "visual_type": "animation",
+  "duration_seconds": 1.56,
+  "content_status": "archived_research_example",
+  "timeline_eligible": false,
+  "rights": {
+    "video": "confirmed-by-project-owner",
+    "reference_speech": "confirmed-by-project-owner",
+    "redistribution": "allowed-for-opendub-v2"
+  },
+  "authorization_record": {
+    "record_path": "docs/rights/showcase-media-rights-v3.md",
+    "approver_role": "OpenDub project owner",
+    "approved_on": "2026-07-27",
+    "public_scope": [
+      "repository",
+      "grant-application-video"
+    ]
+  },
+  "input_contract": {
+    "target_text_source": "not-published-for-archived-listening",
+    "target_text": null,
+    "ipa_source": "not-published-for-archived-listening",
+    "same_input_across_methods": false
+  },
+  "artifacts": [
+    {
+      "role": "ground_truth",
+      "label": "Reference performance",
+      "path": "gt.mp4",
+      "source_path": "reference/example/GT3.mp4",
+      "sha256": "eb6406fb6b84f46eb789439c8c4da246beab1f5410bb92f73b08f3352f4d61e2"
+    },
+    {
+      "role": "method_output",
+      "method_id": "galaxycong/hpmdubbing",
+      "label": "HPMDubbing",
+      "path": "hpmdubbing.mp4",
+      "source_path": "reference/example/3-video1.mp4",
+      "sha256": "bfb6b98c916fa5f78de85d219a15cf1739dace858e71addc6d57ba5effd22ffd"
+    },
+    {
+      "role": "method_output",
+      "method_id": "galaxycong/styledubber",
+      "label": "StyleDubber",
+      "path": "styledubber.mp4",
+      "source_path": "reference/example/3-video2.mp4",
+      "sha256": "244edbf33cf8e2b7152151e226987380861366b964c59f6a32560c8a8b9a377e"
+    },
+    {
+      "role": "method_output",
+      "method_id": "galaxycong/emodubber",
+      "label": "EmoDubber",
+      "path": "emodubber.mp4",
+      "source_path": "reference/example/3-video3.mp4",
+      "sha256": "a00f392acbbe4728561593274acd8ff7bf75b7cdf4a48567ad47d65fa8a990f5"
+    }
+  ],
+  "provenance": {
+    "method_revision": "historical-results; no common-input replay contract is published",
+    "result_origin": "team-provided historical output for archived same-scene listening"
+  }
+}

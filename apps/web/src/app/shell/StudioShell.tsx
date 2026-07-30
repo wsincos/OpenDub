@@ -375,13 +375,20 @@ export function StudioShell({ onBack, onRefresh, project }: StudioShellProps) {
           {videoAsset ? <video className="video-preview" controls muted onPause={() => setPlaying(false)} onPlay={() => setPlaying(true)} ref={videoRef} src={assetUrl(project.id, videoAsset.id)} /> : <div className="empty-monitor"><Film size={34} /><strong>No local video preview</strong><span>Import an authorized video in the inspector.</span></div>}
         </div>
         <div className="transport" aria-label="Playback controls"><button className="play-button" aria-label={playing ? "Pause" : "Play"} disabled={!videoAsset} onClick={() => void togglePlayback()} title={videoAsset ? (playing ? "Pause" : "Play") : "Import a local video to enable preview playback"}>{playing ? <Pause size={17} /> : <Play fill="currentColor" size={17} />}</button><span className="transport-time">{selectedSegment ? formatRange(selectedSegment) : "No selected segment"}</span><span className="transport-mode">Local workspace</span></div>
+        <PreparationContextRail
+          hasReferenceSpeech={project.voice_references.length > 0}
+          hasTargetText={Boolean(selectedSegment?.text)}
+          hasVideo={Boolean(videoAsset)}
+          methodName={selectedMethod?.title ?? "Method selection required"}
+          revision={project.revision}
+        />
         <Timeline acceptedCandidateCount={acceptedCandidateCount} currentCandidateCount={selectedCandidates.filter((candidate) => candidate.segment_revision === selectedSegment?.revision).length} maximumEndUs={maximumEndUs} onSelect={setSelectedSegmentId} project={project} selectedSegmentId={selectedSegmentId} />
       </section>
 
       <aside className="inspector">
         <PanelHeading icon={<SlidersHorizontal size={16} />} title="Local setup" />
         {message ? <div className="studio-message" role="alert">{message}</div> : null}
-        <MethodPreparation busy={busy} canExport={canExportPreparation} exported={preparationExport} method={selectedMethod} onExport={() => void exportPreparation()} selection={project.method_selection} />
+        <MethodPreparation authorizationStatus={{ referenceSpeech: project.voice_references.length > 0, targetText: hasTargetTextAuthorization, video: hasCurrentVideoAuthorization }} busy={busy} canExport={canExportPreparation} exported={preparationExport} method={selectedMethod} onExport={() => void exportPreparation()} selection={project.method_selection} />
         <form className="setup-form" onSubmit={(event) => void submitMedia(event)}>
           <span className="field-label">Source media</span><input aria-label="Local source media" name="media" required type="file" accept="video/*,audio/*,.srt,.vtt" /><select aria-label="Media kind" defaultValue="video" name="kind"><option value="video">Video</option><option value="audio">Voice audio</option><option value="subtitle">Subtitle file</option></select><button className="outline-button" disabled={busy} type="submit"><Upload size={15} /> Import locally</button>
         </form>
@@ -418,13 +425,57 @@ function SegmentEditor({ busy, onDelete, onSubmit, project, segment, supportsEmo
   return <form className="setup-form inspector-section" key={segment.id} onSubmit={(event) => void onSubmit(event)}><div className="section-title"><span>Selected segment</span><span className="mono-value">r{segment.revision}</span></div><input name="segment_id" type="hidden" value={segment.id} /><textarea aria-label="Edit dialogue" defaultValue={segment.text} name="dialogue" required rows={3} /><div className="compact-grid"><label>Start (s)<input defaultValue={(segment.range.start_us / 1_000_000).toFixed(2)} min="0" name="start_seconds" required step="0.01" type="number" /></label><label>End (s)<input defaultValue={(segment.range.end_us / 1_000_000).toFixed(2)} min="0.01" name="end_seconds" required step="0.01" type="number" /></label></div><select aria-label="Edit language" defaultValue={segment.language} name="language"><option value="en">English</option><option value="zh">Chinese</option></select><select aria-label="Edit voice reference" defaultValue={segment.voice_reference_id} name="voice_reference">{project.voice_references.map((reference) => <option key={reference.id} value={reference.id}>{reference.speaker_label}</option>)}</select>{supportsEmotionControls ? <><select aria-label="Edit emotion" defaultValue={segment.emotion.label} name="emotion">{emotionLabels.map((emotion) => <option key={emotion} value={emotion}>{emotion}</option>)}</select><label className="range-heading">Intensity <output>{segment.emotion.intensity.toFixed(2)}</output><input aria-label="Edit emotion intensity" defaultValue={segment.emotion.intensity} max="1" min="0" name="intensity" step="0.05" type="range" /></label></> : <><input name="emotion" type="hidden" value={segment.emotion.label} /><input name="intensity" type="hidden" value={segment.emotion.intensity} /></>}<div className="segment-actions"><button className="outline-button" disabled={busy} type="submit"><Save size={15} /> Save segment</button><button className="danger-button" disabled={busy} onClick={onDelete} type="button" title="Remove segment"><Trash2 size={15} /></button></div></form>;
 }
 
-function MethodPreparation({ busy, canExport, exported, method, onExport, selection }: { busy: boolean; canExport: boolean; exported: PreparationExport | null; method: ReturnType<typeof getMethodById>; onExport: () => void; selection: Project["method_selection"] }) {
+function MethodPreparation({ authorizationStatus, busy, canExport, exported, method, onExport, selection }: {
+  authorizationStatus: { referenceSpeech: boolean; targetText: boolean; video: boolean };
+  busy: boolean;
+  canExport: boolean;
+  exported: PreparationExport | null;
+  method: ReturnType<typeof getMethodById>;
+  onExport: () => void;
+  selection: Project["method_selection"];
+}) {
   if (!selection) {
     return <section className="method-preparation inspector-section"><div className="section-title"><span>Method selection required</span><span className="planned-badge">Atlas first</span></div><p>Choose a complete video-dubbing method before preparing dialogue. This project will not silently default to a model.</p><Link className="method-atlas-link" to="/methods">Open Method Atlas</Link></section>;
   }
   const contentMode = selection.content_modes[0]?.toUpperCase() ?? "PLANNED";
   const localLiveAvailable = selection.runtime_status !== "unavailable" && selection.content_modes.includes("live");
-  return <section aria-label="Selected method configuration" className="method-preparation inspector-section"><div className="section-title"><span>Selected method</span><span className="method-status-badge">{contentMode}</span></div><strong className="selected-method-name">{method?.title ?? selection.method_id}</strong><p>{selection.declared_need}</p><span className="field-label">Required inputs</span><div className="method-chip-list">{selection.required_inputs.map((input) => <span key={input}>{input}</span>)}</div>{selection.optional_controls.length > 0 ? <><span className="field-label">Method controls</span><div className="method-chip-list">{selection.optional_controls.map((control) => <span key={control}>{control}</span>)}</div></> : null}<div className={`method-runtime ${localLiveAvailable ? "is-ready" : ""}`}>{localLiveAvailable ? "This selected method has an admitted local Live runtime." : "Live generation is unavailable for this selected method. A verified adapter is required before it can run."}</div><button aria-label="Export preparation record" className="preparation-export-button" disabled={busy || !canExport} onClick={onExport} title={canExport ? "Export the selected-method preparation record" : "Record required input authorizations before exporting"} type="button"><FileDown size={15} /> Export preparation record</button>{exported ? <a className="preparation-export-link" href={exported.manifest_url}>Preparation record r{exported.project_revision}</a> : null}</section>;
+  return <section aria-label="Selected method configuration" className="method-preparation inspector-section"><div className="section-title"><span>Selected method</span><span className="method-status-badge">{contentMode}</span></div><strong className="selected-method-name">{method?.title ?? selection.method_id}</strong><p>{selection.declared_need}</p><span className="field-label">Required inputs</span><div className="method-chip-list">{selection.required_inputs.map((input) => <span key={input}>{input}</span>)}</div>{selection.optional_controls.length > 0 ? <><span className="field-label">Method controls</span><div className="method-chip-list">{selection.optional_controls.map((control) => <span key={control}>{control}</span>)}</div></> : null}<div aria-label="Preparation authorization status" className="preparation-authorization-status"><PreparationAuthorizationBadge authorized={authorizationStatus.video} label="Video" /><PreparationAuthorizationBadge authorized={authorizationStatus.targetText} label="Target text" /><PreparationAuthorizationBadge authorized={authorizationStatus.referenceSpeech} label="Reference speech" /></div><div className={`method-runtime ${localLiveAvailable ? "is-ready" : ""}`}>{localLiveAvailable ? "This selected method has an admitted local Live runtime." : "Live generation is unavailable for this selected method. A verified adapter is required before it can run."}</div><button aria-label="Export preparation record" className="preparation-export-button" disabled={busy || !canExport} onClick={onExport} title={canExport ? "Export the selected-method preparation record" : "Record required input authorizations before exporting"} type="button"><FileDown size={15} /> Export preparation record</button>{exported ? <a className="preparation-export-link" href={exported.manifest_url}>Preparation record r{exported.project_revision}</a> : null}</section>;
+}
+
+function PreparationAuthorizationBadge({ authorized, label }: { authorized: boolean; label: string }) {
+  return <span className={authorized ? "is-authorized" : "is-pending"}>{label} {authorized ? "authorized" : "authorization required"}</span>;
+}
+
+function PreparationContextRail({ hasReferenceSpeech, hasTargetText, hasVideo, methodName, revision }: {
+  hasReferenceSpeech: boolean;
+  hasTargetText: boolean;
+  hasVideo: boolean;
+  methodName: string;
+  revision: number;
+}) {
+  const inputs = [
+    { label: "Video", detail: hasVideo ? "AUTHORIZED SOURCE" : "SOURCE REQUIRED", tone: "video", icon: <Film size={15} /> },
+    { label: "Text", detail: hasTargetText ? "DECLARED CUE" : "CUE REQUIRED", tone: "text", icon: <FileText size={15} /> },
+    { label: "Authorized reference", detail: hasReferenceSpeech ? "IDENTITY / STYLE" : "REFERENCE REQUIRED", tone: "reference", icon: <FileAudio size={15} /> },
+  ];
+  const states = [
+    { label: "SOURCE", detail: hasVideo ? "RECORDED" : "PENDING", resolved: hasVideo },
+    { label: "VERSION", detail: `r${revision}`, resolved: true },
+    { label: "RIGHTS", detail: hasVideo && hasTargetText && hasReferenceSpeech ? "DECLARED" : "INCOMPLETE", resolved: hasVideo && hasTargetText && hasReferenceSpeech },
+    { label: "PREPARATION", detail: methodName === "Method selection required" ? "PENDING" : "READY", resolved: methodName !== "Method selection required" },
+  ];
+
+  return <section aria-label="Preparation context" className="preparation-context">
+    <header className="preparation-context-heading"><span>PREPARATION CONTEXT</span><small>LOCAL PROJECT / EVIDENCE-AWARE</small></header>
+    <div className="preparation-flow" aria-label="Project inputs and selected method">
+      <div className="preparation-inputs">
+        {inputs.map((input) => <div className={`preparation-input preparation-input-${input.tone}`} key={input.label}><span className="preparation-input-icon">{input.icon}</span><span><strong>{input.label}</strong><small>{input.detail}</small></span></div>)}
+      </div>
+      <div aria-hidden="true" className="preparation-join"><i /><i /><i /><span /></div>
+      <div className="preparation-method"><span className="preparation-input-icon"><SlidersHorizontal size={15} /></span><span><strong>{methodName}</strong><small>SELECTED COMPLETE METHOD</small></span></div>
+    </div>
+    <div className="preparation-record"><div className="preparation-record-title"><ShieldCheck size={14} /><span>EVIDENCE-AWARE PREPARATION RECORD</span></div><div className="preparation-record-states">{states.map((state) => <span className={state.resolved ? "is-resolved" : "is-pending"} key={state.label}><small>{state.label}</small><strong>{state.detail}</strong></span>)}</div></div>
+  </section>;
 }
 
 function CandidateReview({ busy, candidates, evaluations, onReview, project, segment }: { busy: boolean; candidates: DubbingCandidate[]; evaluations: Record<string, CandidateEvaluation>; onReview: (candidate: DubbingCandidate, action: "accept" | "evaluate") => void; project: Project; segment: DubbingSegment }) {
@@ -446,7 +497,31 @@ function Resource({ active = false, detail, icon, label }: { active?: boolean; d
 
 function Timeline({ acceptedCandidateCount, currentCandidateCount, maximumEndUs, onSelect, project, selectedSegmentId }: { acceptedCandidateCount: number; currentCandidateCount: number; maximumEndUs: number; onSelect: (id: string) => void; project: Project; selectedSegmentId: string | null }) {
   const marks = Array.from({ length: 6 }, (_, index) => formatSeconds((maximumEndUs * index) / 5));
-  return <section className="timeline" aria-label="Dubbing timeline"><div className="timeline-header"><span>Timeline</span><span className="mono-value">{project.segments.length} local cues</span></div><div className="ruler">{marks.map((mark) => <span key={mark}>{mark}</span>)}</div><div className="track original-track"><span className="track-label">Original</span><div className="waveform original-wave" /></div><div className="track dialogue-track"><span className="track-label">Dialogue</span><div className="segment-lane">{project.segments.map((segment) => <button className={`segment-block ${segment.id === selectedSegmentId ? "selected" : ""}`} key={segment.id} onClick={() => onSelect(segment.id)} style={{ left: `${(segment.range.start_us / maximumEndUs) * 100}%`, width: `${Math.max(8, ((segment.range.end_us - segment.range.start_us) / maximumEndUs) * 100)}%` }} title={segment.text}><span>{segment.text}</span><small>{formatRange(segment)}</small></button>)}</div></div><div className="track candidate-track"><span className="track-label">Candidate</span><div className="empty-track">{acceptedCandidateCount ? `${acceptedCandidateCount} accepted candidate take${acceptedCandidateCount === 1 ? "" : "s"} ready for local export.` : currentCandidateCount ? `${currentCandidateCount} current candidate take${currentCandidateCount === 1 ? "" : "s"} ready for review.` : "A verified adapter is required before candidate generation."}</div></div></section>;
+  const candidateStatus = acceptedCandidateCount
+    ? `${acceptedCandidateCount} accepted candidate take${acceptedCandidateCount === 1 ? "" : "s"} ready for local export.`
+    : currentCandidateCount
+      ? `${currentCandidateCount} current candidate take${currentCandidateCount === 1 ? "" : "s"} ready for review.`
+      : null;
+  return <section className="timeline" aria-label="Dubbing timeline"><div className="timeline-header"><span>Timeline</span><span className="mono-value">{project.segments.length} local cues</span></div><div className="ruler">{marks.map((mark) => <span key={mark}>{mark}</span>)}</div><div className="track original-track"><span className="track-label">Original</span><div className="waveform original-wave" /></div><div className="track dialogue-track"><span className="track-label">Dialogue</span><div className="segment-lane">{project.segments.map((segment) => <button className={`segment-block ${segment.id === selectedSegmentId ? "selected" : ""}`} key={segment.id} onClick={() => onSelect(segment.id)} style={{ left: `${(segment.range.start_us / maximumEndUs) * 100}%`, width: `${Math.max(8, ((segment.range.end_us - segment.range.start_us) / maximumEndUs) * 100)}%` }} title={segment.text}><span>{segment.text}</span><small>{formatRange(segment)}</small></button>)}</div></div><div className="track candidate-track"><span className="track-label">{candidateStatus ? "Candidate" : "Preparation"}</span>{candidateStatus ? <div className="empty-track">{candidateStatus}</div> : <PreparationTrace project={project} />}</div></section>;
+}
+
+function PreparationTrace({ project }: { project: Project }) {
+  const hasVideo = project.assets.some((asset) => asset.kind === "video");
+  const hasText = project.segments.some((segment) => Boolean(segment.text));
+  const hasReference = project.voice_references.length > 0;
+  const methodName = project.method_selection?.method_id === "galaxycong/emodubber" ? "EmoDubber" : project.method_selection?.method_id?.split("/").at(-1) ?? "METHOD REQUIRED";
+  const stages = [
+    { detail: hasVideo ? "AUTHORIZED VIDEO" : "VIDEO REQUIRED", label: "SOURCE", resolved: hasVideo },
+    { detail: hasText ? "DECLARED TEXT" : "TEXT REQUIRED", label: "DIALOGUE", resolved: hasText },
+    { detail: hasReference ? "AUTHORIZED REFERENCE" : "REFERENCE REQUIRED", label: "VOICE", resolved: hasReference },
+    { detail: methodName, label: "METHOD", resolved: Boolean(project.method_selection) },
+  ];
+
+  return <section aria-label="Preparation trace" className="preparation-trace">
+    <header className="preparation-trace-header"><span>PREPARATION PATH</span><small>PROJECT r{project.revision} / TRACEABLE CONTEXT</small></header>
+    <div className="preparation-trace-stages">{stages.map((stage) => <div className={stage.resolved ? "is-resolved" : "is-pending"} key={stage.label}><small>{stage.label}</small><strong>{stage.detail}</strong><i aria-hidden="true" /></div>)}</div>
+    <footer className="preparation-trace-boundary"><span>INPUTS + COMPLETE METHOD</span><i aria-hidden="true" /><strong>{project.method_selection ? "VERIFIED ADAPTER REQUIRED" : "METHOD SELECTION REQUIRED"}</strong><small>{project.method_selection ? "CONCEPT BOUNDARY / NO CANDIDATE OUTPUT" : "SELECT A COMPLETE METHOD TO PREPARE THE PROJECT"}</small></footer>
+  </section>;
 }
 
 function formatSeconds(microseconds: number): string {

@@ -13,21 +13,16 @@ import {
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-import { ExampleGalleryPage } from "../showcases/ExampleGalleryPage";
-import { TaskIllustrationPanel } from "./TaskIllustrationPanel";
+import { SynchronizedTimelinePanel } from "./SynchronizedTimelinePanel";
+import { TaskIllustrationPanel, type TaskInputId } from "./TaskIllustrationPanel";
+import { ILLUSTRATED_REFERENCE_CONTOUR, ILLUSTRATED_TARGET_SPEECH } from "./illustrated-task-signals";
 import "./vtts-task-stage.css";
 
 type FlowPhase = "idle" | "video-cues" | "text-timing" | "reference-identity" | "method-resolve" | "outputs";
-type AudioFeature = {
-  waveform_peaks: number[];
-  times_seconds: number[];
-  energy: number[];
-  f0_hz: Array<number | null>;
-};
 
 const phases: Array<{ id: Exclude<FlowPhase, "idle">; label: string }> = [
   { id: "video-cues", label: "Visual timing cues" },
-  { id: "text-timing", label: "Target text timing" },
+  { id: "text-timing", label: "Text timing" },
   { id: "reference-identity", label: "Reference identity" },
   { id: "method-resolve", label: "Complete method" },
   { id: "outputs", label: "Target output" },
@@ -38,7 +33,9 @@ const ipaTokens = ["ðə", "siːn", "ˈtʃeɪn.dʒɪz", "haʊ", "ə", "laɪn", "
 export function VttsTaskStagePage() {
   const [flowPhase, setFlowPhase] = useState<FlowPhase>("idle");
   const [running, setRunning] = useState(false);
-  const feature = useAudioFeature("/showcases/v2/human-0/features/gt.json");
+  const [selectedInput, setSelectedInput] = useState<TaskInputId>("video");
+  const search = new URLSearchParams(window.location.search);
+  const compactFlowOverview = search.get("capture") === "overview";
 
   useEffect(() => {
     if (!running) return undefined;
@@ -51,7 +48,7 @@ export function VttsTaskStagePage() {
   }, [running]);
 
   useEffect(() => {
-    const tour = new URLSearchParams(window.location.search).get("tour");
+    const tour = search.get("tour");
     if (tour === "flow") {
       setFlowPhase("video-cues");
       setRunning(true);
@@ -62,7 +59,7 @@ export function VttsTaskStagePage() {
       return () => window.clearTimeout(timer);
     }
     if (tour === "timeline") {
-      const timer = window.setTimeout(() => document.querySelector(".task-illustration-timeline")?.scrollIntoView({ block: "center" }), 120);
+      const timer = window.setTimeout(() => document.querySelector(".synchronized-timeline-panel")?.scrollIntoView({ block: "center" }), 120);
       return () => window.clearTimeout(timer);
     }
     return undefined;
@@ -82,18 +79,23 @@ export function VttsTaskStagePage() {
     setFlowPhase("idle");
   }
 
+  function inspectInput(input: TaskInputId, phase: Exclude<FlowPhase, "idle">) {
+    setSelectedInput(input);
+    setFlowPhase(phase);
+  }
+
   return (
     <main className="vtts-page" aria-label="OpenDub VTTS Task Stage">
       <section className="vtts-intro">
         <div>
           <p className="vtts-kicker"><Sparkles size={13} /> OPEN-SOURCE MULTIMODAL INTELLIGENT VIDEO DUBBING PLATFORM</p>
           <h1>Video dubbing turns a scene into speech.</h1>
-          <p>Video, target text, and authorized reference speech are not interchangeable prompts. A complete dubbing method has to hold their timing, identity, and expression constraints together.</p>
+          <p>Video, text, and authorized reference speech are not interchangeable prompts. Text can provide both reference and target timing context; a complete dubbing method has to hold timing, identity, and expression constraints together.</p>
         </div>
         <div className="vtts-intro-protocol"><span>VTTS / TASK STAGE</span><strong>3 inputs → 1 complete method → 2 outputs</strong><small>Interactive explanation · no generation claim</small></div>
       </section>
 
-      <section className={`vtts-flow ${running ? "is-running" : ""}`} data-phase={flowPhase} aria-label="Video text to speech task flow">
+      <section className={`vtts-flow ${running ? "is-running" : ""}${compactFlowOverview ? " vtts-flow--capture-overview" : ""}`} data-phase={flowPhase} aria-label="Video text to speech task flow">
         <div className="flow-toolbar">
           <span aria-live="polite" className="flow-state">{flowPhase === "idle" ? "Ready to inspect task" : phases.find((phase) => phase.id === flowPhase)?.label}</span>
           <div>
@@ -114,23 +116,23 @@ export function VttsTaskStagePage() {
           <FlowPacket active={running} color="#81d1a5" delay=".82s" path="M810 286 H888 Q912 286 942 388" />
         </svg>
         <div className="flow-inputs">
-          <button aria-label="Silent video input" className="flow-input flow-input-video" onClick={() => document.querySelector(".task-illustration")?.scrollIntoView({ behavior: "smooth", block: "center" })} type="button">
+          <button aria-label="Silent video input" aria-pressed={selectedInput === "video"} className={`flow-input flow-input-video${selectedInput === "video" ? " is-selected" : ""}`} onClick={() => inspectInput("video", "video-cues")} type="button">
             <span className="flow-input-header"><Film size={14} /> SILENT VIDEO <i>01</i></span>
-            <span className="filmstrip">
-              {Array.from({ length: 5 }).map((_, index) => <img alt="" key={index} src="/showcases/v2/human-0/poster.jpg" style={{ objectPosition: `${39 + index * 5}% 40%` }} />)}
+            <span aria-label="Five-frame silent video filmstrip" className="filmstrip">
+              {Array.from({ length: 5 }).map((_, index) => <span className="filmstrip-frame" key={index}><img alt="" src="/showcases/v2/human-0/poster.jpg" style={{ objectPosition: `${39 + index * 5}% 42%` }} /><i aria-hidden="true">{String(index + 1).padStart(2, "0")}</i></span>)}
             </span>
             <strong>Visual timing packets</strong><small>Face · lip · environment</small>
           </button>
-          <button aria-label="Target text input" className="flow-input flow-input-text" onClick={() => setFlowPhase("text-timing")} type="button">
-            <span className="flow-input-header"><Subtitles size={14} /> TARGET TEXT <i>02</i></span>
+          <button aria-label="Text input" aria-pressed={selectedInput === "text"} className={`flow-input flow-input-text${selectedInput === "text" ? " is-selected" : ""}`} onClick={() => inspectInput("text", "text-timing")} type="button">
+            <span className="flow-input-header"><Subtitles size={14} /> TEXT <i>02</i></span>
             <strong>The scene changes how a line should sound.</strong>
             <span className="flow-ipa">{ipaTokens.slice(0, 5).map((token) => <i key={token}>{token}</i>)}</span>
-            <small>Illustrated IPA timing notation</small>
+            <small>Reference + target text timing</small>
           </button>
-          <button aria-label="Authorized reference speech input" className="flow-input flow-input-reference" onClick={() => setFlowPhase("reference-identity")} type="button">
+          <button aria-label="Authorized reference speech input" aria-pressed={selectedInput === "reference"} className={`flow-input flow-input-reference${selectedInput === "reference" ? " is-selected" : ""}`} onClick={() => inspectInput("reference", "reference-identity")} type="button">
             <span className="flow-input-header"><AudioLines size={14} /> AUTHORIZED REFERENCE SPEECH <i>03</i></span>
-            <Waveform feature={feature} label="Reference contour" tone="voice" />
-            <strong>Identity and style envelope</strong><small>Feature source disclosed below</small>
+            <Waveform illustration="reference-contour" label="Reference contour" peaks={ILLUSTRATED_REFERENCE_CONTOUR} tone="voice" />
+            <strong>Identity and style envelope</strong><small>Illustrated contour · no archive audio</small>
           </button>
         </div>
         <section className="complete-method" aria-label="Complete dubbing method">
@@ -140,14 +142,13 @@ export function VttsTaskStagePage() {
           <Link to="/methods">Inspect complete methods <ChevronRight size={15} /></Link>
         </section>
         <section className="flow-outputs" aria-label="Task outputs">
-          <div className="flow-output flow-output-speech"><span className="flow-input-header"><Volume2 size={14} /> TARGET SPEECH</span><Waveform feature={feature} label="Target speech illustration" tone="output" /><strong>Research output: speech</strong><small>Task illustration · no fresh run</small></div>
-          <div className="flow-output flow-output-video"><span className="flow-input-header"><Film size={14} /> DUBBED VIDEO</span><div className="task-video-frame"><img alt="Illustrated dubbed-video output" src="/atlas/demo/scene-v1.png" /><span>TASK VISUAL / ILLUSTRATED</span></div><strong>Product output: video + speech</strong><small>Task illustration · no fresh run</small></div>
+          <div className="flow-output flow-output-speech"><span className="flow-input-header"><Volume2 size={14} /> TARGET SPEECH</span><Waveform illustration="target-speech" label="Target speech illustration" peaks={ILLUSTRATED_TARGET_SPEECH} tone="output" /><strong>Research output: speech</strong><small>Task illustration · no fresh run</small></div>
+          <div className="flow-output flow-output-video"><span className="flow-input-header"><Film size={14} /> DUBBED VIDEO</span><div className="task-video-frame"><video aria-label="Looping dubbed video preview" autoPlay loop muted playsInline poster="/showcases/v2/human-0/poster.jpg" preload="metadata" src="/showcases/v2/human-0/emodubber.mp4" /></div><strong>Product output: video + speech</strong><small>Task illustration · no fresh run</small></div>
         </section>
       </section>
 
-      <TaskIllustrationPanel />
-
-      <ExampleGalleryPage embedded />
+      <TaskIllustrationPanel activeInput={selectedInput} />
+      <SynchronizedTimelinePanel />
     </main>
   );
 }
@@ -156,25 +157,11 @@ function FlowPacket({ active, color, delay = "0s", path }: { active: boolean; co
   return <circle className="flow-packet" fill={color} r="4" visibility={active ? "visible" : "hidden"}><animateMotion begin={active ? delay : "indefinite"} dur="1.1s" path={path} repeatCount="indefinite" /></circle>;
 }
 
-function Waveform({ feature, label, tone }: { feature: AudioFeature | null; label: string; tone: "voice" | "output" }) {
-  const values = feature?.waveform_peaks ?? [];
-  if (!values.length) return <div aria-label={label} className={`signal-placeholder ${tone}`}>Awaiting approved audio feature</div>;
-  const points = values.map((value, index) => {
-    const x = (index / Math.max(1, values.length - 1)) * 100;
+function Waveform({ illustration, label, peaks, tone }: { illustration: string; label: string; peaks: number[]; tone: "voice" | "output" }) {
+  const points = peaks.map((value, index) => {
+    const x = (index / Math.max(1, peaks.length - 1)) * 100;
     const y = 50 - value * 42;
     return `${x},${y} ${x},${100 - y}`;
   });
-  return <svg aria-label={label} className={`real-waveform ${tone}`} preserveAspectRatio="none" viewBox="0 0 100 100">{points.map((point, index) => <polyline key={index} points={point} />)}</svg>;
-}
-
-function useAudioFeature(path: string): AudioFeature | null {
-  const [feature, setFeature] = useState<AudioFeature | null>(null);
-  useEffect(() => {
-    let active = true;
-    if (import.meta.env.MODE === "test") return () => { active = false; };
-    if (typeof fetch !== "function") return () => { active = false; };
-    fetch(path).then((response) => response.ok ? response.json() : null).then((payload: AudioFeature | null) => { if (active) setFeature(payload); }).catch(() => { if (active) setFeature(null); });
-    return () => { active = false; };
-  }, [path]);
-  return feature;
+  return <svg aria-label={label} className={`real-waveform ${tone}`} data-illustration={illustration} preserveAspectRatio="none" viewBox="0 0 100 100">{points.map((point, index) => <polyline key={index} points={point} />)}</svg>;
 }

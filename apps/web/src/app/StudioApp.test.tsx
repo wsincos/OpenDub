@@ -56,6 +56,8 @@ describe("StudioApp", () => {
 
     render(<MemoryRouter initialEntries={["/studio?method=emodubber"]}><StudioApp /></MemoryRouter>);
 
+    expect(screen.getByText("OPEN DUB / LOCAL PROJECT DESK")).toBeVisible();
+    expect(screen.getByText("NEW LOCAL PROJECT")).toBeVisible();
     await user.type(screen.getByLabelText("Project name"), "Emotion-directed scene");
     await user.click(screen.getByRole("button", { name: "Create local project" }));
 

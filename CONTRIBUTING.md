@@ -4,7 +4,7 @@ OpenDub welcomes contributions to the platform, documentation, tests, examples, 
 
 ## Before You Start
 
-1. Read [TODO/README.md](TODO/README.md) for the current architecture and delivery sequence.
+1. Read the [project overview](docs/PROJECT_OVERVIEW.md), [architecture](docs/architecture/README.md), and [method admission gate](docs/adapters/research-backend-gate.md).
 2. Search existing issues before opening a new one.
 3. Open an issue before substantial model, API, schema, or UI work so the scope can be agreed on.
 4. Do not submit copyrighted video, unlicensed voice data, model weights with unclear terms, secrets, or personal data.

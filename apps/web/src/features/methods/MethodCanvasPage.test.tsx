@@ -15,6 +15,9 @@ describe("MethodCanvasPage", () => {
     );
 
     expect(screen.getByRole("heading", { name: "HPMDubbing" })).toBeVisible();
+    expect(screen.getByText("TEAM-DEVELOPED COMPLETE METHOD")).toBeVisible();
+    expect(screen.getAllByRole("link", { name: "Open published record for HPMDubbing" })).toHaveLength(2);
+    expect(screen.getByRole("img", { name: "HPMDubbing original method architecture" })).toBeVisible();
     await user.click(screen.getByRole("button", { name: "Inspect Face Affect" }));
     expect(screen.getByRole("heading", { name: "Face Affect" })).toBeVisible();
     expect(screen.getByText("Face ROI")).toBeVisible();

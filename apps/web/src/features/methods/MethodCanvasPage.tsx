@@ -6,6 +6,7 @@ import { englishIndefiniteArticle, getMethod, GraphPosition, MethodNode } from "
 import { MethodConceptPanel } from "./concepts/MethodConceptPanel";
 import "./concepts/method-concepts.css";
 import "./method-canvas.css";
+import { PaperArchitectureFigure } from "./PaperArchitectureFigure";
 
 const chapters = ["Overview", "Flow", "Signals", "Evidence"] as const;
 const chapterDescriptions = {
@@ -48,9 +49,11 @@ export function MethodCanvasPage() {
     <main className="method-canvas-page" style={{ "--method-color": method.color } as React.CSSProperties}>
       <header className="method-canvas-header">
         <Link className="back-link" to="/methods"><ArrowLeft size={15} /> All methods</Link>
-        <div className="method-title"><span>{method.venue} {method.year}</span><h1>{method.title}</h1><p>{method.question}</p></div>
-        <div className="header-status"><span><i /> {method.status}</span><Link aria-label={`Prepare ${englishIndefiniteArticle(method.title)} ${method.title} project`} className="prepare-project" to={`/studio?method=${method.slug}`}><FolderPlus size={14} /> Prepare project</Link><a href={method.paperUrl} rel="noreferrer" target="_blank"><BookOpen size={14} /> Paper <ArrowUpRight size={13} /></a></div>
+        <div className="method-title"><span>{method.teamLabel}</span><h1>{method.title}</h1><p>{method.originalFocus}</p></div>
+        <div className="header-status"><span><i /> {method.status}</span><Link aria-label={`Prepare ${englishIndefiniteArticle(method.title)} ${method.title} project`} className="prepare-project" to={`/studio?method=${method.slug}`}><FolderPlus size={14} /> Prepare project</Link><a aria-label={`Open published record for ${method.title}`} href={method.paperUrl} rel="noreferrer" target="_blank"><BookOpen size={14} /> PUBLISHED RECORD <ArrowUpRight size={13} /></a></div>
       </header>
+
+      <PaperArchitectureFigure method={method} />
 
       <section className="canvas-layout">
         <aside className="method-chapters" aria-label="Method detail chapters">
@@ -88,7 +91,7 @@ export function MethodCanvasPage() {
                 </button>
               )})}
             </div>
-            <div className="graph-caption"><span>COMMON INPUTS</span><span>PAPER-DEFINED METHOD FLOW</span><span>TARGET SPEECH</span></div>
+          <div className="graph-caption"><span>COMMON INPUTS</span><span>ORIGINAL METHOD FLOW</span><span>TARGET SPEECH</span></div>
           </div>
           <div className="method-story"><b>{method.contribution}</b><span>Each node keeps its original method role. OpenDub only standardizes how it is explored.</span></div>
         </section>
@@ -100,7 +103,7 @@ export function MethodCanvasPage() {
           <p className="node-detail">{selected.detail}</p>
           <div className="node-section"><span>OBSERVABLE SIGNALS</span><div className="signal-chips">{selected.signals.map((signal) => <button className={pinned.includes(signal) ? "is-pinned" : ""} key={signal} onClick={() => togglePinned(signal)} type="button"><Pin size={12} /> {signal}</button>)}</div></div>
           <div className="node-section"><span>VIEW MODE</span><p className="mode-description"><i /> Concept explanation. Signals are illustrative unless a Replay or Live bundle is attached.</p></div>
-          <div className="inspector-actions"><a href={method.paperUrl} rel="noreferrer" target="_blank"><BookOpen size={14} /> Paper section</a><a href={method.sourceUrl} rel="noreferrer" target="_blank"><Code2 size={14} /> Source</a><Link to="/evidence">Evidence</Link></div>
+          <div className="inspector-actions"><a aria-label={`Open published record for ${method.title}`} href={method.paperUrl} rel="noreferrer" target="_blank"><BookOpen size={14} /> PUBLISHED RECORD</a><a href={method.sourceUrl} rel="noreferrer" target="_blank"><Code2 size={14} /> Source</a><Link to="/evidence">Evidence</Link></div>
         </aside>
       </section>
 

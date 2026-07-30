@@ -26,6 +26,7 @@ class ShowcaseArtifact:
 class ShowcaseCase:
     case_id: str
     display_name: str
+    duration_seconds: float
     content_status: ShowcaseContentStatus
     timeline_eligible: bool
     artifacts: tuple[ShowcaseArtifact, ...]
@@ -37,6 +38,7 @@ def load_case_manifest(path: Path) -> ShowcaseCase:
     payload = _read_object(path)
     case_id = _required_string(payload, "case_id")
     display_name = _required_string(payload, "display_name")
+    duration_seconds = _required_positive_number(payload, "duration_seconds")
     status = _required_string(payload, "content_status")
     if status not in _VALID_STATUSES:
         raise ValueError(f"content_status must be one of {sorted(_VALID_STATUSES)}")
@@ -91,6 +93,7 @@ def load_case_manifest(path: Path) -> ShowcaseCase:
     return ShowcaseCase(
         case_id=case_id,
         display_name=display_name,
+        duration_seconds=duration_seconds,
         content_status=cast(ShowcaseContentStatus, status),
         timeline_eligible=timeline_eligible,
         artifacts=artifacts,
@@ -146,3 +149,10 @@ def _required_string(payload: dict[str, Any], key: str) -> str:
     if not isinstance(value, str) or not value.strip():
         raise ValueError(f"{key} must be a non-empty string")
     return value
+
+
+def _required_positive_number(payload: dict[str, Any], key: str) -> float:
+    value = payload.get(key)
+    if isinstance(value, bool) or not isinstance(value, (int, float)) or value <= 0:
+        raise ValueError(f"{key} must be a positive number")
+    return float(value)

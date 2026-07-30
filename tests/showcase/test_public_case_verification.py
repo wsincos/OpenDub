@@ -9,10 +9,11 @@ import pytest
 from opendub.showcase.verification import verify_public_case
 
 
-def test_verify_public_case_accepts_matching_source_public_media_and_features(
+def test_verify_public_case_accepts_a_public_bundle_without_private_source_media(
     tmp_path: Path,
 ) -> None:
     case_path, public_directory = _write_case_bundle(tmp_path)
+    (tmp_path / "source.mp4").unlink()
 
     verify_public_case(case_path, public_directory, tmp_path)
 
@@ -48,6 +49,7 @@ def _write_case_bundle(root: Path) -> tuple[Path, Path]:
         "schema_version": "opendub.showcase/v1",
         "case_id": "case-0",
         "display_name": "Case zero",
+        "duration_seconds": 1.0,
         "content_status": "archived_research_example",
         "timeline_eligible": False,
         "rights": {

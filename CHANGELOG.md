@@ -2,6 +2,20 @@
 
 All notable OpenDub platform changes are recorded here. Version labels describe the platform and evidence layer; they do not imply that an upstream research method has passed the OpenDub `Live` admission gate.
 
+## v0.4.0-showcase - 2026-07-30
+
+### Added
+
+- Final V4.6 project introduction film with bilingual subtitles, checksum, and a public showcase delivery record.
+- A public repository landing page centered on the video-dubbing task, team-developed complete methods, authorized archived examples, and the interactive OpenDub experience.
+- Direct GitHub playback links for the authorized Case 03 and Case 04 archived examples, with their method identity, manifests, and rights records kept visible.
+- A curated public documentation index and project overview.
+
+### Changed
+
+- Moved submission material, review rounds, historical plans, earlier proposal-film assets, narration experiments, capture intermediates, and production-only scripts into a local ignored archive.
+- Updated project metadata and citation information for the `wsincos/OpenDub` public repository.
+
 ## v2.0.0-showcase - 2026-07-27
 
 ### Added

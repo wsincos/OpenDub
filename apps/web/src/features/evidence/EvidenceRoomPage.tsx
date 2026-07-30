@@ -21,20 +21,20 @@ export function EvidenceRoomPage() {
     <main className="evidence-room">
       <header className="evidence-intro">
         <div>
-          <p>EVIDENCE ROOM / RELEASE BOUNDARY</p>
-          <h1>Evidence is part of the method.</h1>
-          <span>Every visible method is tied to a paper, a pinned source revision, and an explicit statement of what OpenDub may not yet run or replay.</span>
+          <p><Fingerprint size={13} /> EVIDENCE OBSERVATORY</p>
+          <h1>A source record is not yet a runnable method.</h1>
+          <span>Every complete method remains connected to its published record, pinned source revision, code license, and an explicit runtime boundary. The source trail is readable; runtime admission is separate.</span>
         </div>
-        <div className="evidence-summary" aria-label="Method provenance summary"><strong>3 / 3</strong><span>core methods with pinned sources</span></div>
+        <div className="evidence-summary" aria-label="Method provenance summary"><strong>3 SOURCE RECORDS / 0 ADMITTED RUNTIMES</strong><span>PUBLIC STATE · CONCEPT ATLAS + ARCHIVED EXAMPLES</span></div>
       </header>
 
-      <section className="evidence-ledger" aria-label="Method provenance ledger">
-        <div className="ledger-heading"><span>METHOD PROVENANCE LEDGER</span><span>VERIFIED SOURCE / BLOCKED RUNTIME</span></div>
+      <section className="evidence-source-lines" aria-label="Method source lines">
+        <div className="source-lines-heading"><span>METHOD SOURCE LINES</span><span>PUBLISHED RECORD → PINNED REVISION → RUNTIME BOUNDARY</span></div>
         {methods.map((method, index) => <MethodEvidenceRow index={index} key={method.id} method={method} />)}
       </section>
 
-      <section className="admission-chain" aria-label="Live admission chain">
-        <div className="admission-copy"><p>LIVE ADMISSION CHAIN</p><h2>A published file is not a runnable method.</h2><span>OpenDub advances one complete method only when all evidence stages are present together.</span></div>
+      <section className="admission-chain" aria-label="Runtime admission rail">
+        <div className="admission-copy"><p>RUNTIME ADMISSION RAIL</p><h2>A published file is not a runnable method.</h2><span>OpenDub advances one complete method only when all evidence stages are present together.</span></div>
         <div className="admission-stages">
           <AdmissionStage icon={<CheckCircle2 size={16} />} label="Source revision" state="Pinned" tone="verified" />
           <AdmissionStage icon={<CheckCircle2 size={16} />} label="Code license" state="Verified" tone="verified" />
@@ -47,7 +47,7 @@ export function EvidenceRoomPage() {
 
       <section className="evidence-boundary" aria-label="Current public content boundary">
         <CircleAlert size={18} />
-        <div><strong>Current public boundary: Concept Atlas.</strong><span>Concept visuals explain reviewed method relationships. They do not imply a checkpoint, a generated audio result, or a public Replay bundle.</span></div>
+        <div><strong>Current public boundary: Concept Atlas and authorized historical examples.</strong><span>Concept visuals explain reviewed method relationships. They do not imply a checkpoint, a generated audio result, or a public Replay bundle.</span></div>
       </section>
     </main>
   );
@@ -57,17 +57,17 @@ function MethodEvidenceRow({ index, method }: { index: number; method: MethodDef
   const auditUrl = `https://github.com/wsincos/OpenDub/blob/main/docs/audits/${auditFiles[method.id]}`;
   const commit = method.sourceCommit.slice(0, 7);
   return (
-    <article className="evidence-row" style={{ "--method-color": method.color } as CSSProperties}>
-      <div className="evidence-method"><span>0{index + 1}</span><div><p>{method.venue.toUpperCase()} {method.year}</p><h2>{method.title}</h2><small>{auditNotes[method.id]}</small></div></div>
-      <div className="evidence-facts">
-        <EvidenceFact icon={<BookOpen size={14} />} label="Paper" value="Primary source" href={method.paperUrl} />
-        <EvidenceFact icon={<GitCommitHorizontal size={14} />} label="Source revision" value={commit} href={method.sourceUrl} linkLabel={`Open ${method.title} source at ${commit}`} />
-        <EvidenceFact icon={<CheckCircle2 size={14} />} label="Code license" value={method.sourceLicense} tone="verified" />
-        <EvidenceFact icon={<FileKey2 size={14} />} label="Weight terms" value="Weight terms not verified" tone="blocked" />
-        <EvidenceFact icon={<TerminalSquare size={14} />} label="Runtime" value={`Runtime ${method.runtimeStatus}`} tone="blocked" />
-        <EvidenceFact icon={<LockKeyhole size={14} />} label="Public content" value="Concept only" tone="concept" />
+    <article className="evidence-source-line" style={{ "--method-color": method.color } as CSSProperties}>
+      <div className="evidence-method"><span>{String(index + 1).padStart(2, "0")}</span><div><p>{method.teamLabel}</p><h2>{method.title}</h2><small>{method.originalFocus}</small></div></div>
+      <div className="evidence-rail" aria-label={`${method.title} source evidence`}>
+        <EvidenceFact icon={<BookOpen size={14} />} label="PUBLISHED RECORD" value="Primary source" href={method.paperUrl} />
+        <EvidenceFact icon={<GitCommitHorizontal size={14} />} label="PINNED REVISION" value={commit} href={method.sourceUrl} linkLabel={`Open ${method.title} source at ${commit}`} />
+        <EvidenceFact icon={<CheckCircle2 size={14} />} label="CODE LICENSE" value={method.sourceLicense} tone="verified" />
+        <EvidenceFact icon={<FileKey2 size={14} />} label="WEIGHT TERMS" value="Weight terms not verified" tone="blocked" />
+        <EvidenceFact icon={<TerminalSquare size={14} />} label="RUNTIME" value={`Runtime ${method.runtimeStatus}`} tone="blocked" />
+        <EvidenceFact icon={<LockKeyhole size={14} />} label="PUBLIC CONTENT" value="Concept only" tone="concept" />
       </div>
-      <a className="audit-link" href={auditUrl} rel="noreferrer" target="_blank">Audit note <ExternalLink size={13} /></a>
+      <footer className="evidence-line-footer"><p>{auditNotes[method.id]}</p><a href={auditUrl} rel="noreferrer" target="_blank">AUDIT NOTE <ExternalLink size={13} /></a></footer>
     </article>
   );
 }
