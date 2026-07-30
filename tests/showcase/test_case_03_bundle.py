@@ -6,7 +6,7 @@ from opendub.showcase.manifest import load_case_manifest
 from opendub.showcase.verification import verify_public_case
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-CASE_PATH = REPO_ROOT / "content/showcases/v3/case-03.json"
+CASE_PATH = REPO_ROOT / "apps/web/content/showcases/v3/case-03.json"
 PUBLIC_DIRECTORY = REPO_ROOT / "apps/web/public/showcases/v3/case-03"
 
 

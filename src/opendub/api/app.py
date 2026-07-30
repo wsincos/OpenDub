@@ -241,7 +241,7 @@ def create_app(*, workspace: Path | None = None) -> FastAPI:
     jobs = JobRepository(root / "jobs.json")
     artifacts = ArtifactStore(root)
     repository_root = Path(__file__).resolve().parents[3]
-    model_registry = ModelRegistry(repository_root / "model-registry" / "upstreams.yaml")
+    model_registry = ModelRegistry(repository_root / "config" / "model-registry" / "upstreams.yaml")
     app = FastAPI(title="OpenDub Local API", version="0.4.0", docs_url="/api/docs")
     app.add_middleware(
         CORSMiddleware,
@@ -282,7 +282,9 @@ def create_app(*, workspace: Path | None = None) -> FastAPI:
         try:
             project = store.load(project_id)
             selection = MethodSelection(**request.model_dump(exclude={"expected_revision"}))
-            _validate_method_selection_evidence(selection, content_root=repository_root / "content")
+            _validate_method_selection_evidence(
+                selection, content_root=repository_root / "apps" / "web" / "content"
+            )
             updated = project.select_method(selection, expected_revision=request.expected_revision)
             return store.save(updated, expected_revision=request.expected_revision)
         except DomainError as error:

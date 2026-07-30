@@ -10,7 +10,7 @@ from opendub.models.audit import validate_upstream_registry
 
 
 def main() -> int:
-    registry = Path(__file__).resolve().parents[1] / "model-registry" / "upstreams.yaml"
+    registry = Path(__file__).resolve().parents[1] / "config" / "model-registry" / "upstreams.yaml"
     result = validate_upstream_registry(registry)
     if result.is_valid:
         print(f"Registry is valid: {registry}")

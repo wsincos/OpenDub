@@ -51,7 +51,7 @@ def test_cli_evaluate_reports_a_missing_candidate_with_a_stable_error(tmp_path: 
 
 def test_cli_validates_the_public_method_atlas_content() -> None:
     result = CliRunner().invoke(
-        app, ["atlas", "validate", "--content", str(REPOSITORY_ROOT / "content")]
+        app, ["atlas", "validate", "--content", str(REPOSITORY_ROOT / "apps" / "web" / "content")]
     )
 
     assert result.exit_code == 0

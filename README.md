@@ -76,7 +76,7 @@ rankings.
 | --- | --- |
 | [![Play human portrait example](apps/web/public/showcases/v2/human-0/poster.jpg)](apps/web/public/showcases/v2/human-0/emodubber.mp4) | [![Play animated character example](apps/web/public/showcases/v2/animation-1/poster.jpg)](apps/web/public/showcases/v2/animation-1/emodubber.mp4) |
 | [Reference performance](apps/web/public/showcases/v2/human-0/gt.mp4) · [HPMDubbing](apps/web/public/showcases/v2/human-0/hpmdubbing.mp4) · [StyleDubber](apps/web/public/showcases/v2/human-0/styledubber.mp4) · [EmoDubber](apps/web/public/showcases/v2/human-0/emodubber.mp4) | [Reference performance](apps/web/public/showcases/v2/animation-1/gt.mp4) · [HPMDubbing](apps/web/public/showcases/v2/animation-1/hpmdubbing.mp4) · [StyleDubber](apps/web/public/showcases/v2/animation-1/styledubber.mp4) · [EmoDubber](apps/web/public/showcases/v2/animation-1/emodubber.mp4) |
-| [Case record](content/showcases/v2/human-0.json) · [authorization record](docs/rights/showcase-media-rights-v2.md) | [Case record](content/showcases/v2/animation-1.json) · [authorization record](docs/rights/showcase-media-rights-v2.md) |
+| [Case record](apps/web/content/showcases/v2/human-0.json) · [authorization record](docs/rights/showcase-media-rights-v2.md) | [Case record](apps/web/content/showcases/v2/animation-1.json) · [authorization record](docs/rights/showcase-media-rights-v2.md) |
 
 ### Comparison Workbench
 
@@ -84,7 +84,7 @@ rankings.
 | --- | --- |
 | [![Play animated cinematic example](apps/web/public/showcases/v3/case-03/poster.jpg)](apps/web/public/showcases/v3/case-03/emodubber.mp4) | [![Play presenter and display example](apps/web/public/showcases/v4/case-04/poster.jpg)](apps/web/public/showcases/v4/case-04/styledubber.mp4) |
 | [Reference performance](apps/web/public/showcases/v3/case-03/gt.mp4) · [HPMDubbing](apps/web/public/showcases/v3/case-03/hpmdubbing.mp4) · [StyleDubber](apps/web/public/showcases/v3/case-03/styledubber.mp4) · [EmoDubber](apps/web/public/showcases/v3/case-03/emodubber.mp4) | [Reference performance](apps/web/public/showcases/v4/case-04/gt.mp4) · [HPMDubbing](apps/web/public/showcases/v4/case-04/hpmdubbing.mp4) · [StyleDubber](apps/web/public/showcases/v4/case-04/styledubber.mp4) · [EmoDubber](apps/web/public/showcases/v4/case-04/emodubber.mp4) |
-| [Case record](content/showcases/v3/case-03.json) · [authorization record](docs/rights/showcase-media-rights-v3.md) | [Case record](content/showcases/v4/case-04.json) · [authorization record](docs/rights/showcase-media-rights-v4.md) |
+| [Case record](apps/web/content/showcases/v3/case-03.json) · [authorization record](docs/rights/showcase-media-rights-v3.md) | [Case record](apps/web/content/showcases/v4/case-04.json) · [authorization record](docs/rights/showcase-media-rights-v4.md) |
 
 **Archived research example — not a fresh OpenDub run or a common-input ranking.**
 

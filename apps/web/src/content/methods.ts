@@ -1,6 +1,6 @@
-import emoManifest from "../../../../content/methods/emodubber/method.json";
-import hpmManifest from "../../../../content/methods/hpmdubbing/method.json";
-import styleManifest from "../../../../content/methods/styledubber/method.json";
+import emoManifest from "../../content/methods/emodubber/method.json";
+import hpmManifest from "../../content/methods/hpmdubbing/method.json";
+import styleManifest from "../../content/methods/styledubber/method.json";
 
 import type { MethodSelectionDraft } from "../api/client";
 

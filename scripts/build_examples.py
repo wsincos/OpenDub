@@ -17,7 +17,9 @@ from opendub.storage.project_store import ProjectStore
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Create redistributable OpenDub alpha examples.")
-    parser.add_argument("--workspace", type=Path, required=True, help="Destination OpenDub workspace.")
+    parser.add_argument(
+        "--workspace", type=Path, required=True, help="Destination OpenDub workspace."
+    )
     args = parser.parse_args()
     workspace = args.workspace.resolve()
     workspace.mkdir(parents=True, exist_ok=True)

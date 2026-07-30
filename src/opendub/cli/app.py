@@ -27,7 +27,7 @@ def validate_atlas(
     content: Annotated[
         Path,
         typer.Option(help="Directory containing Method Atlas manifests."),
-    ] = Path("content"),
+    ] = Path("apps/web/content"),
 ) -> None:
     """Validate every public Method Atlas manifest before a build or recording."""
     report = validate_content(content)
@@ -91,7 +91,7 @@ def doctor(
     repository_root = Path(__file__).resolve().parents[3]
     report = run_doctor(
         workspace=workspace,
-        registry_path=repository_root / "model-registry" / "upstreams.yaml",
+        registry_path=repository_root / "config" / "model-registry" / "upstreams.yaml",
     )
     if json_output:
         typer.echo(report.model_dump_json())

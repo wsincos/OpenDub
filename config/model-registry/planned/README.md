@@ -15,5 +15,5 @@ weight download location.
 | LLM-Flow-Dubber | Static demonstration site | Model implementation, weights, license, contract, and smoke |
 
 Use the promotion packet in
-[`docs/adapters/research-backend-gate.md`](../../docs/adapters/research-backend-gate.md) before
+[`docs/adapters/research-backend-gate.md`](../../../docs/adapters/research-backend-gate.md) before
 changing any entry to `experimental` or `stable`.

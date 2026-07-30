@@ -3,7 +3,7 @@
 **Register date:** 2026-07-27
 **Record owner:** OpenDub project owner / repository maintainer
 **Verification contact:** `wsincos1025@gmail.com`
-**Applies to:** the restricted local source files named by the two manifests in `content/showcases/v2/`
+**Applies to:** the restricted local source files named by the two manifests in `apps/web/content/showcases/v2/`
 
 ## Purpose and public boundary
 

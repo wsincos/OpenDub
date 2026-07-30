@@ -26,4 +26,4 @@ jobs:
       - name: Run quality gate
         run: make check
       - name: Verify audited model registry
-        run: uv run python scripts/verify_registry.py model-registry/upstreams.yaml
+        run: uv run python scripts/verify_registry.py config/model-registry/upstreams.yaml

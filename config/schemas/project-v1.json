@@ -254,6 +254,76 @@
       "title": "EmotionSpec",
       "type": "object"
     },
+    "InputAuthorization": {
+      "additionalProperties": false,
+      "description": "An explicit right-to-use declaration for a project video or target text.",
+      "properties": {
+        "accepted_at": {
+          "format": "date-time",
+          "title": "Accepted At",
+          "type": "string"
+        },
+        "asset_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Asset Id"
+        },
+        "authorization_purpose": {
+          "default": "video_dubbing_project_preparation",
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Authorization Purpose",
+          "type": "string"
+        },
+        "content_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Content Sha256",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "input_kind": {
+          "enum": [
+            "video",
+            "target_text"
+          ],
+          "title": "Input Kind",
+          "type": "string"
+        },
+        "material_source": {
+          "enum": [
+            "self_recorded",
+            "licensed",
+            "public_domain",
+            "authorized_other"
+          ],
+          "title": "Material Source",
+          "type": "string"
+        },
+        "revision": {
+          "default": 1,
+          "minimum": 1,
+          "title": "Revision",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "input_kind",
+        "content_sha256",
+        "material_source"
+      ],
+      "title": "InputAuthorization",
+      "type": "object"
+    },
     "MediaAsset": {
       "additionalProperties": false,
       "description": "Metadata for a content-addressed local asset, never a raw filesystem path.",
@@ -322,6 +392,97 @@
         "size_bytes"
       ],
       "title": "MediaAsset",
+      "type": "object"
+    },
+    "MethodSelection": {
+      "additionalProperties": false,
+      "description": "An evidence-bound choice of one complete method for a local project.",
+      "properties": {
+        "content_modes": {
+          "items": {
+            "enum": [
+              "concept",
+              "replay",
+              "live",
+              "planned"
+            ],
+            "type": "string"
+          },
+          "maxItems": 4,
+          "minItems": 1,
+          "title": "Content Modes",
+          "type": "array"
+        },
+        "declared_need": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Declared Need",
+          "type": "string"
+        },
+        "evidence_revision": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Evidence Revision",
+          "type": "string"
+        },
+        "method_id": {
+          "enum": [
+            "galaxycong/hpmdubbing",
+            "galaxycong/styledubber",
+            "galaxycong/emodubber"
+          ],
+          "title": "Method Id",
+          "type": "string"
+        },
+        "method_manifest_version": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Method Manifest Version",
+          "type": "string"
+        },
+        "optional_controls": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 12,
+          "title": "Optional Controls",
+          "type": "array"
+        },
+        "required_inputs": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 12,
+          "minItems": 1,
+          "title": "Required Inputs",
+          "type": "array"
+        },
+        "runtime_status": {
+          "enum": [
+            "unavailable",
+            "experimental",
+            "stable"
+          ],
+          "title": "Runtime Status",
+          "type": "string"
+        },
+        "selected_at": {
+          "format": "date-time",
+          "title": "Selected At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "method_id",
+        "method_manifest_version",
+        "declared_need",
+        "required_inputs",
+        "optional_controls",
+        "runtime_status",
+        "content_modes",
+        "evidence_revision"
+      ],
+      "title": "MethodSelection",
       "type": "object"
     },
     "TimeRange": {
@@ -427,6 +588,25 @@
     "id": {
       "title": "Id",
       "type": "string"
+    },
+    "input_authorizations": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/InputAuthorization"
+      },
+      "title": "Input Authorizations",
+      "type": "array"
+    },
+    "method_selection": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/MethodSelection"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
     },
     "name": {
       "maxLength": 200,

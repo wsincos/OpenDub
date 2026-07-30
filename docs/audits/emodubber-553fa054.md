@@ -24,7 +24,7 @@ checkpoint was downloaded, and no inference result was claimed.
 ## Release Gate
 
 The upstream record remains `planned`. It may advance to `experimental` only after all
-of the following are recorded in `model-registry/upstreams.yaml` and verified in CI:
+of the following are recorded in `config/model-registry/upstreams.yaml` and verified in CI:
 
 1. an authorized checkpoint URL, exact filename, byte size, SHA-256, and weight terms;
 2. a reproducible, unmodified inference environment and command at the pinned commit;

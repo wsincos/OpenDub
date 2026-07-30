@@ -52,7 +52,7 @@ the public repository.
 
 The application film can show a real generated comparison only after the above sequence yields:
 
-- a valid `adapter.yaml` and model-registry entry;
+- a valid `adapter.yaml` and model-registry entry under `config/model-registry/`;
 - one authorized input project and its explicit output-distribution consent;
 - accepted candidates produced by the actual adapter, not `opendub.test`;
 - the generated WAV/MP4, `render.json`, candidate report, and run manifest from the same project;

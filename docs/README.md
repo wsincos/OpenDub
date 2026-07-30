@@ -23,6 +23,7 @@
 - [Case 04 media authorization](rights/showcase-media-rights-v4.md)
 - [V2 media authorization](rights/showcase-media-rights-v2.md)
 - [V2 source-evidence policy](rights/showcase-source-evidence-v2.md)
+- [Licensing and upstream attribution](licensing/)
 
 The repository intentionally separates public, authorized showcase media from
 local production history. See the root [README](../README.md) for the current

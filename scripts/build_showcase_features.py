@@ -220,9 +220,12 @@ def _write_mel_png(path: Path, mel: tuple[tuple[float, ...], ...]) -> None:
     blue = np.minimum(255, 255 - image // 2).astype(np.uint8)
     rgb = np.dstack((red, green, blue))
     raw = b"".join(b"\x00" + row.tobytes() for row in rgb)
-    png = b"\x89PNG\r\n\x1a\n" + _png_chunk(
-        b"IHDR", struct.pack(">IIBBBBB", rgb.shape[1], rgb.shape[0], 8, 2, 0, 0, 0)
-    ) + _png_chunk(b"IDAT", zlib.compress(raw, 9)) + _png_chunk(b"IEND", b"")
+    png = (
+        b"\x89PNG\r\n\x1a\n"
+        + _png_chunk(b"IHDR", struct.pack(">IIBBBBB", rgb.shape[1], rgb.shape[0], 8, 2, 0, 0, 0))
+        + _png_chunk(b"IDAT", zlib.compress(raw, 9))
+        + _png_chunk(b"IEND", b"")
+    )
     path.write_bytes(png)
 
 

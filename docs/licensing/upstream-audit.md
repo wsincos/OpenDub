@@ -22,7 +22,7 @@ No source in this table is copied into OpenDub by this audit. Each future adapte
 - Blocking gaps: published emotion inference is explicitly under construction;
   linked weights have no recorded terms, byte size, or SHA-256.
 - OpenDub disposition: `planned`; detailed evidence and release gate are in
-  [`docs/audits/emodubber-553fa054.md`](../docs/audits/emodubber-553fa054.md).
+  [`docs/audits/emodubber-553fa054.md`](../audits/emodubber-553fa054.md).
 
 ## HPMDubbing And HPMDubbing_Vocoder
 
@@ -33,7 +33,7 @@ No source in this table is copied into OpenDub by this audit. Each future adapte
   terms and SHA-256; HPMDubbing's published workflow depends on feature data and
   includes V2C material subject to copyright restrictions.
 - OpenDub disposition: both remain `planned`; detailed contracts and release
-  gates are in [`docs/audits/hpmdubbing-f50dfa7.md`](../docs/audits/hpmdubbing-f50dfa7.md).
+  gates are in [`docs/audits/hpmdubbing-f50dfa7.md`](../audits/hpmdubbing-f50dfa7.md).
 
 ## StyleDubber
 
@@ -45,7 +45,7 @@ No source in this table is copied into OpenDub by this audit. Each future adapte
 - Blocking gaps: checkpoint terms, immutable hashes, authorized fixtures, reproducible raw-video
   preprocessing and an isolated real inference remain unverified.
 - OpenDub disposition: `planned`; detailed evidence and promotion gate are in
-  [`docs/audits/styledubber-bc431c8.md`](../docs/audits/styledubber-bc431c8.md).
+  [`docs/audits/styledubber-bc431c8.md`](../audits/styledubber-bc431c8.md).
 
 ## HDCode
 
@@ -57,4 +57,4 @@ No source in this table is copied into OpenDub by this audit. Each future adapte
   as not uploaded; the vocoder and any future checkpoints lack recorded terms, byte size, and
   SHA-256. No isolated real inference was performed.
 - OpenDub disposition: `planned`; detailed evidence and promotion gate are in
-  [`docs/audits/hdcode-d088398.md`](../docs/audits/hdcode-d088398.md).
+  [`docs/audits/hdcode-d088398.md`](../audits/hdcode-d088398.md).

@@ -2,7 +2,7 @@
 
 **Record date:** 2026-07-27
 **Issuing role:** OpenDub project owner / repository maintainer
-**Applies to:** `content/showcases/v4/case-04.json`
+**Applies to:** `apps/web/content/showcases/v4/case-04.json`
 
 ## Authorized use
 

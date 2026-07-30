@@ -1,7 +1,7 @@
-import animationManifest from "../../../../content/showcases/v2/animation-1.json";
-import humanManifest from "../../../../content/showcases/v2/human-0.json";
-import case03Manifest from "../../../../content/showcases/v3/case-03.json";
-import case04Manifest from "../../../../content/showcases/v4/case-04.json";
+import animationManifest from "../../content/showcases/v2/animation-1.json";
+import humanManifest from "../../content/showcases/v2/human-0.json";
+import case03Manifest from "../../content/showcases/v3/case-03.json";
+import case04Manifest from "../../content/showcases/v4/case-04.json";
 
 export type ShowcaseStatus = "archived_research_example" | "replay" | "blocked";
 export type ShowcaseMethodId = "galaxycong/hpmdubbing" | "galaxycong/styledubber" | "galaxycong/emodubber";

@@ -8,7 +8,7 @@ import pytest
 from opendub.atlas.models import MethodManifest
 from opendub.atlas.validation import validate_content
 
-CONTENT_ROOT = Path(__file__).resolve().parents[3] / "content"
+CONTENT_ROOT = Path(__file__).resolve().parents[3] / "apps" / "web" / "content"
 
 
 @pytest.mark.parametrize(

@@ -34,6 +34,6 @@ do not receive an admission block.
 ## Current Dispositions
 
 The exact public upstream status remains in
-[`model-registry/upstreams.yaml`](../../model-registry/upstreams.yaml). As of the recorded audits,
+[`config/model-registry/upstreams.yaml`](../../config/model-registry/upstreams.yaml). As of the recorded audits,
 EmoDubber, HPMDubbing, StyleDubber, HPMDubbing Vocoder, HDCode, CoSyncDiT, and LLM-Flow-Dubber
 remain `planned`. None may be presented as an installed OpenDub model.

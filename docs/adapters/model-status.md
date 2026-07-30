@@ -12,7 +12,7 @@ table is not evidence that its model is installed, usable, or licensed for a par
 | HDCode | Planned | Fixed source commit, MIT source license, 22.05 kHz README contract | Checkpoint/feature availability, weight terms/checksum, isolated runtime, and real smoke |
 | CoSyncDiT, LLM-Flow-Dubber | Planned | Research references only where recorded | Public code/weights/license and the full admission process |
 
-The machine-readable source of truth is [`model-registry/upstreams.yaml`](../../model-registry/upstreams.yaml).
+The machine-readable source of truth is [`config/model-registry/upstreams.yaml`](../../config/model-registry/upstreams.yaml).
 Audits live under [`docs/audits/`](../audits/). An adapter can move to `experimental` only when
 the repository, source commit, source license, weights, input contract, and at least one real
 inference have been verified. It can move to `stable` only after a controlled real smoke test,
@@ -20,5 +20,5 @@ documented limits, and release-quality reproducibility evidence.
 
 The enforceable evidence packet and planned-backend index are in
 [Research Backend Promotion Gate](research-backend-gate.md) and
-[`model-registry/planned/`](../../model-registry/planned/). Project owners can use the
+[`config/model-registry/planned/`](../../config/model-registry/planned/). Project owners can use the
 [real backend admission handoff](owner-handoff.md) to submit one reproducible backend at a time.

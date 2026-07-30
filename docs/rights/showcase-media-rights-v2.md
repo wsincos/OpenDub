@@ -2,7 +2,7 @@
 
 **Record date:** 2026-07-27
 **Issuing role:** OpenDub project owner / repository maintainer
-**Applies to:** `content/showcases/v2/human-0.json` and `content/showcases/v2/animation-1.json`
+**Applies to:** `apps/web/content/showcases/v2/human-0.json` and `apps/web/content/showcases/v2/animation-1.json`
 
 ## Authorized use
 
