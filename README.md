@@ -98,6 +98,7 @@ priorities, rather than treating them as interchangeable fragments.
 | **HPMDubbing** | Hierarchical visual prosody: lip motion, facial affect, and scene context guide duration, pitch, energy, and emotion. | [Repository](https://github.com/GalaxyCong/HPMDubbing) · [paper](https://openaccess.thecvf.com/content/CVPR2023/html/Cong_Learning_To_Dub_Movies_via_Hierarchical_Prosody_Models_CVPR_2023_paper.html) |
 | **StyleDubber** | Multi-scale style learning: visual frames, phonemes, and utterance-level context support clear pronunciation and character style. | [Repository](https://github.com/GalaxyCong/StyleDubber) |
 | **EmoDubber** | Emotion-controllable movie dubbing: lip-related alignment, pronunciation, speaker identity, and emotion-guided generation. | [Repository](https://github.com/GalaxyCong/EmoDubber) · [paper](https://openaccess.thecvf.com/content/CVPR2025/html/Cong_EmoDubber_Towards_High_Quality_and_Emotion_Controllable_Movie_Dubbing_CVPR_2025_paper.html) |
+| **InstructDubber** | Instruction-based Alignment for Zero-shot Movie Dubbing. | [Repository](https://github.com/ZZDoog/InstructDubber) · [paper](https://ojs.aaai.org/index.php/AAAI/article/view/38298) |
 
 ## Public Scope
 
