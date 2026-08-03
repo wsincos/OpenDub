@@ -32,6 +32,36 @@ rights-aware local project.
 > complete methods. OpenDub makes their task assumptions, evidence, and usage
 > boundaries visible in one place.
 
+
+
+## Team-Developed Methods
+
+OpenDub presents the team's original work as complete methods with distinct
+priorities, rather than treating them as interchangeable fragments.
+
+| Method | Complete-method focus | Upstream source |
+| --- | --- | --- |
+| **HPMDubbing** | Hierarchical visual prosody: lip motion, facial affect, and scene context guide duration, pitch, energy, and emotion. | [Repository](https://github.com/GalaxyCong/HPMDubbing) · [paper](https://openaccess.thecvf.com/content/CVPR2023/html/Cong_Learning_To_Dub_Movies_via_Hierarchical_Prosody_Models_CVPR_2023_paper.html) |
+| **StyleDubber** | Multi-scale style learning: visual frames, phonemes, and utterance-level context support clear pronunciation and character style. | [Repository](https://github.com/GalaxyCong/StyleDubber) |
+| **EmoDubber** | Emotion-controllable movie dubbing: lip-related alignment, pronunciation, speaker identity, and emotion-guided generation. | [Repository](https://github.com/GalaxyCong/EmoDubber) · [paper](https://openaccess.thecvf.com/content/CVPR2025/html/Cong_EmoDubber_Towards_High_Quality_and_Emotion_Controllable_Movie_Dubbing_CVPR_2025_paper.html) |
+| **Speaker2Dubber** | From Speaker to Dubber: Movie Dubbing with Prosody and Duration Consistency Learning. | [Repository](https://github.com/ZZDoog/Speaker2Dubber) · [paper](https://dl.acm.org/doi/10.1145/3664647.3680777) |
+| **InstructDubber** | Instruction-based Alignment for Zero-shot Movie Dubbing. | [Repository](https://github.com/ZZDoog/InstructDubber) · [paper](https://ojs.aaai.org/index.php/AAAI/article/view/38298) |
+| **HiCoDiT** | Hierarchical Codec Diffusion for Video-to-Speech Generation. | [Repository](https://github.com/Jiaxin-Ye/HiCoDiT) · [paper](https://openaccess.thecvf.com/content/CVPR2026/papers/Ye_Hierarchical_Codec_Diffusion_for_Video-to-Speech_Generation_CVPR_2026_paper.pdf) |
+| **CoSyncDiT** | CoSyncDiT: Cognitive Synchronous Diffusion Transformer for Movie Dubbing. |  [Repository](https://github.com/GalaxyCong/CoSyncDiT) · [paper](https://arxiv.org/pdf/2604.12292)|
+
+
+## What You Can Explore
+
+| Task Stage | Method Atlas |
+| --- | --- |
+| ![OpenDub task stage](docs/showcase/assets/task-stage.jpg) | ![OpenDub method atlas](docs/showcase/assets/method-atlas.jpg) |
+| Start with the synchronized roles of video, text, and reference speech. Inspect face, lip, environment, phoneme, prosody, and output views. | Explore each complete team-developed method through its original architecture, clickable components, and source record. |
+
+| Compare Workbench | Evidence and Studio |
+| --- | --- |
+| ![OpenDub comparison workbench](docs/showcase/assets/compare-workbench.jpg) | ![OpenDub studio](docs/showcase/assets/evidence-studio.jpg) |
+| Relate archived video and audio to waveform, log-mel, F0, energy, and frame contacts in one synchronized record. | Trace evidence, select a complete method, record authorized inputs, and export a versioned local preparation record. |
+
 ## The Task
 
 ```text
@@ -49,18 +79,6 @@ motion, facial expression, scene context, and timing; text defines the intended
 content; authorized reference speech supplies an identity and style condition.
 OpenDub exposes these signals as an interactive, time-aware task rather than a
 black-box audio button.
-
-## What You Can Explore
-
-| Task Stage | Method Atlas |
-| --- | --- |
-| ![OpenDub task stage](docs/showcase/assets/task-stage.jpg) | ![OpenDub method atlas](docs/showcase/assets/method-atlas.jpg) |
-| Start with the synchronized roles of video, text, and reference speech. Inspect face, lip, environment, phoneme, prosody, and output views. | Explore each complete team-developed method through its original architecture, clickable components, and source record. |
-
-| Compare Workbench | Evidence and Studio |
-| --- | --- |
-| ![OpenDub comparison workbench](docs/showcase/assets/compare-workbench.jpg) | ![OpenDub studio](docs/showcase/assets/evidence-studio.jpg) |
-| Relate archived video and audio to waveform, log-mel, F0, energy, and frame contacts in one synchronized record. | Trace evidence, select a complete method, record authorized inputs, and export a versioned local preparation record. |
 
 ## Listen To Archived Examples
 
@@ -88,17 +106,7 @@ rankings.
 
 **Archived research example — not a fresh OpenDub run or a common-input ranking.**
 
-## Team-Developed Methods
 
-OpenDub presents the team's original work as complete methods with distinct
-priorities, rather than treating them as interchangeable fragments.
-
-| Method | Complete-method focus | Upstream source |
-| --- | --- | --- |
-| **HPMDubbing** | Hierarchical visual prosody: lip motion, facial affect, and scene context guide duration, pitch, energy, and emotion. | [Repository](https://github.com/GalaxyCong/HPMDubbing) · [paper](https://openaccess.thecvf.com/content/CVPR2023/html/Cong_Learning_To_Dub_Movies_via_Hierarchical_Prosody_Models_CVPR_2023_paper.html) |
-| **StyleDubber** | Multi-scale style learning: visual frames, phonemes, and utterance-level context support clear pronunciation and character style. | [Repository](https://github.com/GalaxyCong/StyleDubber) |
-| **EmoDubber** | Emotion-controllable movie dubbing: lip-related alignment, pronunciation, speaker identity, and emotion-guided generation. | [Repository](https://github.com/GalaxyCong/EmoDubber) · [paper](https://openaccess.thecvf.com/content/CVPR2025/html/Cong_EmoDubber_Towards_High_Quality_and_Emotion_Controllable_Movie_Dubbing_CVPR_2025_paper.html) |
-| **InstructDubber** | Instruction-based Alignment for Zero-shot Movie Dubbing. | [Repository](https://github.com/ZZDoog/InstructDubber) · [paper](https://ojs.aaai.org/index.php/AAAI/article/view/38298) |
 
 ## Public Scope
 
